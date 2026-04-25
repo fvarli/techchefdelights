@@ -29,6 +29,46 @@
       "beginner": "Başlangıç",
       "intermediate": "Orta",
       "advanced": "İleri"
+    },
+    "toc": {
+      "title": "Bu Sayfada",
+      "story": "Hikâye",
+      "ingredients": "Malzemeler",
+      "equipment": "Araçlar",
+      "instructions": "Yapılışı",
+      "variations": "Varyasyonlar",
+      "faq": "SSS",
+      "reviews": "Yorumlar"
+    },
+    "sections": {
+      "story": "Hikâye",
+      "ingredients": "Malzemeler",
+      "equipment": "Mutfak Araçları",
+      "instructions": "Yapılışı",
+      "variations": "Varyasyonlar",
+      "faq": "Sıkça Sorulanlar",
+      "reviews": "Yorumlar",
+      "related": "Diğer Tarifler"
+    },
+    "ingredients": {
+      "scaleLabel": "Porsiyonu ölçekle",
+      "containsAllergen": "{name} içerir",
+      "optional": "isteğe bağlı",
+      "toTaste": "damak tadına göre"
+    },
+    "instructions": {
+      "step": "Adım",
+      "chefNote": "Şefin notu"
+    },
+    "allergyAlert": {
+      "title": "Alerjen uyarısı",
+      "contains": "İçerir"
+    },
+    "reviews": {
+      "summary": "{count} yorum",
+      "noReviews": "Henüz yorum yok.",
+      "placeholder": "Örnek",
+      "signInToReview": "Yorum yapmak için giriş yapın"
     }
   }
 }

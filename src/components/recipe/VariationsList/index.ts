@@ -1,0 +1,1 @@
+export { VariationsList } from './VariationsList'

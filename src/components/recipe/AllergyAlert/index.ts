@@ -1,0 +1,1 @@
+export { AllergyAlert } from './AllergyAlert'

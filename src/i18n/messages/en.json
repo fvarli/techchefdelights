@@ -29,6 +29,46 @@
       "beginner": "Beginner",
       "intermediate": "Intermediate",
       "advanced": "Advanced"
+    },
+    "toc": {
+      "title": "On This Page",
+      "story": "Story",
+      "ingredients": "Ingredients",
+      "equipment": "Equipment",
+      "instructions": "Instructions",
+      "variations": "Variations",
+      "faq": "FAQ",
+      "reviews": "Reviews"
+    },
+    "sections": {
+      "story": "The Story",
+      "ingredients": "Ingredients",
+      "equipment": "Equipment",
+      "instructions": "Instructions",
+      "variations": "Variations",
+      "faq": "Frequently Asked",
+      "reviews": "Reviews",
+      "related": "More Recipes"
+    },
+    "ingredients": {
+      "scaleLabel": "Scale servings",
+      "containsAllergen": "Contains {name}",
+      "optional": "optional",
+      "toTaste": "to taste"
+    },
+    "instructions": {
+      "step": "Step",
+      "chefNote": "Chef's note"
+    },
+    "allergyAlert": {
+      "title": "Allergy alert",
+      "contains": "Contains"
+    },
+    "reviews": {
+      "summary": "{count} reviews",
+      "noReviews": "No reviews yet.",
+      "placeholder": "Sample",
+      "signInToReview": "Sign in to leave a review"
     }
   }
 }

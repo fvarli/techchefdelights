@@ -1,0 +1,192 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.scaler {
+  display: inline-flex;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  padding: 2px;
+  background: var(--color-paper);
+}
+
+.scaleBtn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-sub);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.scaleBtn:hover {
+  color: var(--color-ink);
+}
+
+.scaleBtnActive {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border-color: var(--color-ink);
+}
+
+.scaleCount {
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.groupLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  margin: 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto 96px 1fr auto;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.itemChecked .row {
+  opacity: 0.45;
+}
+
+.itemChecked .name,
+.itemChecked .qtyNum,
+.itemChecked .qtyUnit {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-terra);
+  cursor: pointer;
+}
+
+.qty {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-ink);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.qtyNum {
+  font-feature-settings: 'tnum';
+}
+
+.qtyUnit {
+  color: var(--color-sub);
+  text-transform: lowercase;
+}
+
+.toTaste {
+  color: var(--color-mute);
+  font-style: italic;
+  font-family: var(--font-serif);
+  font-size: 14px;
+}
+
+.name {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--color-ink);
+}
+
+.prep {
+  color: var(--color-sub);
+  font-size: 14px;
+}
+
+.optional {
+  margin-left: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+.pills {
+  display: inline-flex;
+  gap: var(--space-1);
+  align-self: center;
+}
+
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+  }
+  .qty {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .name {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .pills {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin-top: var(--space-1);
+  }
+}

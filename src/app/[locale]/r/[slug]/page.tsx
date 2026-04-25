@@ -1,11 +1,25 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { db } from '@/lib/db'
 import { loadRecipeBySlug } from '@/lib/api/recipe-loader'
 import { recipeJsonLd, faqJsonLd, breadcrumbJsonLd } from '@/lib/jsonld'
+import { fromApiLocale } from '@/lib/api/enums'
 import { RecipeHero } from '@/components/recipe/RecipeHero'
 import { SignalBar } from '@/components/recipe/SignalBar'
+import { StickyTOC } from '@/components/recipe/StickyTOC'
+import {
+  IngredientsSection,
+  IngredientsSectionFallback,
+} from '@/components/recipe/IngredientsSection'
+import { AllergyAlert } from '@/components/recipe/AllergyAlert'
+import { EquipmentList } from '@/components/recipe/EquipmentList'
+import { InstructionsSection } from '@/components/recipe/InstructionsSection'
+import { VariationsList } from '@/components/recipe/VariationsList'
+import { FAQList } from '@/components/recipe/FAQList'
+import { ReviewsSection } from '@/components/recipe/ReviewsSection'
+import { RelatedRecipes, type RelatedRecipeItem } from '@/components/recipe/RelatedRecipes'
 import type { ApiLocale } from '@/lib/api/enums'
 import styles from './recipe.module.css'
 
@@ -56,6 +70,45 @@ export async function generateMetadata({
   }
 }
 
+async function loadRelated(
+  recipeId: string,
+  cuisineId: string | null,
+  locale: ApiLocale,
+): Promise<RelatedRecipeItem[]> {
+  if (!cuisineId) return []
+  const prismaLocale = fromApiLocale(locale)
+  const candidates = await db.recipe.findMany({
+    where: {
+      cuisineId,
+      id: { not: recipeId },
+      isDraft: false,
+    },
+    take: 4,
+    orderBy: { publishedAt: 'desc' },
+    include: {
+      translations: { where: { locale: prismaLocale } },
+      cuisine: { include: { translations: { where: { locale: prismaLocale } } } },
+    },
+  })
+  return candidates
+    .filter((c) => c.translations[0])
+    .map((c) => ({
+      slug: c.translations[0].slug,
+      title: c.translations[0].title,
+      tagline: c.translations[0].tagline,
+      totalMinutes: c.totalMinutes,
+      cuisine: c.cuisine?.translations[0]?.name ?? null,
+    }))
+}
+
+async function loadReviews(recipeId: string) {
+  return db.review.findMany({
+    where: { recipeId },
+    take: 10,
+    orderBy: [{ isPlaceholder: 'asc' }, { createdAt: 'desc' }],
+  })
+}
+
 export default async function RecipePage({
   params,
 }: {
@@ -67,7 +120,27 @@ export default async function RecipePage({
   const recipe = await loadRecipeBySlug(slug, locale)
   if (!recipe) notFound()
 
-  const t = await getTranslations('Recipe')
+  const recipeRow = await db.recipe.findUnique({
+    where: { id: recipe.id },
+    select: { cuisineId: true },
+  })
+
+  const [related, reviews, t] = await Promise.all([
+    loadRelated(recipe.id, recipeRow?.cuisineId ?? null, locale),
+    loadReviews(recipe.id),
+    getTranslations('Recipe'),
+  ])
+
+  const tocItems = [
+    { id: 'story', label: t('toc.story') },
+    { id: 'ingredients', label: t('toc.ingredients') },
+    { id: 'equipment', label: t('toc.equipment') },
+    { id: 'instructions', label: t('toc.instructions') },
+    { id: 'variations', label: t('toc.variations') },
+    { id: 'faq', label: t('toc.faq') },
+    { id: 'reviews', label: t('toc.reviews') },
+  ]
+
   const breadcrumbLabels = { home: t('breadcrumb.home'), recipes: t('breadcrumb.recipes') }
   const signalLabels = {
     prep: t('signalBar.prep'),
@@ -83,6 +156,31 @@ export default async function RecipePage({
       advanced: t('skill.advanced'),
     },
   }
+  const ingredientsLabels = {
+    title: t('sections.ingredients'),
+    scaleLabel: t('ingredients.scaleLabel'),
+    optional: t('ingredients.optional'),
+    containsAllergen: t('ingredients.containsAllergen'),
+    toTaste: t('ingredients.toTaste'),
+  }
+  const allergyAlertLabels = {
+    title: t('allergyAlert.title'),
+    contains: t('allergyAlert.contains'),
+  }
+  const instructionsLabels = {
+    title: t('sections.instructions'),
+    step: t('instructions.step'),
+    chefNote: t('instructions.chefNote'),
+    minutes: t('signalBar.minutes'),
+  }
+  const reviewsLabels = {
+    title: t('sections.reviews'),
+    summary: t('reviews.summary'),
+    placeholder: t('reviews.placeholder'),
+    noReviews: t('reviews.noReviews'),
+    signInToReview: t('reviews.signInToReview'),
+  }
+  const relatedLabels = { title: t('sections.related'), minutes: t('signalBar.minutes') }
 
   const jsonLdRecipe = recipeJsonLd(recipe, locale, BASE_URL)
   const jsonLdFaq = faqJsonLd(recipe.faq)
@@ -107,6 +205,70 @@ export default async function RecipePage({
 
       <RecipeHero recipe={recipe} locale={locale} breadcrumb={breadcrumbLabels} />
       <SignalBar recipe={recipe} labels={signalLabels} />
+
+      <div className={styles.grid}>
+        <aside className={styles.leftRail}>
+          <StickyTOC items={tocItems} title={t('toc.title')} />
+        </aside>
+
+        <div className={styles.body}>
+          <section id="story" className={styles.story}>
+            <h2 className={styles.storyTitle}>{t('sections.story')}</h2>
+            {recipe.story.split('\n\n').map((para, i) => (
+              <p key={i} className={styles.storyPara}>
+                {para}
+              </p>
+            ))}
+          </section>
+
+          <AllergyAlert allergens={recipe.allergens} labels={allergyAlertLabels} />
+
+          <Suspense
+            fallback={
+              <IngredientsSectionFallback
+                recipe={recipe}
+                labels={{
+                  title: ingredientsLabels.title,
+                  optional: ingredientsLabels.optional,
+                  containsAllergen: ingredientsLabels.containsAllergen,
+                  toTaste: ingredientsLabels.toTaste,
+                }}
+              />
+            }
+          >
+            <IngredientsSection recipe={recipe} labels={ingredientsLabels} />
+          </Suspense>
+
+          <EquipmentList equipment={recipe.equipment} title={t('sections.equipment')} />
+
+          <InstructionsSection steps={recipe.steps} labels={instructionsLabels} />
+
+          <VariationsList variations={recipe.variations} title={t('sections.variations')} />
+
+          <FAQList faq={recipe.faq} title={t('sections.faq')} />
+
+          <ReviewsSection
+            rating={recipe.rating}
+            reviews={reviews.map((r) => ({
+              id: r.id,
+              rating: r.rating,
+              body: r.body,
+              authorName: r.authorName,
+              isPlaceholder: r.isPlaceholder,
+              createdAt: r.createdAt.toISOString(),
+            }))}
+            labels={reviewsLabels}
+          />
+        </div>
+
+        <aside className={styles.rightRail} aria-label="Recipe utilities (placeholder)">
+          <div className={styles.rightRailPlaceholder}>
+            <span className={styles.rightRailLabel}>RIGHT RAIL · COMMIT 3</span>
+          </div>
+        </aside>
+      </div>
+
+      <RelatedRecipes items={related} locale={locale} labels={relatedLabels} />
     </article>
   )
 }

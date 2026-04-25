@@ -29,6 +29,46 @@
       "beginner": "Básico",
       "intermediate": "Intermedio",
       "advanced": "Avanzado"
+    },
+    "toc": {
+      "title": "En Esta Página",
+      "story": "Historia",
+      "ingredients": "Ingredientes",
+      "equipment": "Utensilios",
+      "instructions": "Instrucciones",
+      "variations": "Variaciones",
+      "faq": "Preguntas",
+      "reviews": "Reseñas"
+    },
+    "sections": {
+      "story": "La Historia",
+      "ingredients": "Ingredientes",
+      "equipment": "Utensilios",
+      "instructions": "Instrucciones",
+      "variations": "Variaciones",
+      "faq": "Preguntas Frecuentes",
+      "reviews": "Reseñas",
+      "related": "Más Recetas"
+    },
+    "ingredients": {
+      "scaleLabel": "Escalar raciones",
+      "containsAllergen": "Contiene {name}",
+      "optional": "opcional",
+      "toTaste": "al gusto"
+    },
+    "instructions": {
+      "step": "Paso",
+      "chefNote": "Nota del chef"
+    },
+    "allergyAlert": {
+      "title": "Alerta de alérgenos",
+      "contains": "Contiene"
+    },
+    "reviews": {
+      "summary": "{count} reseñas",
+      "noReviews": "Aún no hay reseñas.",
+      "placeholder": "Muestra",
+      "signInToReview": "Inicia sesión para dejar una reseña"
     }
   }
 }
