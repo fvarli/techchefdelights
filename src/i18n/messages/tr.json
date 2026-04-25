@@ -69,6 +69,45 @@
       "noReviews": "Henüz yorum yok.",
       "placeholder": "Örnek",
       "signInToReview": "Yorum yapmak için giriş yapın"
+    },
+    "nutrition": {
+      "title": "Besin Değerleri",
+      "servingSize": "porsiyon başına",
+      "calories": "kcal",
+      "protein": "Protein",
+      "carbs": "Karbonhidrat",
+      "fat": "Yağ",
+      "fiber": "Lif",
+      "sodium": "Sodyum",
+      "basedOn": "% Günlük değerler 2.000 kcal'lik diyet üzerinden"
+    },
+    "dietary": {
+      "title": "Diyet & Alerjen",
+      "diets": "Uygun",
+      "contains": "İçerir",
+      "mayContain": "İçerebilir",
+      "none": "Alerjen bilgisi yok"
+    },
+    "cost": {
+      "title": "Maliyet",
+      "perServing": "porsiyon başına",
+      "totalForAll": "{count} porsiyon toplam",
+      "note": "Ortalama market fiyatlarına göre tahmini."
+    },
+    "utilities": {
+      "title": "İşlemler",
+      "save": "Tarifi kaydet",
+      "saved": "Kaydedildi",
+      "addToList": "Alışveriş listesine ekle",
+      "inList": "Listede",
+      "plan": "Plana ekle",
+      "planSoon": "Yakında",
+      "print": "Yazdır",
+      "share": "Paylaş",
+      "shareCopied": "Bağlantı kopyalandı",
+      "units": "Birim",
+      "unitMetric": "Metrik",
+      "unitUS": "US"
     }
   }
 }

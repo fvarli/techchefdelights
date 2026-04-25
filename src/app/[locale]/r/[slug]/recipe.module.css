@@ -34,24 +34,6 @@
   align-self: start;
 }
 
-.rightRailPlaceholder {
-  border: 1px dashed var(--color-rule-strong);
-  border-radius: var(--radius-md);
-  padding: var(--space-7) var(--space-4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 320px;
-  background: var(--color-cream);
-}
-
-.rightRailLabel {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--color-mute);
-}
-
 .story {
   display: flex;
   flex-direction: column;

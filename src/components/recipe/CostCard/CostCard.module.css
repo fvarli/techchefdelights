@@ -1,0 +1,68 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.amount {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  line-height: 1;
+  color: var(--color-ink);
+  font-feature-settings: 'tnum';
+}
+
+.subtext {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.totalLabel {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-sub);
+}
+
+.totalValue {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--color-ink);
+  font-feature-settings: 'tnum';
+}
+
+.note {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-mute);
+  margin: 0;
+}

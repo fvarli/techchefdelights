@@ -10,7 +10,11 @@ export type UserPrefs = {
 
 const DEFAULT: UserPrefs = { allergies: [], unitSystem: 'metric' }
 
-export function usePrefs(): { prefs: UserPrefs; hydrated: boolean } {
+export function usePrefs(): {
+  prefs: UserPrefs
+  update: (partial: Partial<UserPrefs>) => void
+  hydrated: boolean
+} {
   const [prefs, setPrefs] = useState<UserPrefs>(DEFAULT)
   const [hydrated, setHydrated] = useState(false)
 
@@ -27,5 +31,15 @@ export function usePrefs(): { prefs: UserPrefs; hydrated: boolean } {
     setHydrated(true)
   }, [])
 
-  return { prefs, hydrated }
+  function update(partial: Partial<UserPrefs>) {
+    setPrefs((prev) => {
+      const next = { ...prev, ...partial }
+      try {
+        localStorage.setItem(SK.prefs, JSON.stringify(next))
+      } catch {}
+      return next
+    })
+  }
+
+  return { prefs, update, hydrated }
 }

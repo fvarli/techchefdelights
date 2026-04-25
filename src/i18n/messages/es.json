@@ -69,6 +69,45 @@
       "noReviews": "Aún no hay reseñas.",
       "placeholder": "Muestra",
       "signInToReview": "Inicia sesión para dejar una reseña"
+    },
+    "nutrition": {
+      "title": "Nutrición",
+      "servingSize": "por ración",
+      "calories": "kcal",
+      "protein": "Proteínas",
+      "carbs": "Carbohidratos",
+      "fat": "Grasas",
+      "fiber": "Fibra",
+      "sodium": "Sodio",
+      "basedOn": "% Valor diario basado en una dieta de 2.000 kcal"
+    },
+    "dietary": {
+      "title": "Dieta y alérgenos",
+      "diets": "Apto para",
+      "contains": "Contiene",
+      "mayContain": "Puede contener",
+      "none": "Sin información de alérgenos"
+    },
+    "cost": {
+      "title": "Coste",
+      "perServing": "por ración",
+      "totalForAll": "Total para {count} raciones",
+      "note": "Estimación basada en precios medios de supermercado."
+    },
+    "utilities": {
+      "title": "Acciones",
+      "save": "Guardar receta",
+      "saved": "Guardada",
+      "addToList": "Añadir a la lista",
+      "inList": "En la lista",
+      "plan": "Añadir al plan",
+      "planSoon": "Pronto",
+      "print": "Imprimir",
+      "share": "Compartir",
+      "shareCopied": "Enlace copiado",
+      "units": "Unidades",
+      "unitMetric": "Métrico",
+      "unitUS": "US"
     }
   }
 }

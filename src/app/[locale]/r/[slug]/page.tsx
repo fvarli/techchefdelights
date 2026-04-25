@@ -20,6 +20,7 @@ import { VariationsList } from '@/components/recipe/VariationsList'
 import { FAQList } from '@/components/recipe/FAQList'
 import { ReviewsSection } from '@/components/recipe/ReviewsSection'
 import { RelatedRecipes, type RelatedRecipeItem } from '@/components/recipe/RelatedRecipes'
+import { RightRail } from '@/components/recipe/RightRail'
 import type { ApiLocale } from '@/lib/api/enums'
 import styles from './recipe.module.css'
 
@@ -182,6 +183,48 @@ export default async function RecipePage({
   }
   const relatedLabels = { title: t('sections.related'), minutes: t('signalBar.minutes') }
 
+  const rightRailLabels = {
+    nutrition: {
+      title: t('nutrition.title'),
+      servingSize: t('nutrition.servingSize'),
+      calories: t('nutrition.calories'),
+      protein: t('nutrition.protein'),
+      carbs: t('nutrition.carbs'),
+      fat: t('nutrition.fat'),
+      fiber: t('nutrition.fiber'),
+      sodium: t('nutrition.sodium'),
+      basedOn: t('nutrition.basedOn'),
+    },
+    dietary: {
+      title: t('dietary.title'),
+      diets: t('dietary.diets'),
+      contains: t('dietary.contains'),
+      mayContain: t('dietary.mayContain'),
+      none: t('dietary.none'),
+    },
+    cost: {
+      title: t('cost.title'),
+      perServing: t('cost.perServing'),
+      totalForAll: t('cost.totalForAll'),
+      note: t('cost.note'),
+    },
+    utilities: {
+      title: t('utilities.title'),
+      save: t('utilities.save'),
+      saved: t('utilities.saved'),
+      addToList: t('utilities.addToList'),
+      inList: t('utilities.inList'),
+      plan: t('utilities.plan'),
+      planSoon: t('utilities.planSoon'),
+      print: t('utilities.print'),
+      share: t('utilities.share'),
+      shareCopied: t('utilities.shareCopied'),
+      units: t('utilities.units'),
+      unitMetric: t('utilities.unitMetric'),
+      unitUS: t('utilities.unitUS'),
+    },
+  }
+
   const jsonLdRecipe = recipeJsonLd(recipe, locale, BASE_URL)
   const jsonLdFaq = faqJsonLd(recipe.faq)
   const jsonLdBreadcrumb = breadcrumbJsonLd(recipe, locale, BASE_URL, breadcrumbLabels)
@@ -261,10 +304,8 @@ export default async function RecipePage({
           />
         </div>
 
-        <aside className={styles.rightRail} aria-label="Recipe utilities (placeholder)">
-          <div className={styles.rightRailPlaceholder}>
-            <span className={styles.rightRailLabel}>RIGHT RAIL · COMMIT 3</span>
-          </div>
+        <aside className={styles.rightRail}>
+          <RightRail recipe={recipe} locale={locale} labels={rightRailLabels} />
         </aside>
       </div>
 

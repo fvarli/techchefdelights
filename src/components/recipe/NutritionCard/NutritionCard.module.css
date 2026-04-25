@@ -1,0 +1,134 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  margin: 0;
+}
+
+.servingSize {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-sub);
+}
+
+.calorieBlock {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.calorieNum {
+  font-family: var(--font-serif);
+  font-size: 56px;
+  line-height: 1;
+  color: var(--color-ink);
+  font-feature-settings: 'tnum';
+}
+
+.calorieUnit {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.barTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.barLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-sub);
+}
+
+.barRight {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.barValue {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--color-ink);
+  font-feature-settings: 'tnum';
+}
+
+.barUnit {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  margin-left: 2px;
+  color: var(--color-sub);
+}
+
+.barPct {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-mute);
+}
+
+.barTrack {
+  height: 4px;
+  background: var(--color-rule);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+.fill-protein { background: var(--color-terra); }
+.fill-carbs { background: var(--color-amber); }
+.fill-fat { background: var(--color-ink); }
+.fill-fiber { background: var(--color-sage); }
+.fill-sodium { background: var(--color-rule-strong); }
+
+.note {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--color-mute);
+  margin: 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-rule);
+}
