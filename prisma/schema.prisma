@@ -1,7 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// TechChefDelights v1 — Phase 2 schema
+// Source-of-truth for database structure across EN/TR/ES locales.
+// searchVector tsvector + GIN index added in a follow-up raw SQL migration.
 
 generator client {
   provider = "prisma-client"
@@ -10,4 +9,598 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ─── ENUMS ─────────────────────────────────────────────
+
+enum Locale {
+  EN
+  TR
+  ES
+}
+
+enum Skill {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum UnitKey {
+  G
+  KG
+  ML
+  L
+  TSP
+  TBSP
+  CUP
+  OZ
+  LB
+  PIECE
+  PINCH
+}
+
+enum AisleKey {
+  PRODUCE
+  MEAT
+  DAIRY
+  PANTRY
+  BAKERY
+  FROZEN
+  SPICES
+  OTHER
+}
+
+enum AllergenPresence {
+  CONTAINS
+  MAY_CONTAIN
+  FREE
+}
+
+enum VideoProvider {
+  YOUTUBE
+  VIMEO
+  SELF
+}
+
+enum NewsletterStatus {
+  PENDING
+  CONFIRMED
+  UNSUBSCRIBED
+}
+
+// ─── RECIPE CORE ───────────────────────────────────────
+
+model Recipe {
+  id                  String   @id @default(cuid())
+  authorId            String?
+  cuisineId           String?
+  skill               Skill
+  servings            Int
+  prepMinutes         Int
+  cookMinutes         Int
+  totalMinutes        Int
+  heroImageCloudinary String
+  heroBlurhash        String?
+  costPerServingCents Int?
+  costCurrency        String?
+  ratingAvg           Float    @default(0)
+  ratingCount         Int      @default(0)
+  ratingDist          Int[]    @default([0, 0, 0, 0, 0])
+  publishedAt         DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  isDraft             Boolean  @default(false)
+
+  author           Author?             @relation(fields: [authorId], references: [id])
+  cuisine          Cuisine?            @relation(fields: [cuisineId], references: [id])
+  translations     RecipeTranslation[]
+  ingredientGroups IngredientGroup[]
+  steps            Step[]
+  equipment        RecipeEquipment[]
+  variations       Variation[]
+  faq              FAQ[]
+  nutrition        Nutrition?
+  video            RecipeVideo?
+  categories       RecipeCategory[]
+  tags             RecipeTag[]
+  diets            RecipeDiet[]
+  allergens        RecipeAllergen[]
+  reviews          Review[]
+  gallery          RecipeImage[]
+  editorialPicks   EditorialPick[]
+
+  @@index([cuisineId])
+  @@index([skill])
+  @@index([publishedAt])
+  @@index([authorId])
+}
+
+model RecipeTranslation {
+  id             String                   @id @default(cuid())
+  recipeId       String
+  locale         Locale
+  slug           String
+  title          String
+  tagline        String
+  description    String                   @db.Text
+  story          String                   @db.Text
+  seoTitle       String?
+  seoDescription String?
+  searchVector   Unsupported("tsvector")?
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, locale])
+  @@unique([locale, slug])
+  @@index([locale])
+}
+
+// ─── INGREDIENTS ───────────────────────────────────────
+
+model IngredientGroup {
+  id       String @id @default(cuid())
+  recipeId String
+  position Int
+
+  recipe       Recipe                       @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  translations IngredientGroupTranslation[]
+  items        Ingredient[]
+
+  @@index([recipeId])
+}
+
+model IngredientGroupTranslation {
+  id      String @id @default(cuid())
+  groupId String
+  locale  Locale
+  label   String
+
+  group IngredientGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, locale])
+}
+
+model Ingredient {
+  id         String   @id @default(cuid())
+  groupId    String
+  position   Int
+  quantity   Float?
+  unit       UnitKey?
+  quantityUS Float?
+  unitUS     UnitKey?
+  optional   Boolean  @default(false)
+  aisle      AisleKey @default(OTHER)
+
+  group        IngredientGroup         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  translations IngredientTranslation[]
+
+  @@index([groupId])
+}
+
+model IngredientTranslation {
+  id           String   @id @default(cuid())
+  ingredientId String
+  locale       Locale
+  name         String
+  prep         String?
+  substitutes  String[]
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@unique([ingredientId, locale])
+}
+
+// ─── STEPS ─────────────────────────────────────────────
+
+model Step {
+  id             String   @id @default(cuid())
+  recipeId       String
+  index          Int
+  timerSeconds   Int?
+  ingredientRefs String[]
+
+  recipe       Recipe            @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  translations StepTranslation[]
+  images       StepImage[]
+
+  @@unique([recipeId, index])
+}
+
+model StepTranslation {
+  id         String  @id @default(cuid())
+  stepId     String
+  locale     Locale
+  title      String?
+  body       String  @db.Text
+  note       String?
+  timerLabel String?
+
+  step Step @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  @@unique([stepId, locale])
+}
+
+// ─── EQUIPMENT ─────────────────────────────────────────
+
+model Equipment {
+  id      String  @id @default(cuid())
+  slug    String  @unique
+  iconKey String?
+
+  translations EquipmentTranslation[]
+  recipes      RecipeEquipment[]
+}
+
+model EquipmentTranslation {
+  id          String @id @default(cuid())
+  equipmentId String
+  locale      Locale
+  name        String
+
+  equipment Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@unique([equipmentId, locale])
+}
+
+model RecipeEquipment {
+  recipeId    String
+  equipmentId String
+
+  recipe    Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
+
+  @@id([recipeId, equipmentId])
+  @@index([equipmentId])
+}
+
+// ─── VARIATIONS / FAQ / NUTRITION / VIDEO ──────────────
+
+model Variation {
+  id       String @id @default(cuid())
+  recipeId String
+  position Int
+
+  recipe       Recipe                 @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  translations VariationTranslation[]
+
+  @@index([recipeId])
+}
+
+model VariationTranslation {
+  id          String @id @default(cuid())
+  variationId String
+  locale      Locale
+  title       String
+  body        String @db.Text
+
+  variation Variation @relation(fields: [variationId], references: [id], onDelete: Cascade)
+
+  @@unique([variationId, locale])
+}
+
+model FAQ {
+  id       String @id @default(cuid())
+  recipeId String
+  position Int
+
+  recipe       Recipe           @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  translations FAQTranslation[]
+
+  @@index([recipeId])
+}
+
+model FAQTranslation {
+  id     String @id @default(cuid())
+  faqId  String
+  locale Locale
+  q      String
+  a      String @db.Text
+
+  faq FAQ @relation(fields: [faqId], references: [id], onDelete: Cascade)
+
+  @@unique([faqId, locale])
+}
+
+model Nutrition {
+  recipeId        String  @id
+  calories        Int
+  proteinG        Float
+  proteinDailyPct Float?
+  carbsG          Float
+  carbsDailyPct   Float?
+  fatG            Float
+  fatDailyPct     Float?
+  fiberG          Float?
+  fiberDailyPct   Float?
+  sugarG          Float?
+  sodiumMg        Float?
+  sodiumDailyPct  Float?
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+model RecipeVideo {
+  id       String        @id @default(cuid())
+  recipeId String        @unique
+  provider VideoProvider
+  videoId  String
+  poster   String?
+  duration Int?
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+// ─── TAXONOMIES ────────────────────────────────────────
+
+model Category {
+  id             String  @id @default(cuid())
+  slug           String  @unique
+  iconKey        String?
+  popularityRank Int     @default(0)
+
+  translations CategoryTranslation[]
+  recipes      RecipeCategory[]
+}
+
+model CategoryTranslation {
+  id          String  @id @default(cuid())
+  categoryId  String
+  locale      Locale
+  name        String
+  description String? @db.Text
+  slug        String
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, locale])
+  @@unique([locale, slug])
+}
+
+model RecipeCategory {
+  recipeId   String
+  categoryId String
+
+  recipe   Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@id([recipeId, categoryId])
+  @@index([categoryId])
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  slug String @unique
+
+  translations TagTranslation[]
+  recipes      RecipeTag[]
+}
+
+model TagTranslation {
+  id     String @id @default(cuid())
+  tagId  String
+  locale Locale
+  name   String
+
+  tag Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([tagId, locale])
+}
+
+model RecipeTag {
+  recipeId String
+  tagId    String
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id])
+
+  @@id([recipeId, tagId])
+  @@index([tagId])
+}
+
+model Diet {
+  id   String @id @default(cuid())
+  slug String @unique
+
+  translations DietTranslation[]
+  recipes      RecipeDiet[]
+}
+
+model DietTranslation {
+  id          String  @id @default(cuid())
+  dietId      String
+  locale      Locale
+  name        String
+  description String?
+
+  diet Diet @relation(fields: [dietId], references: [id], onDelete: Cascade)
+
+  @@unique([dietId, locale])
+}
+
+model RecipeDiet {
+  recipeId String
+  dietId   String
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  diet   Diet   @relation(fields: [dietId], references: [id])
+
+  @@id([recipeId, dietId])
+  @@index([dietId])
+}
+
+model Cuisine {
+  id   String @id @default(cuid())
+  slug String @unique
+
+  translations CuisineTranslation[]
+  recipes      Recipe[]
+}
+
+model CuisineTranslation {
+  id        String @id @default(cuid())
+  cuisineId String
+  locale    Locale
+  name      String
+
+  cuisine Cuisine @relation(fields: [cuisineId], references: [id], onDelete: Cascade)
+
+  @@unique([cuisineId, locale])
+}
+
+model Allergen {
+  id   String @id @default(cuid())
+  slug String @unique
+
+  translations AllergenTranslation[]
+  recipes      RecipeAllergen[]
+}
+
+model AllergenTranslation {
+  id         String @id @default(cuid())
+  allergenId String
+  locale     Locale
+  name       String
+
+  allergen Allergen @relation(fields: [allergenId], references: [id], onDelete: Cascade)
+
+  @@unique([allergenId, locale])
+}
+
+model RecipeAllergen {
+  recipeId   String
+  allergenId String
+  presence   AllergenPresence
+
+  recipe   Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  allergen Allergen @relation(fields: [allergenId], references: [id])
+
+  @@id([recipeId, allergenId])
+  @@index([allergenId])
+}
+
+// ─── AUTHOR / IMAGES ───────────────────────────────────
+
+model Author {
+  id     String  @id @default(cuid())
+  slug   String  @unique
+  name   String
+  avatar String?
+
+  translations AuthorTranslation[]
+  recipes      Recipe[]
+}
+
+model AuthorTranslation {
+  id       String  @id @default(cuid())
+  authorId String
+  locale   Locale
+  bio      String? @db.Text
+  title    String?
+
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@unique([authorId, locale])
+}
+
+model RecipeImage {
+  id           String  @id @default(cuid())
+  recipeId     String
+  cloudinaryId String
+  w            Int
+  h            Int
+  blurhash     String?
+  position     Int
+
+  recipe       Recipe                   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  translations RecipeImageTranslation[]
+
+  @@index([recipeId])
+}
+
+model RecipeImageTranslation {
+  id      String @id @default(cuid())
+  imageId String
+  locale  Locale
+  alt     String
+
+  image RecipeImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  @@unique([imageId, locale])
+}
+
+model StepImage {
+  id           String  @id @default(cuid())
+  stepId       String
+  cloudinaryId String
+  w            Int
+  h            Int
+  blurhash     String?
+  position     Int
+
+  step         Step                  @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  translations StepImageTranslation[]
+
+  @@index([stepId])
+}
+
+model StepImageTranslation {
+  id      String @id @default(cuid())
+  imageId String
+  locale  Locale
+  alt     String
+
+  image StepImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  @@unique([imageId, locale])
+}
+
+// ─── REVIEWS / NEWSLETTER / EDITORIAL ──────────────────
+
+model Review {
+  id            String   @id @default(cuid())
+  recipeId      String
+  rating        Int
+  body          String   @db.Text
+  authorName    String
+  authorLocale  Locale?
+  isPlaceholder Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+  @@index([isPlaceholder])
+}
+
+model NewsletterSignup {
+  id        String           @id @default(cuid())
+  emailHash String           @unique
+  locale    Locale
+  status    NewsletterStatus @default(PENDING)
+  createdAt DateTime         @default(now())
+}
+
+model EditorialPick {
+  id          String   @id @default(cuid())
+  recipeId    String
+  position    Int
+  publishedAt DateTime @default(now())
+  isActive    Boolean  @default(true)
+
+  recipe       Recipe                     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  translations EditorialPickTranslation[]
+
+  @@index([isActive, position])
+  @@index([recipeId])
+}
+
+model EditorialPickTranslation {
+  id        String  @id @default(cuid())
+  pickId    String
+  locale    Locale
+  pullQuote String? @db.Text
+  byline    String?
+
+  pick EditorialPick @relation(fields: [pickId], references: [id], onDelete: Cascade)
+
+  @@unique([pickId, locale])
 }
