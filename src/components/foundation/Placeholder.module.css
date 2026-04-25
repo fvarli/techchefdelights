@@ -1,0 +1,60 @@
+.ph {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.label {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+}
+
+.warm {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--ph-warm-a) 0 14px,
+    var(--ph-warm-b) 14px 28px
+  );
+}
+.warm .label { color: #6B5B45; }
+
+.cool {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--ph-cool-a) 0 14px,
+    var(--ph-cool-b) 14px 28px
+  );
+}
+.cool .label { color: #6B5B45; }
+
+.dark {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--ph-dark-a) 0 14px,
+    var(--ph-dark-b) 14px 28px
+  );
+}
+.dark .label { color: #D8CDB9; }
+
+.light {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--ph-light-a) 0 14px,
+    var(--ph-light-b) 14px 28px
+  );
+}
+.light .label { color: #6B5B45; }
+
+.sand {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--ph-sand-a) 0 14px,
+    var(--ph-sand-b) 14px 28px
+  );
+}
+.sand .label { color: #6B5B45; }

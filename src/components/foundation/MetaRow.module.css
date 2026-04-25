@@ -1,0 +1,29 @@
+.row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--color-mute);
+  text-transform: uppercase;
+}
+
+.sizeSm {
+  font-size: 10px;
+  gap: var(--space-1);
+}
+
+.toneSub {
+  color: var(--color-sub);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.dot {
+  color: var(--color-rule-strong);
+}

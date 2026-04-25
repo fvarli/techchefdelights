@@ -1,0 +1,9 @@
+.rule {
+  border: none;
+  border-top: 1px solid var(--color-rule);
+  margin: 0;
+}
+
+.strong {
+  border-top-color: var(--color-rule-strong);
+}

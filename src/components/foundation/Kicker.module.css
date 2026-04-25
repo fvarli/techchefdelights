@@ -1,0 +1,16 @@
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  color: var(--color-terra);
+  text-transform: uppercase;
+}
+
+.toneMute {
+  color: var(--color-mute);
+}
+
+.num {
+  color: var(--color-mute);
+}
