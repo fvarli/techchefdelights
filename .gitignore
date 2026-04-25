@@ -52,3 +52,5 @@ yarn-error.log*
 
 # Sentry
 .sentryclirc
+
+/src/generated/prisma
