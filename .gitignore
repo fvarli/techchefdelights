@@ -1,0 +1,54 @@
+# Local-only — never committed
+docs/
+.claude/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node / pnpm / Next.js
+node_modules/
+.pnpm-store/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Env & secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Prisma
+prisma/migrations/dev.db*
+prisma/.env
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+.nyc_output/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+.vercel/
+
+# Bundle analyzer output
+.next/analyze/
+
+# Sentry
+.sentryclirc
