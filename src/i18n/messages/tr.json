@@ -10,5 +10,25 @@
     "loading": "Yükleniyor…",
     "languageSwitcher": "Dil",
     "explore": "Keşfet"
+  },
+  "Recipe": {
+    "breadcrumb": {
+      "home": "Ana Sayfa",
+      "recipes": "Tarifler"
+    },
+    "signalBar": {
+      "prep": "Hazırlık",
+      "cook": "Pişirme",
+      "total": "Toplam",
+      "serves": "Kişilik",
+      "difficulty": "Zorluk",
+      "rating": "Puan",
+      "minutes": "dk"
+    },
+    "skill": {
+      "beginner": "Başlangıç",
+      "intermediate": "Orta",
+      "advanced": "İleri"
+    }
   }
 }

@@ -10,5 +10,25 @@
     "loading": "Loading…",
     "languageSwitcher": "Language",
     "explore": "Explore"
+  },
+  "Recipe": {
+    "breadcrumb": {
+      "home": "Home",
+      "recipes": "Recipes"
+    },
+    "signalBar": {
+      "prep": "Prep",
+      "cook": "Cook",
+      "total": "Total",
+      "serves": "Serves",
+      "difficulty": "Difficulty",
+      "rating": "Rating",
+      "minutes": "min"
+    },
+    "skill": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
   }
 }
