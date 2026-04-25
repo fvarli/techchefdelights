@@ -1,0 +1,14 @@
+{
+  "Home": {
+    "kicker": "TechChefDelights",
+    "title": "Where tech meets taste",
+    "tagline": "Recipes in three languages — engineered, then plated.",
+    "localeBadge": "EN"
+  },
+  "Common": {
+    "skipToContent": "Skip to content",
+    "loading": "Loading…",
+    "languageSwitcher": "Language",
+    "explore": "Explore"
+  }
+}

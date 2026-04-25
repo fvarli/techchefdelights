@@ -1,0 +1,14 @@
+{
+  "Home": {
+    "kicker": "TechChefDelights",
+    "title": "Donde la tecnología se encuentra con el sabor",
+    "tagline": "Recetas en tres idiomas — primero ingeniería, luego al plato.",
+    "localeBadge": "ES"
+  },
+  "Common": {
+    "skipToContent": "Saltar al contenido",
+    "loading": "Cargando…",
+    "languageSwitcher": "Idioma",
+    "explore": "Explorar"
+  }
+}

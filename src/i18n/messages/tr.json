@@ -1,0 +1,14 @@
+{
+  "Home": {
+    "kicker": "TechChefDelights",
+    "title": "Teknolojinin lezzetle buluştuğu yer",
+    "tagline": "Üç dilde tarifler — önce mühendislik, sonra tabakta.",
+    "localeBadge": "TR"
+  },
+  "Common": {
+    "skipToContent": "İçeriğe atla",
+    "loading": "Yükleniyor…",
+    "languageSwitcher": "Dil",
+    "explore": "Keşfet"
+  }
+}
