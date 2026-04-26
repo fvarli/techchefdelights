@@ -7,7 +7,32 @@
     "liveLabel": "home cooks now",
     "searchPlaceholder": "Search recipes, ingredients, or techniques",
     "searchHint": "⌘K",
-    "quickChipsLabel": "Try"
+    "quickChipsLabel": "Try",
+    "discovery": {
+      "kicker": "Discovery",
+      "title": "Find your next dish",
+      "ingredient": {
+        "title": "By Ingredient",
+        "desc": "Search recipes by what's in your fridge."
+      },
+      "diet": {
+        "title": "By Diet",
+        "desc": "Vegan, gluten-free, high-protein, halal, and more."
+      },
+      "cuisine": {
+        "title": "By Cuisine",
+        "desc": "Turkish, Japanese, Mediterranean, Italian, and more."
+      },
+      "time": {
+        "title": "By Time",
+        "desc": "From 15-minute meals to weekend projects."
+      }
+    },
+    "trending": {
+      "kicker": "Trending",
+      "title": "What home cooks are making this week",
+      "rangeWeek": "This week"
+    }
   },
   "Common": {
     "skipToContent": "Skip to content",

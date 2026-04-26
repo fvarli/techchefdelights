@@ -4,6 +4,8 @@ import { fromApiLocale, type ApiLocale } from '@/lib/api/enums'
 import { deterministicLiveCount, LIVE_COUNTER_TTL_SECONDS } from '@/lib/api/live-counter'
 import { loadTrending } from '@/lib/api/home-loaders'
 import { HomeHero } from '@/components/home/HomeHero'
+import { DiscoveryQuadrant } from '@/components/home/DiscoveryQuadrant'
+import { TrendingSection } from '@/components/home/TrendingSection'
 import styles from './page.module.css'
 
 export const revalidate = 3600
@@ -28,11 +30,14 @@ export default async function HomePage({
   const locale = rawLocale as ApiLocale
   setRequestLocale(locale)
 
-  const [t, [spotlight], quickChips] = await Promise.all([
+  const [t, tRecipe, trending, quickChips] = await Promise.all([
     getTranslations('Home'),
-    loadTrending(locale, 1),
+    getTranslations('Recipe'),
+    loadTrending(locale, 4),
     loadQuickChipTags(locale, 8),
   ])
+
+  const spotlight = trending[0] ?? null
 
   return (
     <div className={styles.page}>
@@ -41,7 +46,7 @@ export default async function HomePage({
         liveCount={deterministicLiveCount()}
         liveTtlSeconds={LIVE_COUNTER_TTL_SECONDS}
         quickChips={quickChips}
-        spotlight={spotlight ?? null}
+        spotlight={spotlight}
         labels={{
           kicker: t('kicker'),
           title: t('title'),
@@ -53,7 +58,42 @@ export default async function HomePage({
         }}
       />
 
-      {/* Sections 01–09 land in subsequent commits. */}
+      <DiscoveryQuadrant
+        locale={locale}
+        labels={{
+          kicker: t('discovery.kicker'),
+          title: t('discovery.title'),
+          ingredient: {
+            title: t('discovery.ingredient.title'),
+            desc: t('discovery.ingredient.desc'),
+          },
+          diet: {
+            title: t('discovery.diet.title'),
+            desc: t('discovery.diet.desc'),
+          },
+          cuisine: {
+            title: t('discovery.cuisine.title'),
+            desc: t('discovery.cuisine.desc'),
+          },
+          time: {
+            title: t('discovery.time.title'),
+            desc: t('discovery.time.desc'),
+          },
+        }}
+      />
+
+      <TrendingSection
+        recipes={trending}
+        locale={locale}
+        labels={{
+          kicker: t('trending.kicker'),
+          title: t('trending.title'),
+          rangeWeek: t('trending.rangeWeek'),
+          minutes: tRecipe('signalBar.minutes'),
+        }}
+      />
+
+      {/* Sections 03–09 land in subsequent commits. */}
     </div>
   )
 }

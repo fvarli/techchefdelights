@@ -7,7 +7,32 @@
     "liveLabel": "personas cocinando ahora",
     "searchPlaceholder": "Busca recetas, ingredientes o técnicas",
     "searchHint": "⌘K",
-    "quickChipsLabel": "Prueba"
+    "quickChipsLabel": "Prueba",
+    "discovery": {
+      "kicker": "Descubre",
+      "title": "Encuentra tu próximo plato",
+      "ingredient": {
+        "title": "Por ingrediente",
+        "desc": "Busca recetas con lo que tengas en la nevera."
+      },
+      "diet": {
+        "title": "Por dieta",
+        "desc": "Vegano, sin gluten, alto en proteínas, halal y más."
+      },
+      "cuisine": {
+        "title": "Por cocina",
+        "desc": "Turca, japonesa, mediterránea, italiana y más."
+      },
+      "time": {
+        "title": "Por tiempo",
+        "desc": "Desde comidas de 15 minutos hasta proyectos de fin de semana."
+      }
+    },
+    "trending": {
+      "kicker": "Tendencia",
+      "title": "Lo que se cocina esta semana en casa",
+      "rangeWeek": "Esta semana"
+    }
   },
   "Common": {
     "skipToContent": "Saltar al contenido",

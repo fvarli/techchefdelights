@@ -7,7 +7,32 @@
     "liveLabel": "kişi şu an pişiriyor",
     "searchPlaceholder": "Tarif, malzeme veya teknik ara",
     "searchHint": "⌘K",
-    "quickChipsLabel": "Dene"
+    "quickChipsLabel": "Dene",
+    "discovery": {
+      "kicker": "Keşfet",
+      "title": "Bir sonraki yemeğini bul",
+      "ingredient": {
+        "title": "Malzemeyle",
+        "desc": "Buzdolabındakilerle tarifleri bul."
+      },
+      "diet": {
+        "title": "Diyetle",
+        "desc": "Vegan, glutensiz, yüksek protein, helal ve fazlası."
+      },
+      "cuisine": {
+        "title": "Mutfakla",
+        "desc": "Türk, Japon, Akdeniz, İtalyan ve fazlası."
+      },
+      "time": {
+        "title": "Süreyle",
+        "desc": "15 dakikalık yemeklerden hafta sonu projelerine."
+      }
+    },
+    "trending": {
+      "kicker": "Trendde",
+      "title": "Bu hafta evlerde en çok pişen tarifler",
+      "rangeWeek": "Bu hafta"
+    }
   },
   "Common": {
     "skipToContent": "İçeriğe atla",
