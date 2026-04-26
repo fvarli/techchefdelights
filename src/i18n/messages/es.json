@@ -101,6 +101,17 @@
     "saved": "Guardadas",
     "profile": "Perfil"
   },
+  "Cook": {
+    "exit": "Salir",
+    "step": "Paso",
+    "of": "de",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "complete": "Completar",
+    "ingredientsUsed": "Usado en este paso",
+    "noIngredients": "Sin ingredientes específicos para este paso",
+    "chefNote": "Nota del chef"
+  },
   "Footer": {
     "tagline": "Donde la tecnología se encuentra con el sabor — recetas en tres idiomas, primero ingeniería, luego al plato.",
     "popularCategories": "Categorías populares",

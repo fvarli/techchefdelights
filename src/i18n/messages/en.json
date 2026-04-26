@@ -101,6 +101,17 @@
     "saved": "Saved",
     "profile": "Profile"
   },
+  "Cook": {
+    "exit": "Exit",
+    "step": "Step",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "complete": "Complete",
+    "ingredientsUsed": "Used in this step",
+    "noIngredients": "No specific ingredients for this step",
+    "chefNote": "Chef's note"
+  },
   "Footer": {
     "tagline": "Where tech meets taste — recipes in three languages, engineered then plated.",
     "popularCategories": "Popular Categories",

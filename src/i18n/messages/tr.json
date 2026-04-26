@@ -101,6 +101,17 @@
     "saved": "Kaydedilenler",
     "profile": "Profil"
   },
+  "Cook": {
+    "exit": "Çık",
+    "step": "Adım",
+    "of": "/",
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "complete": "Tamamlandı",
+    "ingredientsUsed": "Bu adımda kullanılan",
+    "noIngredients": "Bu adım için özel malzeme yok",
+    "chefNote": "Şefin notu"
+  },
   "Footer": {
     "tagline": "Teknolojinin lezzetle buluştuğu yer — üç dilde, önce mühendislik sonra tabakta.",
     "popularCategories": "Popüler Kategoriler",
