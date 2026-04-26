@@ -164,6 +164,71 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Saved": {
+    "metaTitle": "Kaydedilen tarifler — TechChefDelights",
+    "metaDescription": "Bu cihazda kaydettiğin tarifler.",
+    "kicker": "Kayıtlar",
+    "title": "Kaydedilen tariflerin",
+    "lede": "Kayıtlar hesap gelene kadar bu cihazda durur — tarayıcı verisini silmek hepsini siler.",
+    "loading": "Kayıtların yükleniyor…",
+    "empty": {
+      "title": "Henüz kayıt yok",
+      "body": "Sonra dönmek istediğin tariflerde kalp simgesine dokun.",
+      "action": "Tariflere göz at"
+    }
+  },
+  "Profile": {
+    "metaTitle": "Profil — TechChefDelights",
+    "metaDescription": "Diyet tercihlerin ve birim ayarların, bu cihazda saklanır.",
+    "kicker": "Profil",
+    "title": "Tercihlerin",
+    "lede": "Bu cihazda kaydedilir. Alerjenler tüm sitede malzemeleri uyarır; birim ayarı tüm tarif ölçeklerini değiştirir.",
+    "loading": "Tercihlerin yükleniyor…",
+    "savedHint": "Değişiklikler otomatik kaydedilir",
+    "resetAll": "Tüm tercihleri sıfırla",
+    "allergies": {
+      "title": "Kaçınılacak alerjenler",
+      "desc": "Tarif bunlardan birini içerdiğinde malzemelerin üstünde uyarırız.",
+      "none": "Alerjen ayarlanmamış."
+    },
+    "units": {
+      "title": "Ölçü birimi",
+      "desc": "Malzeme miktarları için varsayılan birim sistemi.",
+      "metric": "Metrik",
+      "us": "ABD"
+    }
+  },
+  "Plan": {
+    "metaTitle": "Yemek planı — TechChefDelights",
+    "metaDescription": "Haftalık yemek planı. Yakında.",
+    "kicker": "Plan",
+    "title": "Haftanı planla",
+    "lede": "Tarifleri 7 günlük tabloya bırak. Alışveriş listesi otomatik oluşsun. Yakında.",
+    "previewLabel": "/plan için yakında",
+    "previewBadge": "Yakında",
+    "features": {
+      "feature1": {
+        "title": "Haftalık tablo",
+        "body": "Tarifleri Pazartesi–Pazar arasına sürükle, hafta boyunca protein, süre ve maliyeti dengele."
+      },
+      "feature2": {
+        "title": "Otomatik liste",
+        "body": "Tüm planlanan tariflerin malzemelerini reyona göre tek listede topla."
+      },
+      "feature3": {
+        "title": "Artıkları kullanır",
+        "body": "Dünkü artıkları değerlendiren takip yemekleri öner; taze alışveriş yerine geçer."
+      },
+      "feature4": {
+        "title": "Kayıtlardan plan",
+        "body": "Halihazırda kaydettiğin tariflerden haftayı hızlıca doldur."
+      }
+    },
+    "cta": {
+      "recipes": "Tariflere göz at",
+      "saved": "Kayıtları gör"
+    }
+  },
   "Search": {
     "metaTitle": "Tarif ara — TechChefDelights",
     "metaDescription": "Üç dilde test edilmiş tüm tarifler arasında tam metin arama.",

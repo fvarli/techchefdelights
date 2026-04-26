@@ -1,0 +1,137 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.loading {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  padding: var(--space-6) 0;
+  text-align: center;
+}
+
+.section {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.legend {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--color-ink);
+  margin: 0;
+  padding: 0;
+}
+
+.desc {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-sub);
+  margin: 0;
+  max-width: 600px;
+}
+
+.empty {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-mute);
+  margin: 0;
+}
+
+.allergyGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.allergyChip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  background: var(--color-paper);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.allergyChip:hover {
+  border-color: var(--color-rule-strong);
+}
+
+.allergyChip[data-checked] {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.allergyInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  inset: 0;
+}
+
+.allergyInput:focus-visible + .allergyLabel,
+.allergyChip:focus-within {
+  outline: 2px solid var(--color-terra);
+  outline-offset: 2px;
+}
+
+.unitRow {
+  display: inline-flex;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  gap: 2px;
+  align-self: flex-start;
+}
+
+.unitOption {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-sub);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.unitOption[data-checked] {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.unitInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.savedHint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  margin: 0;
+}

@@ -44,3 +44,32 @@ export function useSaveRecipe(slug: string): {
 
   return { saved, toggle, hydrated }
 }
+
+/**
+ * Returns the full set of saved recipe slugs from `tcd:saves`. Subscribes to
+ * cross-tab `storage` events so toggles in another tab reflect here.
+ */
+export function useSavedSlugs(): { slugs: string[]; hydrated: boolean } {
+  const [slugs, setSlugs] = useState<string[]>([])
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(() => {
+    const read = () => {
+      try {
+        const raw = localStorage.getItem(SK.saves)
+        setSlugs(raw ? (JSON.parse(raw) as string[]) : [])
+      } catch {
+        setSlugs([])
+      }
+    }
+    read()
+    setHydrated(true)
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === SK.saves) read()
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
+
+  return { slugs, hydrated }
+}

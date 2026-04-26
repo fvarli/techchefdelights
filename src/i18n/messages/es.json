@@ -164,6 +164,71 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Saved": {
+    "metaTitle": "Recetas guardadas — TechChefDelights",
+    "metaDescription": "Recetas que has guardado en este dispositivo.",
+    "kicker": "Guardadas",
+    "title": "Tus recetas guardadas",
+    "lede": "Las guardadas viven en este dispositivo hasta que lleguen las cuentas — borrar los datos del navegador las borra.",
+    "loading": "Cargando tus guardadas…",
+    "empty": {
+      "title": "Aún no hay nada guardado",
+      "body": "Toca el corazón en cualquier receta para guardarla aquí.",
+      "action": "Ver recetas"
+    }
+  },
+  "Profile": {
+    "metaTitle": "Perfil — TechChefDelights",
+    "metaDescription": "Tus preferencias dietéticas y de unidades, guardadas en este dispositivo.",
+    "kicker": "Perfil",
+    "title": "Tus preferencias",
+    "lede": "Guardadas en este dispositivo. Los alérgenos avisan de ingredientes en todo el sitio; las unidades cambian el escalado de todas las recetas.",
+    "loading": "Cargando tus preferencias…",
+    "savedHint": "Los cambios se guardan automáticamente",
+    "resetAll": "Restablecer todas las preferencias",
+    "allergies": {
+      "title": "Alérgenos a evitar",
+      "desc": "Te avisamos sobre los ingredientes cuando una receta contenga alguno de estos.",
+      "none": "No hay alérgenos configurados."
+    },
+    "units": {
+      "title": "Unidades de medida",
+      "desc": "Sistema de unidades por defecto para las cantidades.",
+      "metric": "Métrico",
+      "us": "EE.UU."
+    }
+  },
+  "Plan": {
+    "metaTitle": "Plan de comidas — TechChefDelights",
+    "metaDescription": "Planifica una semana de cocina. Próximamente.",
+    "kicker": "Plan",
+    "title": "Planifica tu semana",
+    "lede": "Coloca recetas en una cuadrícula de 7 días. Genera la lista de la compra automáticamente. Próximamente.",
+    "previewLabel": "Próximamente en /plan",
+    "previewBadge": "Próximamente",
+    "features": {
+      "feature1": {
+        "title": "Cuadrícula semanal",
+        "body": "Arrastra recetas en los días de lunes a domingo y equilibra proteína, tiempo y coste."
+      },
+      "feature2": {
+        "title": "Lista automática",
+        "body": "Combina los ingredientes de todas las recetas planeadas en una sola lista por pasillo."
+      },
+      "feature3": {
+        "title": "Reutiliza sobras",
+        "body": "Sugiere platos posteriores que usen las sobras de ayer en lugar de comprar de nuevo."
+      },
+      "feature4": {
+        "title": "Plan desde tus guardadas",
+        "body": "Rellena la semana rápidamente con las recetas que ya tienes guardadas."
+      }
+    },
+    "cta": {
+      "recipes": "Ver recetas",
+      "saved": "Ver guardadas"
+    }
+  },
   "Search": {
     "metaTitle": "Buscar recetas — TechChefDelights",
     "metaDescription": "Búsqueda de texto completo en cada receta probada, en tres idiomas.",

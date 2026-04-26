@@ -164,6 +164,71 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Saved": {
+    "metaTitle": "Saved recipes — TechChefDelights",
+    "metaDescription": "Recipes you have saved on this device.",
+    "kicker": "Saved",
+    "title": "Your saved recipes",
+    "lede": "Saves live on this device until accounts arrive — clearing browser data clears them.",
+    "loading": "Loading your saves…",
+    "empty": {
+      "title": "Nothing saved yet",
+      "body": "Tap the heart on any recipe to keep it here for later.",
+      "action": "Browse recipes"
+    }
+  },
+  "Profile": {
+    "metaTitle": "Profile — TechChefDelights",
+    "metaDescription": "Your dietary preferences and unit settings, stored on this device.",
+    "kicker": "Profile",
+    "title": "Your preferences",
+    "lede": "Saved on this device. Allergens flag matching ingredients site-wide; units switch all recipe scaling.",
+    "loading": "Loading your preferences…",
+    "savedHint": "Changes save automatically",
+    "resetAll": "Reset all preferences",
+    "allergies": {
+      "title": "Allergens to avoid",
+      "desc": "We will warn you above ingredients when a recipe contains any of these.",
+      "none": "No allergens configured."
+    },
+    "units": {
+      "title": "Measurement units",
+      "desc": "Default unit system for ingredient quantities.",
+      "metric": "Metric",
+      "us": "US"
+    }
+  },
+  "Plan": {
+    "metaTitle": "Meal plan — TechChefDelights",
+    "metaDescription": "Plan a week of cooking. Coming soon.",
+    "kicker": "Plan",
+    "title": "Plan your week",
+    "lede": "Drop recipes onto a 7-day grid. Auto-generate the shopping list. Coming soon.",
+    "previewLabel": "Coming soon to /plan",
+    "previewBadge": "Coming soon",
+    "features": {
+      "feature1": {
+        "title": "Weekly grid",
+        "body": "Drag recipes onto Monday–Sunday slots and rebalance protein, time, and cost across the week."
+      },
+      "feature2": {
+        "title": "Auto shopping list",
+        "body": "Combine ingredients across all planned recipes into a single list grouped by aisle."
+      },
+      "feature3": {
+        "title": "Leftover-aware",
+        "body": "Suggest follow-up dishes that use yesterday's leftovers instead of fresh shopping."
+      },
+      "feature4": {
+        "title": "Plan from your saves",
+        "body": "Quick-fill the week from recipes you have already saved."
+      }
+    },
+    "cta": {
+      "recipes": "Browse recipes",
+      "saved": "View saved"
+    }
+  },
   "Search": {
     "metaTitle": "Search recipes — TechChefDelights",
     "metaDescription": "Full-text search across every tested recipe in three languages.",
