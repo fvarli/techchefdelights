@@ -51,6 +51,41 @@
       "title": "Filter the entire site by your diet",
       "desc": "Save your dietary preferences and every recipe surface — search, browse, recommendations — adapts.",
       "recipesSuffix": "recipes"
+    },
+    "latest": {
+      "kicker": "Freshest",
+      "title": "Just out of the test kitchen"
+    },
+    "tips": {
+      "kicker": "From the test kitchen",
+      "title": "Notes we wish we'd had earlier",
+      "items": [
+        {
+          "kicker": "Knife skill",
+          "title": "Cut a flat side first",
+          "body": "Round vegetables roll. Slice once to make a flat side, then dice safely on a stable plane."
+        },
+        {
+          "kicker": "Pasta water",
+          "title": "Salt like the sea",
+          "body": "Pasta water should taste briny — about 10 g salt per litre. It seasons the pasta from the inside."
+        },
+        {
+          "kicker": "Resting meat",
+          "title": "Five minutes saves the juices",
+          "body": "Slice a steak straight from the heat and the plate floods. Rest five minutes for clean cuts."
+        }
+      ]
+    },
+    "newsletter": {
+      "kicker": "Newsletter",
+      "title": "One recipe a week, three languages",
+      "desc": "A short note from the test kitchen — no spam, easy unsubscribe.",
+      "placeholder": "your@email.com",
+      "submit": "Subscribe",
+      "success": "Check your inbox to confirm.",
+      "error": "Something went wrong. Please try again.",
+      "rateLimited": "Too many attempts. Try again later."
     }
   },
   "Common": {

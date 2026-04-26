@@ -1,0 +1,1 @@
+export { TipsStrip } from './TipsStrip'

@@ -51,6 +51,41 @@
       "title": "Tüm siteyi diyetine göre filtrele",
       "desc": "Diyet tercihlerini kaydet, arama ve öneriler dahil her tarif yüzeyi sana uyumlu görünsün.",
       "recipesSuffix": "tarif"
+    },
+    "latest": {
+      "kicker": "En taze",
+      "title": "Test mutfağından henüz çıktı"
+    },
+    "tips": {
+      "kicker": "Test mutfağından",
+      "title": "Daha önce bilmek istediğimiz notlar",
+      "items": [
+        {
+          "kicker": "Bıçak becerisi",
+          "title": "Önce düz bir taban yap",
+          "body": "Yuvarlak sebzeler kaymak için yapılmıştır. Bir kez kes, düz tarafı yere yatır, sonra güvenle doğra."
+        },
+        {
+          "kicker": "Makarna suyu",
+          "title": "Deniz gibi tuzla",
+          "body": "Makarna suyu tuzlu deniz tadında olmalı — litreye yaklaşık 10 g. Makarnayı içeriden tatlandırır."
+        },
+        {
+          "kicker": "Et dinlendirme",
+          "title": "Beş dakika suları korur",
+          "body": "Sıcakken kestiğin biftek tabağa akar. Beş dakika dinlendir, dilim temiz çıkar."
+        }
+      ]
+    },
+    "newsletter": {
+      "kicker": "Bülten",
+      "title": "Haftada bir tarif, üç dilde",
+      "desc": "Test mutfağından kısa bir not — spam yok, çıkış kolay.",
+      "placeholder": "ornek@email.com",
+      "submit": "Abone ol",
+      "success": "Onay e-postanı kontrol et.",
+      "error": "Bir şeyler ters gitti. Tekrar dene.",
+      "rateLimited": "Çok fazla deneme. Sonra tekrar dene."
     }
   },
   "Common": {

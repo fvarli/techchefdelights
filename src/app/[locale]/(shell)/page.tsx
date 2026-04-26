@@ -16,6 +16,9 @@ import { EditorialFeature } from '@/components/home/EditorialFeature'
 import { VisualMasonry } from '@/components/home/VisualMasonry'
 import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { DietInk } from '@/components/home/DietInk'
+import { LatestFeed } from '@/components/home/LatestFeed'
+import { TipsStrip } from '@/components/home/TipsStrip'
+import { NewsletterCTA } from '@/components/home/NewsletterCTA'
 import styles from './page.module.css'
 
 export const revalidate = 3600
@@ -40,19 +43,30 @@ export default async function HomePage({
   const locale = rawLocale as ApiLocale
   setRequestLocale(locale)
 
-  const [t, tRecipe, trending, featured, masonry, categoryTiles, dietTiles, quickChips] =
-    await Promise.all([
-      getTranslations('Home'),
-      getTranslations('Recipe'),
-      loadTrending(locale, 4),
-      loadFeatured(locale),
-      loadLatest(locale, 8),
-      loadCategoryTiles(locale),
-      loadDietTiles(locale, 4),
-      loadQuickChipTags(locale, 8),
-    ])
+  const [
+    t,
+    tRecipe,
+    trending,
+    featured,
+    masonry,
+    latest,
+    categoryTiles,
+    dietTiles,
+    quickChips,
+  ] = await Promise.all([
+    getTranslations('Home'),
+    getTranslations('Recipe'),
+    loadTrending(locale, 4),
+    loadFeatured(locale),
+    loadLatest(locale, 8),
+    loadLatest(locale, 6),
+    loadCategoryTiles(locale),
+    loadDietTiles(locale, 4),
+    loadQuickChipTags(locale, 8),
+  ])
 
   const spotlight = trending[0] ?? null
+  const tips = t.raw('tips.items') as Array<{ kicker: string; title: string; body: string }>
 
   return (
     <div className={styles.page}>
@@ -150,7 +164,37 @@ export default async function HomePage({
         }}
       />
 
-      {/* Sections 07–09 land in next commit. */}
+      <LatestFeed
+        recipes={latest}
+        locale={locale}
+        labels={{
+          kicker: t('latest.kicker'),
+          title: t('latest.title'),
+          minutes: tRecipe('signalBar.minutes'),
+        }}
+      />
+
+      <TipsStrip
+        tips={tips}
+        labels={{
+          kicker: t('tips.kicker'),
+          title: t('tips.title'),
+        }}
+      />
+
+      <NewsletterCTA
+        locale={locale}
+        labels={{
+          kicker: t('newsletter.kicker'),
+          title: t('newsletter.title'),
+          desc: t('newsletter.desc'),
+          placeholder: t('newsletter.placeholder'),
+          submit: t('newsletter.submit'),
+          success: t('newsletter.success'),
+          error: t('newsletter.error'),
+          rateLimited: t('newsletter.rateLimited'),
+        }}
+      />
     </div>
   )
 }

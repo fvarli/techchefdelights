@@ -1,0 +1,1 @@
+export { LatestFeed } from './LatestFeed'

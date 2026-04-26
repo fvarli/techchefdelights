@@ -51,6 +51,41 @@
       "title": "Filtra todo el sitio según tu dieta",
       "desc": "Guarda tus preferencias dietéticas y cada superficie de recetas — búsqueda, navegación, recomendaciones — se adapta.",
       "recipesSuffix": "recetas"
+    },
+    "latest": {
+      "kicker": "Lo más fresco",
+      "title": "Recién salido de la cocina de pruebas"
+    },
+    "tips": {
+      "kicker": "Desde la cocina de pruebas",
+      "title": "Notas que nos hubiera gustado tener antes",
+      "items": [
+        {
+          "kicker": "Habilidad con el cuchillo",
+          "title": "Primero un lado plano",
+          "body": "Las verduras redondas ruedan. Corta una vez para crear un lado plano y luego pica seguro sobre una superficie estable."
+        },
+        {
+          "kicker": "Agua de la pasta",
+          "title": "Sala como el mar",
+          "body": "El agua de la pasta debe saber salobre — unos 10 g de sal por litro. Sazona la pasta desde dentro."
+        },
+        {
+          "kicker": "Reposo de la carne",
+          "title": "Cinco minutos salvan los jugos",
+          "body": "Cortar un filete recién retirado del fuego inunda el plato. Reposa cinco minutos para cortes limpios."
+        }
+      ]
+    },
+    "newsletter": {
+      "kicker": "Boletín",
+      "title": "Una receta a la semana, tres idiomas",
+      "desc": "Una nota breve desde la cocina de pruebas — sin spam, fácil cancelar.",
+      "placeholder": "tu@email.com",
+      "submit": "Suscribirse",
+      "success": "Revisa tu bandeja de entrada para confirmar.",
+      "error": "Algo salió mal. Intenta de nuevo.",
+      "rateLimited": "Demasiados intentos. Inténtalo más tarde."
     }
   },
   "Common": {
