@@ -118,6 +118,19 @@
       "reset": "Sıfırla",
       "addMinute": "+1 dk",
       "complete": "Bitti!"
+    },
+    "exitModal": {
+      "title": "Pişirmeye ara ver?",
+      "description": "Yerini kaydedeceğiz. İstediğin zaman bu adımdan devam edebilirsin.",
+      "progress": "Adım {current} / {total}",
+      "saveAndExit": "Kaydet ve çık",
+      "stay": "Pişirmeye devam"
+    },
+    "resumeBanner": {
+      "title": "Pişirmeye devam et",
+      "body": "Adım {step}'de durmuştun. Kaldığın yerden devam et.",
+      "resume": "Devam et",
+      "dismiss": "Kapat"
     }
   },
   "Footer": {

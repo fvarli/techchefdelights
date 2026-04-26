@@ -4,6 +4,7 @@ import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { loadRecipeBySlug } from '@/lib/api/recipe-loader'
 import { localePath } from '@/lib/path'
 import { CookHeader } from '@/components/cook/CookHeader'
+import { CookExitButton } from '@/components/cook/CookExitButton'
 import { StepCard } from '@/components/cook/StepCard'
 import { CookControls } from '@/components/cook/CookControls'
 import type { ApiLocale } from '@/lib/api/enums'
@@ -55,14 +56,30 @@ export default async function CookPage({
   const exitHref = localePath(locale, `/r/${recipe.slug}`)
   const cookBasePath = localePath(locale, `/r/${recipe.slug}/cook`)
 
+  const exitModalLabels = {
+    title: t('exitModal.title'),
+    description: t('exitModal.description'),
+    progress: t('exitModal.progress'),
+    saveAndExit: t('exitModal.saveAndExit'),
+    stay: t('exitModal.stay'),
+  }
+
   return (
     <div className={styles.page}>
       <CookHeader
         recipeTitle={recipe.title}
         totalSteps={totalSteps}
         currentStep={stepIndex}
-        exitHref={exitHref}
-        labels={{ exit: t('exit'), step: t('step'), of: t('of') }}
+        exitButton={
+          <CookExitButton
+            slug={recipe.slug}
+            recipeHref={exitHref}
+            stepIndex={stepIndex}
+            totalSteps={totalSteps}
+            labels={{ exit: t('exit'), modal: exitModalLabels }}
+          />
+        }
+        labels={{ step: t('step'), of: t('of') }}
       />
       <main className={styles.main}>
         <StepCard

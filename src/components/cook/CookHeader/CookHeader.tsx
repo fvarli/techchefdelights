@@ -1,28 +1,25 @@
-import Link from 'next/link'
+import type { ReactNode } from 'react'
 import styles from './CookHeader.module.css'
 
 type Props = {
   recipeTitle: string
   totalSteps: number
   currentStep: number
-  exitHref: string
-  labels: { exit: string; step: string; of: string }
+  exitButton: ReactNode
+  labels: { step: string; of: string }
 }
 
 export function CookHeader({
   recipeTitle,
   totalSteps,
   currentStep,
-  exitHref,
+  exitButton,
   labels,
 }: Props) {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <Link href={exitHref} className={styles.exit} aria-label={labels.exit}>
-          <span aria-hidden>✕</span>
-          <span className={styles.exitLabel}>{labels.exit}</span>
-        </Link>
+        <div className={styles.exitSlot}>{exitButton}</div>
 
         <h1 className={styles.recipe}>{recipeTitle}</h1>
 

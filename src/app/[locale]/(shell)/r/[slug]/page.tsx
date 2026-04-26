@@ -21,6 +21,8 @@ import { FAQList } from '@/components/recipe/FAQList'
 import { ReviewsSection } from '@/components/recipe/ReviewsSection'
 import { RelatedRecipes, type RelatedRecipeItem } from '@/components/recipe/RelatedRecipes'
 import { RightRail } from '@/components/recipe/RightRail'
+import { ResumeBanner } from '@/components/recipe/ResumeBanner'
+import { localePath } from '@/lib/path'
 import type { ApiLocale } from '@/lib/api/enums'
 import styles from './recipe.module.css'
 
@@ -126,10 +128,11 @@ export default async function RecipePage({
     select: { cuisineId: true },
   })
 
-  const [related, reviews, t] = await Promise.all([
+  const [related, reviews, t, tCook] = await Promise.all([
     loadRelated(recipe.id, recipeRow?.cuisineId ?? null, locale),
     loadReviews(recipe.id),
     getTranslations('Recipe'),
+    getTranslations('Cook'),
   ])
 
   const tocItems = [
@@ -225,6 +228,14 @@ export default async function RecipePage({
     },
   }
 
+  const cookHref = localePath(locale, `/r/${recipe.slug}/cook`)
+  const resumeBannerLabels = {
+    title: tCook('resumeBanner.title'),
+    body: tCook('resumeBanner.body'),
+    resume: tCook('resumeBanner.resume'),
+    dismiss: tCook('resumeBanner.dismiss'),
+  }
+
   const jsonLdRecipe = recipeJsonLd(recipe, locale, BASE_URL)
   const jsonLdFaq = faqJsonLd(recipe.faq)
   const jsonLdBreadcrumb = breadcrumbJsonLd(recipe, locale, BASE_URL, breadcrumbLabels)
@@ -248,6 +259,8 @@ export default async function RecipePage({
 
       <RecipeHero recipe={recipe} locale={locale} breadcrumb={breadcrumbLabels} />
       <SignalBar recipe={recipe} labels={signalLabels} />
+
+      <ResumeBanner slug={recipe.slug} cookHref={cookHref} labels={resumeBannerLabels} />
 
       <div className={styles.grid}>
         <aside className={styles.leftRail}>

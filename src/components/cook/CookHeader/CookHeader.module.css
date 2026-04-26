@@ -16,30 +16,8 @@
   gap: var(--space-4);
 }
 
-.exit {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  text-decoration: none;
-  color: var(--color-sub);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius-full);
+.exitSlot {
   justify-self: start;
-  transition: color var(--transition-fast), border-color var(--transition-fast);
-}
-
-.exit:hover {
-  color: var(--color-ink);
-  border-color: var(--color-rule-strong);
-}
-
-.exitLabel {
-  font-weight: 500;
 }
 
 .recipe {
@@ -100,9 +78,6 @@
 @media (max-width: 720px) {
   .inner {
     grid-template-columns: auto 1fr auto;
-  }
-  .exitLabel {
-    display: none;
   }
   .recipe {
     font-size: 14px;

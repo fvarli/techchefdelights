@@ -118,6 +118,19 @@
       "reset": "Reset",
       "addMinute": "+1 min",
       "complete": "Done!"
+    },
+    "exitModal": {
+      "title": "Pause cooking?",
+      "description": "We'll save your spot. Come back any time to resume from this step.",
+      "progress": "Step {current} of {total}",
+      "saveAndExit": "Save & exit",
+      "stay": "Keep cooking"
+    },
+    "resumeBanner": {
+      "title": "Resume cooking",
+      "body": "You stopped at step {step}. Pick up where you left off.",
+      "resume": "Resume",
+      "dismiss": "Dismiss"
     }
   },
   "Footer": {

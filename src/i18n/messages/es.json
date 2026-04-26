@@ -118,6 +118,19 @@
       "reset": "Reiniciar",
       "addMinute": "+1 min",
       "complete": "¡Listo!"
+    },
+    "exitModal": {
+      "title": "¿Pausar la cocina?",
+      "description": "Guardaremos tu sitio. Vuelve cuando quieras para retomar desde este paso.",
+      "progress": "Paso {current} de {total}",
+      "saveAndExit": "Guardar y salir",
+      "stay": "Seguir cocinando"
+    },
+    "resumeBanner": {
+      "title": "Reanudar cocina",
+      "body": "Te detuviste en el paso {step}. Continúa donde lo dejaste.",
+      "resume": "Reanudar",
+      "dismiss": "Descartar"
     }
   },
   "Footer": {
