@@ -59,7 +59,7 @@ export default async function CookPage({
   const exitModalLabels = {
     title: t('exitModal.title'),
     description: t('exitModal.description'),
-    progress: t('exitModal.progress'),
+    progress: t('exitModal.progress', { current: '{current}', total: '{total}' }),
     saveAndExit: t('exitModal.saveAndExit'),
     stay: t('exitModal.stay'),
   }

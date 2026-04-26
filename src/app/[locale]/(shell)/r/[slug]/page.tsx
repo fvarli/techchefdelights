@@ -166,7 +166,7 @@ export default async function RecipePage({
     title: t('sections.ingredients'),
     scaleLabel: t('ingredients.scaleLabel'),
     optional: t('ingredients.optional'),
-    containsAllergen: t('ingredients.containsAllergen'),
+    containsAllergen: t('ingredients.containsAllergen', { name: '{name}' }),
     toTaste: t('ingredients.toTaste'),
   }
   const allergyAlertLabels = {
@@ -181,7 +181,7 @@ export default async function RecipePage({
   }
   const reviewsLabels = {
     title: t('sections.reviews'),
-    summary: t('reviews.summary'),
+    summary: t('reviews.summary', { count: '{count}' }),
     placeholder: t('reviews.placeholder'),
     noReviews: t('reviews.noReviews'),
     signInToReview: t('reviews.signInToReview'),
@@ -210,7 +210,7 @@ export default async function RecipePage({
     cost: {
       title: t('cost.title'),
       perServing: t('cost.perServing'),
-      totalForAll: t('cost.totalForAll'),
+      totalForAll: t('cost.totalForAll', { count: '{count}' }),
       note: t('cost.note'),
     },
     utilities: {
@@ -233,7 +233,7 @@ export default async function RecipePage({
   const cookHref = localePath(locale, `/r/${recipe.slug}/cook`)
   const resumeBannerLabels = {
     title: tCook('resumeBanner.title'),
-    body: tCook('resumeBanner.body'),
+    body: tCook('resumeBanner.body', { step: '{step}' }),
     resume: tCook('resumeBanner.resume'),
     dismiss: tCook('resumeBanner.dismiss'),
   }
