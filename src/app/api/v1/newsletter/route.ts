@@ -5,6 +5,7 @@ import { db } from '@/lib/db'
 import { fromApiLocale } from '@/lib/api/enums'
 import { ApiErrors, apiError } from '@/lib/api/errors'
 import { logger, reqMeta } from '@/lib/logger'
+import { rateLimit } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,6 +19,13 @@ function hashEmail(email: string): string {
 }
 
 export async function POST(request: Request) {
+  const verdict = await rateLimit(request, 'newsletter', { limit: 5, windowMs: 60_000 })
+  if (!verdict.allowed) {
+    const retryAfter = Math.max(1, Math.ceil((verdict.resetAt - Date.now()) / 1000))
+    logger.warn('newsletter.rate_limited', { ...reqMeta(request), context: { retryAfter } })
+    return ApiErrors.rateLimited(retryAfter)
+  }
+
   let json: unknown
   try {
     json = await request.json()

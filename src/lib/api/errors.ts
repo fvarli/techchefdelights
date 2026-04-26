@@ -25,4 +25,17 @@ export const ApiErrors = {
     apiError(400, 'INVALID_QUERY', 'Query parameters failed validation.', issues),
   internal: () =>
     apiError(500, 'INTERNAL_ERROR', 'An unexpected error occurred.'),
+  rateLimited: (retryAfterSec: number) => {
+    const body: ApiError = {
+      error: {
+        code: 'RATE_LIMITED',
+        message: 'Too many requests. Please try again later.',
+        details: { retryAfterSec },
+      },
+    }
+    return NextResponse.json(body, {
+      status: 429,
+      headers: { 'Retry-After': String(retryAfterSec) },
+    })
+  },
 }
