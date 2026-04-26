@@ -3,7 +3,11 @@
     "kicker": "TechChefDelights",
     "title": "Teknolojinin lezzetle buluştuğu yer",
     "tagline": "Üç dilde tarifler — önce mühendislik, sonra tabakta.",
-    "localeBadge": "TR"
+    "localeBadge": "TR",
+    "liveLabel": "kişi şu an pişiriyor",
+    "searchPlaceholder": "Tarif, malzeme veya teknik ara",
+    "searchHint": "⌘K",
+    "quickChipsLabel": "Dene"
   },
   "Common": {
     "skipToContent": "İçeriğe atla",

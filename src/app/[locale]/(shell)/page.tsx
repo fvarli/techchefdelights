@@ -1,58 +1,59 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server'
+import { db } from '@/lib/db'
+import { fromApiLocale, type ApiLocale } from '@/lib/api/enums'
+import { deterministicLiveCount, LIVE_COUNTER_TTL_SECONDS } from '@/lib/api/live-counter'
+import { loadTrending } from '@/lib/api/home-loaders'
+import { HomeHero } from '@/components/home/HomeHero'
+import styles from './page.module.css'
+
+export const revalidate = 3600
+
+async function loadQuickChipTags(locale: ApiLocale, limit = 8) {
+  const prismaLocale = fromApiLocale(locale)
+  const tags = await db.tag.findMany({
+    take: limit,
+    include: { translations: { where: { locale: prismaLocale } } },
+  })
+  return tags
+    .filter((t) => t.translations[0])
+    .map((t) => ({ slug: t.slug, name: t.translations[0].name }))
+}
 
 export default async function HomePage({
   params,
 }: {
   params: Promise<{ locale: string }>
 }) {
-  const { locale } = await params
+  const { locale: rawLocale } = await params
+  const locale = rawLocale as ApiLocale
   setRequestLocale(locale)
-  const t = await getTranslations('Home')
+
+  const [t, [spotlight], quickChips] = await Promise.all([
+    getTranslations('Home'),
+    loadTrending(locale, 1),
+    loadQuickChipTags(locale, 8),
+  ])
 
   return (
-    <main
-      style={{
-        padding: 'var(--space-8)',
-        maxWidth: 720,
-        margin: '0 auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--space-4)',
-      }}
-    >
-      <div
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 11,
-          letterSpacing: '0.18em',
-          color: 'var(--color-terra)',
-          textTransform: 'uppercase',
+    <div className={styles.page}>
+      <HomeHero
+        locale={locale}
+        liveCount={deterministicLiveCount()}
+        liveTtlSeconds={LIVE_COUNTER_TTL_SECONDS}
+        quickChips={quickChips}
+        spotlight={spotlight ?? null}
+        labels={{
+          kicker: t('kicker'),
+          title: t('title'),
+          tagline: t('tagline'),
+          liveLabel: t('liveLabel'),
+          searchPlaceholder: t('searchPlaceholder'),
+          searchHint: t('searchHint'),
+          quickChipsLabel: t('quickChipsLabel'),
         }}
-      >
-        ◆ {t('localeBadge')} / {t('kicker')}
-      </div>
-      <h1
-        style={{
-          fontFamily: 'var(--font-serif)',
-          fontSize: 64,
-          lineHeight: 1.05,
-          letterSpacing: '-0.02em',
-          color: 'var(--color-ink)',
-          margin: 0,
-        }}
-      >
-        {t('title')}
-      </h1>
-      <p
-        style={{
-          fontFamily: 'var(--font-sans)',
-          fontSize: 18,
-          color: 'var(--color-sub)',
-          margin: 0,
-        }}
-      >
-        {t('tagline')}
-      </p>
-    </main>
+      />
+
+      {/* Sections 01–09 land in subsequent commits. */}
+    </div>
   )
 }

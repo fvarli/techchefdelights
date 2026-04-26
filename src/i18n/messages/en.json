@@ -3,7 +3,11 @@
     "kicker": "TechChefDelights",
     "title": "Where tech meets taste",
     "tagline": "Recipes in three languages — engineered, then plated.",
-    "localeBadge": "EN"
+    "localeBadge": "EN",
+    "liveLabel": "home cooks now",
+    "searchPlaceholder": "Search recipes, ingredients, or techniques",
+    "searchHint": "⌘K",
+    "quickChipsLabel": "Try"
   },
   "Common": {
     "skipToContent": "Skip to content",
