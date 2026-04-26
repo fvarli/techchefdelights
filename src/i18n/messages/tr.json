@@ -164,6 +164,11 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Print": {
+    "cuisine": "Mutfak",
+    "source": "Kaynak",
+    "printedOn": "Yazdırıldı"
+  },
   "Saved": {
     "metaTitle": "Kaydedilen tarifler — TechChefDelights",
     "metaDescription": "Bu cihazda kaydettiğin tarifler.",

@@ -164,6 +164,11 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Print": {
+    "cuisine": "Cocina",
+    "source": "Fuente",
+    "printedOn": "Impreso"
+  },
   "Saved": {
     "metaTitle": "Recetas guardadas — TechChefDelights",
     "metaDescription": "Recetas que has guardado en este dispositivo.",

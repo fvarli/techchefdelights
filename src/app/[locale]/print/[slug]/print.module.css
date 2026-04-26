@@ -1,0 +1,294 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-5) var(--space-8);
+  font-family: var(--font-serif);
+  color: #111;
+  background: #fff;
+  line-height: 1.55;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border-bottom: 2px solid #111;
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #555;
+  margin: 0;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: #111;
+}
+
+.tagline {
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-size: 14px;
+  color: #444;
+  margin: 4px 0 0;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-3) var(--space-4);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.metaCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+}
+
+.metaCell dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.metaCell dd {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  margin: 0;
+  color: #111;
+}
+
+.description {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: #333;
+  margin: 0 0 var(--space-5);
+}
+
+.section {
+  margin-top: var(--space-5);
+  page-break-inside: auto;
+  break-inside: auto;
+}
+
+.sectionTitle {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  margin: 0 0 var(--space-3);
+  color: #111;
+  border-bottom: 1px solid #111;
+  padding-bottom: 4px;
+}
+
+.group {
+  margin-bottom: var(--space-3);
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.groupTitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #555;
+  margin: 0 0 var(--space-2);
+}
+
+.ingredientList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ingredient {
+  display: flex;
+  gap: var(--space-2);
+  padding: 4px 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: #111;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.checkbox {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  color: #333;
+}
+
+.ingredientText {
+  flex: 1;
+}
+
+.optional {
+  font-style: italic;
+  color: #666;
+}
+
+.steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 0;
+  padding: 0;
+}
+
+.step {
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px dotted #ccc;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.step:last-child {
+  border-bottom: none;
+}
+
+.stepHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.stepNumber {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.stepTimer {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: #555;
+}
+
+.stepTitle {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  margin: 0 0 4px;
+  color: #111;
+}
+
+.stepBody {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  margin: 0;
+  color: #111;
+}
+
+.stepNote {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: #444;
+  margin: var(--space-1) 0 0;
+  padding-left: var(--space-3);
+  border-left: 2px solid #ccc;
+}
+
+.nutritionLine {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  margin: 0 0 4px;
+  color: #111;
+}
+
+.nutritionFootnote {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
+
+.footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-3);
+  border-top: 1px solid #ccc;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #555;
+  letter-spacing: 0.04em;
+}
+
+.source {
+  margin: 0 0 4px;
+}
+
+.sourceUrl {
+  word-break: break-all;
+  color: #111;
+}
+
+.copyright {
+  margin: 0;
+}
+
+@media print {
+  .page {
+    padding: 0;
+    max-width: none;
+    font-size: 11pt;
+    line-height: 1.4;
+  }
+
+  .title {
+    font-size: 24pt;
+  }
+
+  .sectionTitle {
+    font-size: 14pt;
+  }
+
+  .stepTitle {
+    font-size: 12pt;
+  }
+
+  .description,
+  .ingredient,
+  .stepBody,
+  .nutritionLine {
+    font-size: 11pt;
+  }
+
+  .step,
+  .group {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .header {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .sectionTitle {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  @page {
+    margin: 1.5cm;
+  }
+}
