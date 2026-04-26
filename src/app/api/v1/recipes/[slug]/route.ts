@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { resolveLocale } from '@/lib/api/locale'
 import { loadRecipeBySlug } from '@/lib/api/recipe-loader'
 import { ApiErrors } from '@/lib/api/errors'
+import { logger, reqMeta } from '@/lib/logger'
 import type { ApiRecipeResponse } from '@/lib/api/types'
 
 export const dynamic = 'force-dynamic'
@@ -10,6 +11,7 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string }> },
 ) {
+  const meta = reqMeta(request)
   try {
     const { slug } = await params
     const url = new URL(request.url)
@@ -27,7 +29,10 @@ export async function GET(
       },
     })
   } catch (err) {
-    console.error('GET /api/v1/recipes/[slug] failed:', err)
+    logger.error('recipes.get_failed', {
+      ...meta,
+      context: { error: err instanceof Error ? err.message : 'unknown' },
+    })
     return ApiErrors.internal()
   }
 }

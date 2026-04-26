@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { db } from '@/lib/db'
 import { fromApiLocale } from '@/lib/api/enums'
 import { ApiErrors, apiError } from '@/lib/api/errors'
+import { logger, reqMeta } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,8 +30,9 @@ export async function POST(request: Request) {
     return apiError(400, 'INVALID_EMAIL', 'Email failed validation.', parsed.error.issues)
   }
 
-  const { email, locale = 'en' } = parsed.data
-  const emailHash = hashEmail(email)
+  const { email: _email, locale = 'en' } = parsed.data
+  const emailHash = hashEmail(_email)
+  const meta = reqMeta(request)
 
   try {
     const existing = await db.newsletterSignup.findUnique({ where: { emailHash } })
@@ -42,9 +44,15 @@ export async function POST(request: Request) {
           status: 'PENDING',
         },
       })
+      logger.info('newsletter.signup', { ...meta, context: { locale, status: 'created' } })
+    } else {
+      logger.info('newsletter.signup', { ...meta, context: { locale, status: 'duplicate' } })
     }
   } catch (err) {
-    console.error('newsletter signup failed:', err)
+    logger.error('newsletter.signup_failed', {
+      ...meta,
+      context: { locale, error: err instanceof Error ? err.message : 'unknown' },
+    })
     return ApiErrors.internal()
   }
 
