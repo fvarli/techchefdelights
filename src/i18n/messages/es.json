@@ -11,6 +11,37 @@
     "languageSwitcher": "Idioma",
     "explore": "Explorar"
   },
+  "Header": {
+    "recipes": "Recetas",
+    "categories": "Categorías",
+    "search": "Buscar",
+    "saved": "Guardadas",
+    "profile": "Perfil"
+  },
+  "Footer": {
+    "tagline": "Donde la tecnología se encuentra con el sabor — recetas en tres idiomas, primero ingeniería, luego al plato.",
+    "popularCategories": "Categorías populares",
+    "explore": {
+      "title": "Explorar",
+      "recipes": "Todas las recetas",
+      "categories": "Categorías",
+      "diets": "Dietas",
+      "cuisines": "Cocinas"
+    },
+    "company": {
+      "title": "Empresa",
+      "about": "Sobre nosotros",
+      "contact": "Contacto",
+      "privacy": "Privacidad",
+      "terms": "Términos"
+    },
+    "connect": {
+      "title": "Conectar",
+      "instagram": "Instagram",
+      "newsletter": "Boletín"
+    },
+    "copyright": "© {year} TechChefDelights"
+  },
   "Recipe": {
     "breadcrumb": {
       "home": "Inicio",

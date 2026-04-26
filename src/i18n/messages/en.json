@@ -11,6 +11,37 @@
     "languageSwitcher": "Language",
     "explore": "Explore"
   },
+  "Header": {
+    "recipes": "Recipes",
+    "categories": "Categories",
+    "search": "Search",
+    "saved": "Saved",
+    "profile": "Profile"
+  },
+  "Footer": {
+    "tagline": "Where tech meets taste — recipes in three languages, engineered then plated.",
+    "popularCategories": "Popular Categories",
+    "explore": {
+      "title": "Explore",
+      "recipes": "All Recipes",
+      "categories": "Categories",
+      "diets": "Diets",
+      "cuisines": "Cuisines"
+    },
+    "company": {
+      "title": "Company",
+      "about": "About",
+      "contact": "Contact",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
+    "connect": {
+      "title": "Connect",
+      "instagram": "Instagram",
+      "newsletter": "Newsletter"
+    },
+    "copyright": "© {year} TechChefDelights"
+  },
   "Recipe": {
     "breadcrumb": {
       "home": "Home",

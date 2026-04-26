@@ -11,6 +11,37 @@
     "languageSwitcher": "Dil",
     "explore": "Keşfet"
   },
+  "Header": {
+    "recipes": "Tarifler",
+    "categories": "Kategoriler",
+    "search": "Ara",
+    "saved": "Kaydedilenler",
+    "profile": "Profil"
+  },
+  "Footer": {
+    "tagline": "Teknolojinin lezzetle buluştuğu yer — üç dilde, önce mühendislik sonra tabakta.",
+    "popularCategories": "Popüler Kategoriler",
+    "explore": {
+      "title": "Keşfet",
+      "recipes": "Tüm Tarifler",
+      "categories": "Kategoriler",
+      "diets": "Diyetler",
+      "cuisines": "Mutfaklar"
+    },
+    "company": {
+      "title": "Kurumsal",
+      "about": "Hakkında",
+      "contact": "İletişim",
+      "privacy": "Gizlilik",
+      "terms": "Şartlar"
+    },
+    "connect": {
+      "title": "Bağlan",
+      "instagram": "Instagram",
+      "newsletter": "Bülten"
+    },
+    "copyright": "© {year} TechChefDelights"
+  },
   "Recipe": {
     "breadcrumb": {
       "home": "Ana Sayfa",
