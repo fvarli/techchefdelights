@@ -101,6 +101,13 @@
     "saved": "Guardadas",
     "profile": "Perfil"
   },
+  "MobileNav": {
+    "home": "Inicio",
+    "search": "Buscar",
+    "saved": "Guarda.",
+    "plan": "Plan",
+    "profile": "Yo"
+  },
   "Cook": {
     "exit": "Salir",
     "step": "Paso",

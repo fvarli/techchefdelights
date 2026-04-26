@@ -101,6 +101,13 @@
     "saved": "Saved",
     "profile": "Profile"
   },
+  "MobileNav": {
+    "home": "Home",
+    "search": "Search",
+    "saved": "Saved",
+    "plan": "Plan",
+    "profile": "Me"
+  },
   "Cook": {
     "exit": "Exit",
     "step": "Step",

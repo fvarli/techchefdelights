@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { Header } from '@/components/navigation/Header'
 import { Footer } from '@/components/navigation/Footer'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import type { ApiLocale } from '@/lib/api/enums'
 import styles from './SiteShell.module.css'
 
@@ -10,9 +11,10 @@ type Props = {
 }
 
 export async function SiteShell({ locale, children }: Props) {
-  const [tHeader, tFooter] = await Promise.all([
+  const [tHeader, tFooter, tMobile] = await Promise.all([
     getTranslations('Header'),
     getTranslations('Footer'),
+    getTranslations('MobileNav'),
   ])
 
   const headerLabels = {
@@ -48,11 +50,20 @@ export async function SiteShell({ locale, children }: Props) {
     copyright: tFooter('copyright', { year: new Date().getFullYear() }),
   }
 
+  const mobileNavLabels = {
+    home: tMobile('home'),
+    search: tMobile('search'),
+    saved: tMobile('saved'),
+    plan: tMobile('plan'),
+    profile: tMobile('profile'),
+  }
+
   return (
     <>
       <Header locale={locale} labels={headerLabels} />
       <main className={styles.main}>{children}</main>
       <Footer locale={locale} labels={footerLabels} />
+      <MobileBottomNav locale={locale} labels={mobileNavLabels} />
     </>
   )
 }

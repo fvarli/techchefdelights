@@ -101,6 +101,13 @@
     "saved": "Kaydedilenler",
     "profile": "Profil"
   },
+  "MobileNav": {
+    "home": "Ana",
+    "search": "Ara",
+    "saved": "Kayıt",
+    "plan": "Plan",
+    "profile": "Ben"
+  },
   "Cook": {
     "exit": "Çık",
     "step": "Adım",
