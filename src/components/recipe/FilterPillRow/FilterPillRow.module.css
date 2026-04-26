@@ -1,0 +1,75 @@
+.row {
+  display: grid;
+  grid-template-columns: minmax(80px, max-content) 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+.pills {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  padding-bottom: 2px;
+}
+
+.pills::-webkit-scrollbar {
+  display: none;
+}
+
+.pill {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-full);
+  background: var(--color-paper);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.pill:hover {
+  border-color: var(--color-rule-strong);
+}
+
+.pill:focus-visible {
+  outline: 2px solid var(--color-terra);
+  outline-offset: 2px;
+}
+
+.pillActive {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-paper);
+}
+
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+
+  .pills {
+    margin: 0 calc(-1 * var(--space-4));
+    padding: 0 var(--space-4) 4px;
+  }
+}

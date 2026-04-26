@@ -164,6 +164,31 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Recipes": {
+    "metaTitle": "Tüm Tarifler — TechChefDelights",
+    "metaDescription": "Test mutfağındaki her tarif — mutfak, diyet, kategori, beceri ya da süreye göre filtrele.",
+    "kicker": "Tüm Tarifler",
+    "title": "Test mutfağına göz at",
+    "lede": "Her tarif — önce mühendislik, sonra tabakta. Mutfak, diyet, süre veya beceriye göre filtrele.",
+    "filters": {
+      "heading": "Filtreler",
+      "cuisine": "Mutfak",
+      "diet": "Diyet",
+      "category": "Kategori",
+      "skill": "Beceri",
+      "time": "Süre",
+      "all": "Hepsi",
+      "any": "Tümü",
+      "under": "{minutes} dk altı"
+    },
+    "summary": "{count, plural, =0 {Tarif yok} =1 {1 tarif} other {# tarif}}",
+    "resetFilters": "Filtreleri temizle",
+    "loadMore": "Daha fazla",
+    "empty": {
+      "title": "Bu filtrelerle eşleşen tarif yok",
+      "body": "Bir iki filtreyi kaldır ya da test mutfağındaki her şeyi gez."
+    }
+  },
   "Recipe": {
     "breadcrumb": {
       "home": "Ana Sayfa",

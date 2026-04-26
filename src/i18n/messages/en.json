@@ -164,6 +164,31 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Recipes": {
+    "metaTitle": "All Recipes — TechChefDelights",
+    "metaDescription": "Browse every tested recipe — filter by cuisine, diet, category, skill, or time.",
+    "kicker": "All Recipes",
+    "title": "Browse the test kitchen",
+    "lede": "Every recipe — engineered, then plated. Filter by cuisine, diet, time, or skill.",
+    "filters": {
+      "heading": "Filters",
+      "cuisine": "Cuisine",
+      "diet": "Diet",
+      "category": "Category",
+      "skill": "Skill",
+      "time": "Time",
+      "all": "All",
+      "any": "Any",
+      "under": "Under {minutes} min"
+    },
+    "summary": "{count, plural, =0 {No recipes} =1 {1 recipe} other {# recipes}}",
+    "resetFilters": "Clear filters",
+    "loadMore": "Load more",
+    "empty": {
+      "title": "No recipes match these filters",
+      "body": "Try removing one or two filters, or browse everything in the test kitchen."
+    }
+  },
   "Recipe": {
     "breadcrumb": {
       "home": "Home",

@@ -164,6 +164,31 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Recipes": {
+    "metaTitle": "Todas las recetas — TechChefDelights",
+    "metaDescription": "Navega cada receta probada — filtra por cocina, dieta, categoría, habilidad o tiempo.",
+    "kicker": "Todas las recetas",
+    "title": "Recorre la cocina de pruebas",
+    "lede": "Cada receta — primero ingeniería, luego al plato. Filtra por cocina, dieta, tiempo o habilidad.",
+    "filters": {
+      "heading": "Filtros",
+      "cuisine": "Cocina",
+      "diet": "Dieta",
+      "category": "Categoría",
+      "skill": "Habilidad",
+      "time": "Tiempo",
+      "all": "Todas",
+      "any": "Cualquiera",
+      "under": "Menos de {minutes} min"
+    },
+    "summary": "{count, plural, =0 {Sin recetas} =1 {1 receta} other {# recetas}}",
+    "resetFilters": "Limpiar filtros",
+    "loadMore": "Ver más",
+    "empty": {
+      "title": "Ninguna receta coincide con estos filtros",
+      "body": "Intenta quitar uno o dos filtros, o explora toda la cocina de pruebas."
+    }
+  },
   "Recipe": {
     "breadcrumb": {
       "home": "Inicio",
