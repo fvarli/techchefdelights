@@ -36,7 +36,6 @@ const loadPopularCategories = cache(async (locale: ApiLocale) => {
 
 export async function Footer({ locale, labels }: Props) {
   const categories = await loadPopularCategories(locale)
-  const year = new Date().getFullYear()
 
   function categoryPath(slug: string) {
     return localePath(locale, `/c/${slug}`)
@@ -115,9 +114,7 @@ export async function Footer({ locale, labels }: Props) {
       </div>
 
       <div className={styles.bottomBar}>
-        <span className={styles.copyright}>
-          {labels.copyright.replace('{year}', String(year))}
-        </span>
+        <span className={styles.copyright}>{labels.copyright}</span>
       </div>
     </footer>
   )

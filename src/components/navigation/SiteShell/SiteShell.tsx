@@ -45,7 +45,7 @@ export async function SiteShell({ locale, children }: Props) {
       instagram: tFooter('connect.instagram'),
       newsletter: tFooter('connect.newsletter'),
     },
-    copyright: tFooter('copyright'),
+    copyright: tFooter('copyright', { year: new Date().getFullYear() }),
   }
 
   return (
