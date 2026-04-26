@@ -164,6 +164,24 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Search": {
+    "metaTitle": "Search recipes — TechChefDelights",
+    "metaDescription": "Full-text search across every tested recipe in three languages.",
+    "kicker": "Search",
+    "title": "Find a recipe",
+    "inputLabel": "Recipe search",
+    "inputPlaceholder": "Try ‘red lentil’, ‘pasta’, ‘feta’…",
+    "submit": "Search",
+    "summary": "{count, plural, =1 {1 result for ‘{q}’} other {# results for ‘{q}’}}",
+    "emptyQuery": {
+      "body": "Search for a dish, ingredient, or technique.",
+      "examples": "Try: red lentil · pasta · cheesecake · quinoa"
+    },
+    "noResults": {
+      "title": "No matches for ‘{q}’",
+      "body": "Try a shorter query, an ingredient, or a different language."
+    }
+  },
   "Taxonomy": {
     "browseAll": "Browse all recipes",
     "category": {

@@ -164,6 +164,24 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Search": {
+    "metaTitle": "Buscar recetas — TechChefDelights",
+    "metaDescription": "Búsqueda de texto completo en cada receta probada, en tres idiomas.",
+    "kicker": "Buscar",
+    "title": "Encuentra una receta",
+    "inputLabel": "Búsqueda de recetas",
+    "inputPlaceholder": "Prueba ‘lentejas rojas’, ‘pasta’, ‘feta’…",
+    "submit": "Buscar",
+    "summary": "{count, plural, =1 {1 resultado para ‘{q}’} other {# resultados para ‘{q}’}}",
+    "emptyQuery": {
+      "body": "Busca un plato, un ingrediente o una técnica.",
+      "examples": "Prueba: lentejas · pasta · cheesecake · quinoa"
+    },
+    "noResults": {
+      "title": "Sin coincidencias para ‘{q}’",
+      "body": "Prueba con una consulta más corta, un ingrediente o un idioma diferente."
+    }
+  },
   "Taxonomy": {
     "browseAll": "Ver todas las recetas",
     "category": {

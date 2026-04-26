@@ -164,6 +164,24 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Search": {
+    "metaTitle": "Tarif ara — TechChefDelights",
+    "metaDescription": "Üç dilde test edilmiş tüm tarifler arasında tam metin arama.",
+    "kicker": "Ara",
+    "title": "Bir tarif bul",
+    "inputLabel": "Tarif arama",
+    "inputPlaceholder": "‘mercimek’, ‘makarna’, ‘peynir’ dene…",
+    "submit": "Ara",
+    "summary": "{count, plural, =1 {‘{q}’ için 1 sonuç} other {‘{q}’ için # sonuç}}",
+    "emptyQuery": {
+      "body": "Bir yemek, malzeme ya da teknik ara.",
+      "examples": "Dene: mercimek · makarna · cheesecake · kinoa"
+    },
+    "noResults": {
+      "title": "‘{q}’ için sonuç yok",
+      "body": "Daha kısa bir sorgu, malzeme adı ya da farklı bir dil dene."
+    }
+  },
   "Taxonomy": {
     "browseAll": "Tüm tarifleri gez",
     "category": {
