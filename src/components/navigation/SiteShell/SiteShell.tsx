@@ -11,10 +11,11 @@ type Props = {
 }
 
 export async function SiteShell({ locale, children }: Props) {
-  const [tHeader, tFooter, tMobile] = await Promise.all([
+  const [tHeader, tFooter, tMobile, tCommon] = await Promise.all([
     getTranslations('Header'),
     getTranslations('Footer'),
     getTranslations('MobileNav'),
+    getTranslations('Common'),
   ])
 
   const headerLabels = {
@@ -60,8 +61,13 @@ export async function SiteShell({ locale, children }: Props) {
 
   return (
     <>
+      <a href="#main-content" className={styles.skipLink}>
+        {tCommon('skipToContent')}
+      </a>
       <Header locale={locale} labels={headerLabels} />
-      <main className={styles.main}>{children}</main>
+      <main id="main-content" className={styles.main}>
+        {children}
+      </main>
       <Footer locale={locale} labels={footerLabels} />
       <MobileBottomNav locale={locale} labels={mobileNavLabels} />
     </>
