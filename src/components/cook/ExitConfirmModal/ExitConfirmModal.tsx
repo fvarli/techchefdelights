@@ -63,9 +63,9 @@ export function ExitConfirmModal({
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className={styles.overlay} />
-        <Dialog.Content className={styles.content} aria-describedby="exit-desc">
+        <Dialog.Content className={styles.content}>
           <Dialog.Title className={styles.title}>{labels.title}</Dialog.Title>
-          <Dialog.Description id="exit-desc" className={styles.description}>
+          <Dialog.Description className={styles.description}>
             {labels.description}
           </Dialog.Description>
           <p className={styles.progress}>{progressText}</p>
