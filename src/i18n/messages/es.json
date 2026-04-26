@@ -178,6 +178,7 @@
     },
     "toc": {
       "title": "En Esta Página",
+      "mobileTitle": "Ir a la sección",
       "story": "Historia",
       "ingredients": "Ingredientes",
       "equipment": "Utensilios",
@@ -186,6 +187,7 @@
       "faq": "Preguntas",
       "reviews": "Reseñas"
     },
+    "startCooking": "Empezar a cocinar",
     "sections": {
       "story": "La Historia",
       "ingredients": "Ingredientes",

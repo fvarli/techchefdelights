@@ -22,6 +22,8 @@ import { ReviewsSection } from '@/components/recipe/ReviewsSection'
 import { RelatedRecipes, type RelatedRecipeItem } from '@/components/recipe/RelatedRecipes'
 import { RightRail } from '@/components/recipe/RightRail'
 import { ResumeBanner } from '@/components/recipe/ResumeBanner'
+import { TocAccordion } from '@/components/recipe/TocAccordion'
+import { StickyCookCTA } from '@/components/recipe/StickyCookCTA'
 import { localePath } from '@/lib/path'
 import type { ApiLocale } from '@/lib/api/enums'
 import styles from './recipe.module.css'
@@ -268,6 +270,8 @@ export default async function RecipePage({
         </aside>
 
         <div className={styles.body}>
+          <TocAccordion items={tocItems} title={t('toc.mobileTitle')} />
+
           <section id="story" className={styles.story}>
             <h2 className={styles.storyTitle}>{t('sections.story')}</h2>
             {recipe.story.split('\n\n').map((para, i) => (
@@ -323,6 +327,13 @@ export default async function RecipePage({
       </div>
 
       <RelatedRecipes items={related} locale={locale} labels={relatedLabels} />
+
+      <StickyCookCTA
+        cookHref={cookHref}
+        label={t('startCooking')}
+        totalMinutes={recipe.meta.totalMinutes}
+        minutesLabel={t('signalBar.minutes')}
+      />
     </article>
   )
 }

@@ -1,0 +1,1 @@
+export { TocAccordion } from './TocAccordion'

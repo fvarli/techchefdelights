@@ -178,6 +178,7 @@
     },
     "toc": {
       "title": "Bu Sayfada",
+      "mobileTitle": "Bölüme atla",
       "story": "Hikâye",
       "ingredients": "Malzemeler",
       "equipment": "Araçlar",
@@ -186,6 +187,7 @@
       "faq": "SSS",
       "reviews": "Yorumlar"
     },
+    "startCooking": "Pişirmeye başla",
     "sections": {
       "story": "Hikâye",
       "ingredients": "Malzemeler",

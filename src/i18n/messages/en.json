@@ -178,6 +178,7 @@
     },
     "toc": {
       "title": "On This Page",
+      "mobileTitle": "Jump to section",
       "story": "Story",
       "ingredients": "Ingredients",
       "equipment": "Equipment",
@@ -186,6 +187,7 @@
       "faq": "FAQ",
       "reviews": "Reviews"
     },
+    "startCooking": "Start cooking",
     "sections": {
       "story": "The Story",
       "ingredients": "Ingredients",
