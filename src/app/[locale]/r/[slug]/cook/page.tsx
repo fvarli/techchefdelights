@@ -75,6 +75,14 @@ export default async function CookPage({
             chefNote: t('chefNote'),
             ingredientsUsed: t('ingredientsUsed'),
             noIngredients: t('noIngredients'),
+            timer: {
+              start: t('timer.start'),
+              pause: t('timer.pause'),
+              resume: t('timer.resume'),
+              reset: t('timer.reset'),
+              addMinute: t('timer.addMinute'),
+              complete: t('timer.complete'),
+            },
           }}
         />
       </main>

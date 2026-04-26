@@ -1,3 +1,4 @@
+import { TimerModule } from '@/components/cook/TimerModule'
 import type { ApiRecipe } from '@/lib/api/types'
 import styles from './StepCard.module.css'
 
@@ -14,6 +15,14 @@ type Props = {
     chefNote: string
     ingredientsUsed: string
     noIngredients: string
+    timer: {
+      start: string
+      pause: string
+      resume: string
+      reset: string
+      addMinute: string
+      complete: string
+    }
   }
 }
 
@@ -40,6 +49,15 @@ export function StepCard({ step, stepIndex, totalSteps, ingredients, labels }: P
             <span className={styles.noteLabel}>{labels.chefNote}</span>
             <p className={styles.noteText}>{step.note}</p>
           </aside>
+        )}
+
+        {step.timer && (
+          <TimerModule
+            key={`step-${stepIndex}`}
+            seconds={step.timer.seconds}
+            customLabel={step.timer.label}
+            labels={labels.timer}
+          />
         )}
 
         <section className={styles.ingredientsSection}>
