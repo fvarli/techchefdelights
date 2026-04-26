@@ -32,6 +32,14 @@
       "kicker": "Trendde",
       "title": "Bu hafta evlerde en çok pişen tarifler",
       "rangeWeek": "Bu hafta"
+    },
+    "editorial": {
+      "kicker": "Editöryel",
+      "cta": "Tarife git"
+    },
+    "masonry": {
+      "kicker": "Bak, sonra pişir",
+      "title": "Test mutfağından görsel bir akış"
     }
   },
   "Common": {

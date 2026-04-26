@@ -32,6 +32,14 @@
       "kicker": "Tendencia",
       "title": "Lo que se cocina esta semana en casa",
       "rangeWeek": "Esta semana"
+    },
+    "editorial": {
+      "kicker": "Editorial",
+      "cta": "Ver la receta"
+    },
+    "masonry": {
+      "kicker": "Mira, luego cocina",
+      "title": "Un recorrido visual por la cocina de pruebas"
     }
   },
   "Common": {

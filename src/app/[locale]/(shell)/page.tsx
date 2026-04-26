@@ -2,10 +2,12 @@ import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { db } from '@/lib/db'
 import { fromApiLocale, type ApiLocale } from '@/lib/api/enums'
 import { deterministicLiveCount, LIVE_COUNTER_TTL_SECONDS } from '@/lib/api/live-counter'
-import { loadTrending } from '@/lib/api/home-loaders'
+import { loadTrending, loadFeatured, loadLatest } from '@/lib/api/home-loaders'
 import { HomeHero } from '@/components/home/HomeHero'
 import { DiscoveryQuadrant } from '@/components/home/DiscoveryQuadrant'
 import { TrendingSection } from '@/components/home/TrendingSection'
+import { EditorialFeature } from '@/components/home/EditorialFeature'
+import { VisualMasonry } from '@/components/home/VisualMasonry'
 import styles from './page.module.css'
 
 export const revalidate = 3600
@@ -30,10 +32,12 @@ export default async function HomePage({
   const locale = rawLocale as ApiLocale
   setRequestLocale(locale)
 
-  const [t, tRecipe, trending, quickChips] = await Promise.all([
+  const [t, tRecipe, trending, featured, masonry, quickChips] = await Promise.all([
     getTranslations('Home'),
     getTranslations('Recipe'),
     loadTrending(locale, 4),
+    loadFeatured(locale),
+    loadLatest(locale, 8),
     loadQuickChipTags(locale, 8),
   ])
 
@@ -93,7 +97,28 @@ export default async function HomePage({
         }}
       />
 
-      {/* Sections 03–09 land in subsequent commits. */}
+      {featured && (
+        <EditorialFeature
+          feature={featured}
+          locale={locale}
+          labels={{
+            kicker: t('editorial.kicker'),
+            cta: t('editorial.cta'),
+            minutes: tRecipe('signalBar.minutes'),
+          }}
+        />
+      )}
+
+      <VisualMasonry
+        recipes={masonry}
+        locale={locale}
+        labels={{
+          kicker: t('masonry.kicker'),
+          title: t('masonry.title'),
+        }}
+      />
+
+      {/* Sections 05–09 land in subsequent commits. */}
     </div>
   )
 }

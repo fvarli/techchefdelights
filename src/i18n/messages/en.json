@@ -32,6 +32,14 @@
       "kicker": "Trending",
       "title": "What home cooks are making this week",
       "rangeWeek": "This week"
+    },
+    "editorial": {
+      "kicker": "Editorial",
+      "cta": "Read the recipe"
+    },
+    "masonry": {
+      "kicker": "Look, then cook",
+      "title": "A visual scroll through the test kitchen"
     }
   },
   "Common": {
