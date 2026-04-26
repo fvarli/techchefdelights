@@ -164,6 +164,27 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Taxonomy": {
+    "browseAll": "Ver todas las recetas",
+    "category": {
+      "kicker": "Categoría",
+      "metaTitle": "Recetas de {name} — TechChefDelights",
+      "metaDescription": "Recetas probadas de {name} desde la cocina de pruebas, en tres idiomas."
+    },
+    "diet": {
+      "kicker": "Dieta",
+      "metaTitle": "Recetas {name} — TechChefDelights",
+      "metaDescription": "Todas las recetas {name} en la cocina de pruebas, en tres idiomas."
+    },
+    "emptyCategory": {
+      "title": "Aún no hay recetas en esta categoría",
+      "body": "Seguimos cocinando. Vuelve pronto o explora todo lo que hemos probado."
+    },
+    "emptyDiet": {
+      "title": "Aún no hay recetas para esta dieta",
+      "body": "Estamos trabajando en ello. Explora todas las recetas o prueba otro filtro."
+    }
+  },
   "Recipes": {
     "metaTitle": "Todas las recetas — TechChefDelights",
     "metaDescription": "Navega cada receta probada — filtra por cocina, dieta, categoría, habilidad o tiempo.",

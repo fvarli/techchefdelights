@@ -96,6 +96,74 @@ export async function loadRecipeList(
   return { items, nextCursor, total }
 }
 
+export type CategoryDetail = {
+  baseSlug: string
+  name: string
+  description: string | null
+  slugByLocale: Record<ApiLocale, string>
+  recipeCount: number
+}
+
+export async function loadCategoryBySlug(
+  locale: ApiLocale,
+  slug: string,
+): Promise<CategoryDetail | null> {
+  const prismaLocale = fromApiLocale(locale)
+  const tx = await db.categoryTranslation.findUnique({
+    where: { locale_slug: { locale: prismaLocale, slug } },
+    include: {
+      category: {
+        include: {
+          translations: true,
+          _count: { select: { recipes: true } },
+        },
+      },
+    },
+  })
+  if (!tx) return null
+  const slugByLocale: Record<ApiLocale, string> = { en: '', tr: '', es: '' }
+  for (const t of tx.category.translations) {
+    slugByLocale[t.locale.toLowerCase() as ApiLocale] = t.slug
+  }
+  return {
+    baseSlug: tx.category.slug,
+    name: tx.name,
+    description: tx.description,
+    slugByLocale,
+    recipeCount: tx.category._count.recipes,
+  }
+}
+
+export type DietDetail = {
+  slug: string
+  name: string
+  description: string | null
+  recipeCount: number
+}
+
+export async function loadDietBySlug(
+  locale: ApiLocale,
+  slug: string,
+): Promise<DietDetail | null> {
+  const prismaLocale = fromApiLocale(locale)
+  const diet = await db.diet.findUnique({
+    where: { slug },
+    include: {
+      translations: { where: { locale: prismaLocale } },
+      _count: { select: { recipes: true } },
+    },
+  })
+  if (!diet) return null
+  const tx = diet.translations[0]
+  if (!tx) return null
+  return {
+    slug: diet.slug,
+    name: tx.name,
+    description: tx.description,
+    recipeCount: diet._count.recipes,
+  }
+}
+
 export async function loadFilterOptions(locale: ApiLocale): Promise<{
   cuisines: FilterOption[]
   diets: FilterOption[]

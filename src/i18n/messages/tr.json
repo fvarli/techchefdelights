@@ -164,6 +164,27 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Taxonomy": {
+    "browseAll": "Tüm tarifleri gez",
+    "category": {
+      "kicker": "Kategori",
+      "metaTitle": "{name} tarifleri — TechChefDelights",
+      "metaDescription": "Test mutfağından denenmiş {name} tarifleri, üç dilde."
+    },
+    "diet": {
+      "kicker": "Diyet",
+      "metaTitle": "{name} tarifleri — TechChefDelights",
+      "metaDescription": "Test mutfağındaki tüm {name} tarifleri, üç dilde."
+    },
+    "emptyCategory": {
+      "title": "Bu kategoride henüz tarif yok",
+      "body": "Mutfaktayız. Yakında tekrar bak ya da test ettiğimiz tüm tariflere göz at."
+    },
+    "emptyDiet": {
+      "title": "Bu diyete uyan henüz tarif yok",
+      "body": "Üzerinde çalışıyoruz. Tüm tarifleri gez ya da başka bir filtre dene."
+    }
+  },
   "Recipes": {
     "metaTitle": "Tüm Tarifler — TechChefDelights",
     "metaDescription": "Test mutfağındaki her tarif — mutfak, diyet, kategori, beceri ya da süreye göre filtrele.",
