@@ -110,7 +110,15 @@
     "complete": "Tamamlandı",
     "ingredientsUsed": "Bu adımda kullanılan",
     "noIngredients": "Bu adım için özel malzeme yok",
-    "chefNote": "Şefin notu"
+    "chefNote": "Şefin notu",
+    "timer": {
+      "start": "Zamanlayıcıyı başlat",
+      "pause": "Duraklat",
+      "resume": "Devam et",
+      "reset": "Sıfırla",
+      "addMinute": "+1 dk",
+      "complete": "Bitti!"
+    }
   },
   "Footer": {
     "tagline": "Teknolojinin lezzetle buluştuğu yer — üç dilde, önce mühendislik sonra tabakta.",

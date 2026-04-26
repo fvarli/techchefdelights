@@ -110,7 +110,15 @@
     "complete": "Complete",
     "ingredientsUsed": "Used in this step",
     "noIngredients": "No specific ingredients for this step",
-    "chefNote": "Chef's note"
+    "chefNote": "Chef's note",
+    "timer": {
+      "start": "Start timer",
+      "pause": "Pause",
+      "resume": "Resume",
+      "reset": "Reset",
+      "addMinute": "+1 min",
+      "complete": "Done!"
+    }
   },
   "Footer": {
     "tagline": "Where tech meets taste — recipes in three languages, engineered then plated.",

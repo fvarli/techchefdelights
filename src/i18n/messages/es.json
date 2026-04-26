@@ -110,7 +110,15 @@
     "complete": "Completar",
     "ingredientsUsed": "Usado en este paso",
     "noIngredients": "Sin ingredientes específicos para este paso",
-    "chefNote": "Nota del chef"
+    "chefNote": "Nota del chef",
+    "timer": {
+      "start": "Iniciar temporizador",
+      "pause": "Pausar",
+      "resume": "Reanudar",
+      "reset": "Reiniciar",
+      "addMinute": "+1 min",
+      "complete": "¡Listo!"
+    }
   },
   "Footer": {
     "tagline": "Donde la tecnología se encuentra con el sabor — recetas en tres idiomas, primero ingeniería, luego al plato.",

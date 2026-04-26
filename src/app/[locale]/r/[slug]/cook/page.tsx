@@ -87,7 +87,9 @@ export default async function CookPage({
         />
       </main>
       <CookControls
+        slug={recipe.slug}
         basePath={cookBasePath}
+        recipeHref={exitHref}
         stepIndex={stepIndex}
         totalSteps={totalSteps}
         labels={{
