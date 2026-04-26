@@ -40,6 +40,17 @@
     "masonry": {
       "kicker": "Bak, sonra pişir",
       "title": "Test mutfağından görsel bir akış"
+    },
+    "categories": {
+      "kicker": "Kategoriler",
+      "title": "Nereden başlayacağını seç",
+      "recipesSuffix": "tarif"
+    },
+    "diets": {
+      "kicker": "Bir kez ayarla, her yerde uygulansın",
+      "title": "Tüm siteyi diyetine göre filtrele",
+      "desc": "Diyet tercihlerini kaydet, arama ve öneriler dahil her tarif yüzeyi sana uyumlu görünsün.",
+      "recipesSuffix": "tarif"
     }
   },
   "Common": {

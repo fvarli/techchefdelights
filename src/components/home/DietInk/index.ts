@@ -1,0 +1,1 @@
+export { DietInk } from './DietInk'

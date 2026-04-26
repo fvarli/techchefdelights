@@ -40,6 +40,17 @@
     "masonry": {
       "kicker": "Look, then cook",
       "title": "A visual scroll through the test kitchen"
+    },
+    "categories": {
+      "kicker": "By category",
+      "title": "Where to start",
+      "recipesSuffix": "recipes"
+    },
+    "diets": {
+      "kicker": "Set once, applies everywhere",
+      "title": "Filter the entire site by your diet",
+      "desc": "Save your dietary preferences and every recipe surface — search, browse, recommendations — adapts.",
+      "recipesSuffix": "recipes"
     }
   },
   "Common": {

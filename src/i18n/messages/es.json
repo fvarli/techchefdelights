@@ -40,6 +40,17 @@
     "masonry": {
       "kicker": "Mira, luego cocina",
       "title": "Un recorrido visual por la cocina de pruebas"
+    },
+    "categories": {
+      "kicker": "Por categoría",
+      "title": "Por dónde empezar",
+      "recipesSuffix": "recetas"
+    },
+    "diets": {
+      "kicker": "Configura una vez, aplica en todo",
+      "title": "Filtra todo el sitio según tu dieta",
+      "desc": "Guarda tus preferencias dietéticas y cada superficie de recetas — búsqueda, navegación, recomendaciones — se adapta.",
+      "recipesSuffix": "recetas"
     }
   },
   "Common": {
