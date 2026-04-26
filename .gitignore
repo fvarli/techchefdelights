@@ -1,5 +1,9 @@
-# Local-only — never committed
-docs/
+# Local-only — never committed (reference materials from v3 spec & assets)
+docs/markdowns/
+docs/hifi/
+docs/wires/
+docs/components/
+docs/screenshots/
 .claude/
 
 # OS / editor
