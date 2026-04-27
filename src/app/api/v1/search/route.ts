@@ -5,6 +5,7 @@ import { searchRecipes } from '@/lib/api/search-loader'
 import { ApiErrors, apiError } from '@/lib/api/errors'
 import { logger, reqMeta } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
+import { getRequestId, REQUEST_ID_HEADER } from '@/lib/request-id'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,13 +16,14 @@ const SearchQuery = z.object({
 })
 
 export async function GET(request: Request) {
-  const meta = reqMeta(request)
+  const requestId = getRequestId(request)
+  const meta = { requestId, ...reqMeta(request) }
 
   const verdict = await rateLimit(request, 'search', { limit: 30, windowMs: 60_000 })
   if (!verdict.allowed) {
     const retryAfter = Math.max(1, Math.ceil((verdict.resetAt - Date.now()) / 1000))
     logger.warn('search.rate_limited', { ...meta, context: { retryAfter } })
-    return ApiErrors.rateLimited(retryAfter)
+    return ApiErrors.rateLimited(retryAfter, requestId)
   }
 
   const url = new URL(request.url)
@@ -30,7 +32,9 @@ export async function GET(request: Request) {
     locale: url.searchParams.get('locale') ?? undefined,
     limit: url.searchParams.get('limit') ?? undefined,
   })
-  if (!parsed.success) return apiError(400, 'INVALID_QUERY', 'Invalid search parameters.', parsed.error.issues)
+  if (!parsed.success) {
+    return apiError(400, 'INVALID_QUERY', 'Invalid search parameters.', parsed.error.issues, requestId)
+  }
 
   const apiLocale = await resolveLocale(parsed.data.locale ?? null)
   const limit = parsed.data.limit ?? 20
@@ -45,17 +49,20 @@ export async function GET(request: Request) {
         results: result.items.length,
       },
     })
-    return NextResponse.json({
-      query: result.query,
-      locale: apiLocale,
-      total: result.total,
-      items: result.items,
-    })
+    return NextResponse.json(
+      {
+        query: result.query,
+        locale: apiLocale,
+        total: result.total,
+        items: result.items,
+      },
+      { headers: { [REQUEST_ID_HEADER]: requestId } },
+    )
   } catch (err) {
     logger.error('search.failed', {
       ...meta,
       context: { locale: apiLocale, error: err instanceof Error ? err.message : 'unknown' },
     })
-    return ApiErrors.internal()
+    return ApiErrors.internal(requestId)
   }
 }

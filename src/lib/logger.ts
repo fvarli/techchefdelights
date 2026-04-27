@@ -12,6 +12,7 @@
 export type LogLevel = 'info' | 'warn' | 'error'
 
 export type LogContext = {
+  requestId?: string
   route?: string
   method?: string
   userAgent?: string
@@ -37,6 +38,7 @@ function emit(record: LogRecord) {
   }
   const tag = `[${record.level.toUpperCase()}]`
   const meta = [
+    record.requestId && `req=${record.requestId.slice(0, 8)}`,
     record.route && `route=${record.route}`,
     record.method && `method=${record.method}`,
     record.ip && `ip=${record.ip}`,
