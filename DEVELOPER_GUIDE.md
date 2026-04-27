@@ -291,6 +291,26 @@ The full workflow lives in **[`IMAGE_WORKFLOW.md`](./IMAGE_WORKFLOW.md)** — re
 - Don't write `alt: 'Image of <recipe>'` — screen readers already announce it as an image. Describe the photographic content.
 - Don't ship a recipe to production with `isDraft = false` if its hero is still pointing at a `tcd/seed/...` path.
 
+### Validation
+
+`content/image-manifest.ts` is the source of truth for **what we plan to ship**. Every seeded recipe has an entry; each `images[]` item carries `publicId`, `role`, `alt.{en,tr,es}`, `prompt`, `status`.
+
+```bash
+pnpm images:validate              # advisory; exit 0 with warns
+IMAGES_STRICT=1 pnpm images:validate  # production gate; exit 1 on any blocker
+```
+
+When `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET` are set, the validator also remote-checks every `uploaded`/`approved` `publicId` against the Cloudinary Admin API. It is **read-only** — the script never uploads, deletes, renames, or mutates assets.
+
+Workflow when adding a new image:
+1. Plan it in the manifest (`status: 'planned'`).
+2. Generate (AI per the style guide in `IMAGE_WORKFLOW.md`).
+3. Manual review against the quality gate. Bump status to `generated`.
+4. Upload to Cloudinary at the canonical path. Bump to `uploaded`.
+5. Run `pnpm images:validate`. Fix any errors.
+6. Once review passes, bump to `approved` and update the seed file's `heroImageCloudinary`.
+7. `pnpm prisma db seed`. Verify the recipe page renders the new hero.
+
 ### Adding image dimensions
 
 `w` and `h` are CLS-critical (they prevent layout shift on first paint). Set them to the actual image dimensions, not the rendered size. Cloudinary returns these from the upload response; capture them in the per-recipe metadata template before re-seeding.

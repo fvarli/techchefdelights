@@ -234,6 +234,18 @@ psql "$DATABASE_URL" -c "SELECT COUNT(*) AS recipes_with_seed_hero
 # expected: 0  (any non-zero blocks promotion)
 ```
 
+Manifest + validator gate (must run with Cloudinary env present):
+```bash
+IMAGES_STRICT=1 pnpm images:validate
+# expected: exit 0
+# fails on: missing required hero, non-approved hero, placeholder
+#   tcd/seed/* prefix, missing alt EN/TR/ES, alt > 125 chars,
+#   duplicate publicIds, gallery-N gaps, Cloudinary asset missing
+#   (when env is configured), seed/manifest hero mismatch.
+```
+
+The validator is **read-only** — it never uploads, deletes, renames, or mutates any Cloudinary asset.
+
 ## 7. Cross-browser smoke (manual, 5 minutes)
 
 On staging, with the staging hostname in the URL bar:

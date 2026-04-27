@@ -242,6 +242,69 @@ Post-launch, when content velocity grows:
 
 This is a deliberate v1.x scope item, not v1. The placeholder implementation in this doc and the Cloudinary `public_id` convention are designed to make that admin tool a thin layer on top of an already-correct data model.
 
+## Production pipeline
+
+End-to-end flow for shipping a recipe's images:
+
+```
+1. AI generation
+   – follow the style guide + per-image prompt template
+   – output: image file(s) on disk
+2. Manual review
+   – run the quality gate (no text/logos, garnish matches recipe, lighting OK)
+   – iterate with regeneration if needed
+3. Cloudinary upload
+   – upload at the canonical path  recipes/<en-slug>/<role>(-N)?
+   – capture width/height
+4. Manifest update
+   – edit content/image-manifest.ts
+   – flip status: planned → generated → uploaded → approved
+   – fill alt EN/TR/ES (≤ 125 chars)
+5. Validation
+   – pnpm images:validate                     ← advisory, exit 0 with warns
+   – IMAGES_STRICT=1 pnpm images:validate     ← prod gate, exit 1 on any blocker
+6. Seed update
+   – replace tcd/seed/<slug>/hero with recipes/<slug>/hero in
+     prisma/seed/data/recipes/<slug>.ts
+   – pnpm prisma db seed
+   – /recipes/<slug> renders the new hero
+```
+
+## Image manifest
+
+The single source of truth for what we **plan** to ship is **`content/image-manifest.ts`** (not the DB). One entry per published recipe; `images[]` lists every planned asset. The validator script (`scripts/validate-images.ts`) reads it and gates production promotion.
+
+Status values:
+- `planned` — entry exists, AI prompt drafted, no asset yet
+- `generated` — image generated, awaiting review
+- `uploaded` — uploaded to Cloudinary at the canonical `public_id`
+- `approved` — review passed, seed file updated, ready for production
+
+The manifest is **read-only** for the validator. The validator never uploads, deletes, renames, or mutates Cloudinary assets.
+
+## Validation script
+
+`pnpm images:validate` runs all of:
+
+| Check | Severity (default) | Severity (strict) |
+|---|---|---|
+| every seeded recipe has a manifest entry | error | error |
+| every manifest recipe maps to a seeded slug | error | error |
+| each recipe has exactly 1 hero, ≤ 1 og | error | error |
+| publicId matches `recipes/<en-slug>/<role>(-N)?` | error | error |
+| publicId NOT prefixed `tcd/seed/` | error | error |
+| alt EN/TR/ES present, ≤ 125 chars | error | error |
+| no duplicate publicIds across the manifest | error | error |
+| gallery numbering sequential (1, 2, 3, …) | error | error |
+| seed `Recipe.heroImageCloudinary` not `tcd/seed/...` | warn | error |
+| required hero status === `approved` | warn | error |
+| Cloudinary asset exists for `uploaded` / `approved` (when env set) | error | error |
+
+**Default mode**: warns are advisory; exit 0 unless a hard error is found.
+**Strict mode** (`IMAGES_STRICT=1`): warns become fatal; exit 1 on any failure.
+
+The Cloudinary remote check runs only when `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET` are set. Without those env vars the script logs a clear "skipping remote check" notice and continues with local-only validation. The check uses the Cloudinary Admin API (`GET /resources/image/upload/<public_id>`) — read-only.
+
 ## Verification checklist (before promoting a new recipe to production)
 
 - [ ] One `recipes/<slug>/hero` asset uploaded to Cloudinary

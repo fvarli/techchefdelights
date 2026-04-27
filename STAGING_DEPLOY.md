@@ -336,6 +336,19 @@ PGPASSWORD="$STRONG_PW" psql -h 127.0.0.1 -U tcd_staging -d techchefdelights_sta
 
 The full image workflow — Cloudinary `public_id` rules, AI prompt style guide, alt-text SEO, provider portability — lives in **[`IMAGE_WORKFLOW.md`](./IMAGE_WORKFLOW.md)**.
 
+Run the manifest validator before promoting staging → production:
+
+```bash
+# advisory (default): exit 0 with warns about unfinished heroes
+pnpm images:validate
+
+# production gate: exit 1 if any required hero isn't approved, any
+# placeholder tcd/seed/* path remains, alt is missing, etc.
+IMAGES_STRICT=1 pnpm images:validate
+```
+
+When `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET` are set on the staging host, the validator also checks every `uploaded`/`approved` asset is reachable via the Cloudinary Admin API (read-only — no mutations).
+
 ## 13. Rich Results validation
 
 For each of the three locales, paste the URL into <https://search.google.com/test/rich-results>:
