@@ -160,10 +160,13 @@ The `/api/v1/*` route handlers are designed to be the JSON contract for both the
 
 ## Security & observability
 
-- **Rate limit**: `src/lib/rate-limit.ts` is fixed-window in-memory with a `RateLimitStore` interface — drop in Redis/Upstash without touching call sites.
-- **Logger**: `src/lib/logger.ts` emits structured JSON in production, human-readable lines in development. Audit logs at: `newsletter.signup`, `search.query`, `*.rate_limited`, `*.failed`.
-- **Sentry**: env-gated via `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN`. No app crash when unset.
-- **Security headers**: configured in `next.config.ts` (`headers()`). Includes `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and production-only `Strict-Transport-Security`.
+- **Rate limit** (`src/lib/rate-limit.ts`): swappable `RateLimitStore` interface with two implementations — `RedisStore` (Upstash REST, INCR + EXPIRE) and `MemoryStore` (per-process buckets). Backend is selected at module load via `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`. Production deploys without those vars get a one-shot warn log and `/api/v1/health.status === "degraded"` so misconfigurations are visible. Quotas: newsletter 5/60s, search 30/60s, recipes 120/60s — all per-IP.
+- **Logger** (`src/lib/logger.ts`): structured JSON in production, human-readable lines in development. Every log record carries `requestId`. Audit events: `newsletter.signup`, `*.rate_limited`, `search.query` (length only), `*.failed`, `health.db_check_failed`. Never logs bodies, headers, emails, hashes, or tokens.
+- **Request correlation** (`src/lib/request-id.ts`): every `/api/v1/*` request gets a uuid (or trusts an upstream `x-request-id`). Threaded through the response header, the error envelope (`error.requestId`), and every log line for a given request. See README "Debugging via request id".
+- **Sentry** (`src/instrumentation.ts` + `src/instrumentation-client.ts`): env-gated via `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN`. No app crash when unset. Release id resolved from `NEXT_PUBLIC_APP_VERSION` → `VERCEL_GIT_COMMIT_SHA` → `APP_COMMIT_SHA`. Source map upload is conditional on `SENTRY_AUTH_TOKEN` + `SENTRY_ORG` + `SENTRY_PROJECT` being set at build time; maps are uploaded then deleted from the public bundle.
+- **Security headers** (`next.config.ts`): `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `Content-Security-Policy`, and production-only `Strict-Transport-Security`. CSP allow-lists Cloudinary for images, Google Tag Manager + GA + Sentry ingest for connect/script, and uses `'unsafe-inline'` (a documented Next.js compat allowance).
+- **Analytics consent** (`src/hooks/useConsent.ts`, `ConsentBanner`, `PrivacySettingsLink`): `tcd:consent` localStorage shape `{ analytics, decidedAt, version: 1 }`. GA4 only loads after explicit accept. Footer button reopens the banner so users can change choice. Banner stays hidden when `NEXT_PUBLIC_GA_ID` is unset.
+- **Health endpoint** (`src/app/api/v1/health/route.ts`): liveness + readiness probe. Reports DB ping, rate-limit backend, uptime, memory, environment, commit, version, requestId. 503 in production when DB fails or running on memory store.
 
 ## Testing strategy
 

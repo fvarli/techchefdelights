@@ -47,6 +47,7 @@ import { z } from 'zod'
 import { ApiErrors, apiError } from '@/lib/api/errors'
 import { logger, reqMeta } from '@/lib/logger'
 import { rateLimit } from '@/lib/rate-limit'
+import { getRequestId, REQUEST_ID_HEADER } from '@/lib/request-id'
 
 export const dynamic = 'force-dynamic'
 
@@ -55,34 +56,58 @@ const Query = z.object({
 })
 
 export async function GET(request: Request) {
-  const meta = reqMeta(request)
+  const requestId = getRequestId(request)
+  const meta = { requestId, ...reqMeta(request) }
 
   // Rate limit (optional but recommended for public endpoints)
   const v = await rateLimit(request, 'your-endpoint', { limit: 30, windowMs: 60_000 })
   if (!v.allowed) {
     const retryAfter = Math.max(1, Math.ceil((v.resetAt - Date.now()) / 1000))
     logger.warn('your-endpoint.rate_limited', { ...meta, context: { retryAfter } })
-    return ApiErrors.rateLimited(retryAfter)
+    return ApiErrors.rateLimited(retryAfter, requestId)
   }
 
   // Validate
   const url = new URL(request.url)
   const parsed = Query.safeParse({ /* extract from url.searchParams */ })
   if (!parsed.success)
-    return apiError(400, 'INVALID_QUERY', 'Bad params.', parsed.error.issues)
+    return apiError(400, 'INVALID_QUERY', 'Bad params.', parsed.error.issues, requestId)
 
   try {
     // …call a loader from src/lib/api
-    return NextResponse.json({ /* response */ })
+    return NextResponse.json(
+      { /* response */ },
+      { headers: { [REQUEST_ID_HEADER]: requestId } },
+    )
   } catch (err) {
     logger.error('your-endpoint.failed', {
       ...meta,
       context: { error: err instanceof Error ? err.message : 'unknown' },
     })
-    return ApiErrors.internal()
+    return ApiErrors.internal(requestId)
   }
 }
 ```
+
+**Always** thread `requestId` through:
+1. The `x-request-id` response header (success and error paths).
+2. The `error.requestId` field of the error envelope (`apiError` and `ApiErrors.*` accept it as the last arg).
+3. Every `logger.*` call in the route (via the `meta` object).
+
+Trusting upstream ids: `getRequestId()` accepts an existing `x-request-id` header from a load balancer / Cloudflare and only mints a new uuid when the header is absent or malformed.
+
+## Debugging via request id
+
+The `x-request-id` header threads through three places:
+1. Server log line — `requestId: "..."` field in the JSON record (or `req=<first-8>` prefix in dev).
+2. Sentry event — visible as a tag/extra when DSN is set.
+3. Response — both `x-request-id` header and `body.error.requestId` on errors.
+
+Workflow when a user reports an error:
+1. Ask them to send the response header value (or the value in the JSON error body).
+2. In your log viewer, search `requestId="<the-uuid>"` to find the exact server-side trace.
+3. In Sentry, search by tag `requestId:<the-uuid>` to find the event with stack trace.
+4. The three views describe the same request from different angles.
 
 Conventions:
 - Path is **always** `/api/v1/...` (versioned).

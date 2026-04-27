@@ -8,16 +8,23 @@ Required in the deployment platform (Vercel / Railway / self-host):
 
 | Var | Value | Notes |
 |---|---|---|
-| `DATABASE_URL` | `postgresql://USER:PASS@HOST:5432/DB?sslmode=require` | Pick provider: Neon, Vercel Postgres, Railway, self-hosted. Pgbouncer/transaction-mode is fine — Prisma 7 + adapter-pg handles it. |
+| `DATABASE_URL` | `postgresql://USER:PASS@HOST:5432/DB?sslmode=require` | Pick provider. Pgbouncer/transaction-mode is fine — Prisma 7 + adapter-pg handles it. |
 | `NEXT_PUBLIC_BASE_URL` | `https://techchefdelights.com` | Used by sitemap, robots, JSON-LD, OpenGraph. **No trailing slash.** |
-| `NEXT_PUBLIC_GA_ID` | `G-XXXXXXXXXX` (optional) | GA4 property ID. Loads only when set AND `NODE_ENV=production`. Skip for staging. |
-| `SENTRY_DSN` | (optional) | Server-side DSN. App is a no-op when unset. |
-| `NEXT_PUBLIC_SENTRY_DSN` | (optional) | Client-side DSN. Captures React render errors via `app/global-error.tsx`. |
-| `SENTRY_ENV` / `NEXT_PUBLIC_SENTRY_ENV` | `staging` / `production` | Override Sentry environment tag (defaults to `NODE_ENV`). |
-| `NEXT_PUBLIC_APP_VERSION` | git short SHA or release tag | Surfaced by `/api/v1/health`. |
-| `CLOUDINARY_CLOUD_NAME` | (deferred) | Required only when real recipe images replace seed placeholders. |
-| `CLOUDINARY_API_KEY` | (deferred) | Same. |
-| `CLOUDINARY_API_SECRET` | (deferred) | Same. |
+| `NEXT_PUBLIC_GA_ID` | `G-XXXXXXXXXX` (optional) | GA4 ID. Loads only when set + `NODE_ENV=production` + user has accepted consent. Skip for staging. |
+| `SENTRY_DSN` | optional | Server-side DSN. App is a no-op when unset. |
+| `NEXT_PUBLIC_SENTRY_DSN` | optional | Client-side DSN. Captures React render errors via `app/global-error.tsx`. |
+| `SENTRY_AUTH_TOKEN` | **CI/prod required for source maps** | Internal-integration auth token. Without it, `withSentryConfig` is skipped and Sentry events won't bind to source maps. |
+| `SENTRY_ORG` | required for source maps | Sentry org slug. |
+| `SENTRY_PROJECT` | required for source maps | Sentry project slug. |
+| `SENTRY_ENV` / `NEXT_PUBLIC_SENTRY_ENV` | `staging` / `production` | Override Sentry environment tag. |
+| `NEXT_PUBLIC_APP_VERSION` | git short SHA or release tag | Release id for Sentry + `version` in `/api/v1/health`. |
+| `VERCEL_GIT_COMMIT_SHA` | auto-set on Vercel | Used for `commit` field in `/api/v1/health` and as a release fallback. |
+| `APP_COMMIT_SHA` | optional | CI fallback for non-Vercel deploys. |
+| `UPSTASH_REDIS_REST_URL` | **prod (multi-instance) required** | Upstash Redis URL for distributed rate limiting. Without it, the app uses an in-process MemoryStore — fine for single-instance, broken for multi-instance. |
+| `UPSTASH_REDIS_REST_TOKEN` | required if URL is set | Upstash Redis token. |
+| `CLOUDINARY_CLOUD_NAME` | deferred | Required when real recipe images replace seed placeholders. |
+| `CLOUDINARY_API_KEY` | deferred | Same. |
+| `CLOUDINARY_API_SECRET` | deferred | Same. |
 
 ## 2. Database — migrate + seed
 
@@ -63,53 +70,101 @@ Deploy to a staging URL first. Run on the live staging hostname:
 
 ## 4. Observability
 
-### Analytics (Google Analytics 4)
+### Analytics (Google Analytics 4) + consent
 
 - [ ] `NEXT_PUBLIC_GA_ID` set in production only (not staging)
-- [ ] View page source on a public route — `gtag` script tag present
-- [ ] First page load: GA4 real-time view shows the request, no `gtag` errors in DevTools console
-- [ ] LCP not regressed (script is `afterInteractive`, should not block)
-- [ ] **Do not** set `NEXT_PUBLIC_GA_ID` in development — verified by `pnpm dev` showing zero gtag scripts
+- [ ] First load: ConsentBanner appears with EN/TR/ES copy depending on `<html lang>`
+- [ ] Click **Reject** → `localStorage.tcd:consent.analytics === false`. View page source — **zero** `googletagmanager.com` script tags. GA4 real-time shows no event.
+- [ ] Click **Accept** → `localStorage.tcd:consent.analytics === true`. `gtag/js` script loads. GA4 real-time shows the page view within ~30s.
+- [ ] Click footer **Privacy settings** → banner reopens, choice can be flipped
+- [ ] LCP not regressed (script is `afterInteractive`, lazy, gated)
+- [ ] Confirm `pnpm dev` (NODE_ENV=development) loads zero gtag scripts even with `NEXT_PUBLIC_GA_ID` set
 
-### Sentry (optional but recommended for production)
+### Sentry — server + client + source maps
 
+**Minimum (capture errors only):**
 - [ ] `SENTRY_DSN` and `NEXT_PUBLIC_SENTRY_DSN` set in production
 - [ ] `SENTRY_ENV=production` and `NEXT_PUBLIC_SENTRY_ENV=production`
-- [ ] Trigger a test error: hit `https://staging.../api/v1/recipes/__force-error__` (or briefly throw in a route) — event appears in Sentry within 30s
-- [ ] React render error: temporarily throw in a client component — `app/global-error.tsx` renders the recovery UI, event appears in Sentry
-- [ ] Confirm `tracesSampleRate: 0.1` is acceptable for free-tier quota; tune as needed
-- [ ] **Source maps**: not auto-uploaded by default. To enable, wrap `next.config.ts` with `withSentryConfig` per `@sentry/nextjs` docs.
+- [ ] Server error test: hit a 500-throwing route — event appears in Sentry within 30s with `requestId` tag/extra
+- [ ] Client error test: temporarily throw in a client component — `app/global-error.tsx` renders the recovery UI, event appears in Sentry
+
+**Full (release tagging + source maps):**
+- [ ] `SENTRY_AUTH_TOKEN` set in CI/build env (not in committed `.env`)
+- [ ] `SENTRY_ORG` and `SENTRY_PROJECT` set in CI/build env
+- [ ] `NEXT_PUBLIC_APP_VERSION` set to the deploy SHA / tag
+- [ ] CI build log shows Sentry source map upload (look for `Successfully uploaded source maps`)
+- [ ] Open DevTools network on production; confirm `.js.map` files return 404 (deleted from public output by `deleteSourcemapsAfterUpload: true`)
+- [ ] Trigger a test error; in Sentry the stack trace shows original TypeScript file/line, not minified output
+- [ ] Test build WITHOUT `SENTRY_AUTH_TOKEN`: `pnpm build` still succeeds (`withSentryConfig` is skipped)
+
+### Request correlation
+
+- [ ] Every `/api/v1/*` 200 response carries `x-request-id` header
+- [ ] `/api/v1/health` body.requestId matches the response header
+- [ ] Trigger a 4xx/5xx; the response body's `error.requestId` matches the response header
+- [ ] Logs include the same `requestId` field — grep one error's id and find the matching log line
+- [ ] If you proxy via Cloudflare / a load balancer that adds an upstream `x-request-id`, verify it's preserved (curl with `-H 'x-request-id: trace-test-abc'` echoes it back)
 
 ### Logging verification
 
-Tail the application logs (your hosting platform's log viewer or `docker logs`) and confirm:
+Tail the application logs (hosting platform's log viewer or `docker logs`) and confirm:
 - [ ] `pnpm start` (production mode) emits **structured JSON** lines, one record per line
-- [ ] Each record has `level`, `message`, `timestamp`, optional `route`/`method`/`ip`/`userAgent`/`context`
-- [ ] **No PII**: grep logs for emails, IPs of users you know, raw request bodies — none should appear
-- [ ] **No secrets**: grep for `Bearer`, `cookie`, `authorization`, `password` — none present
+- [ ] Each record has `level`, `message`, `timestamp`, `requestId`, optional `route`/`method`/`ip`/`userAgent`/`context`
+- [ ] **No PII**: grep for emails, IPs of users you know, raw request bodies — none should appear
+- [ ] **No secrets**: grep for `Bearer`, `cookie`, `authorization`, `password`, `SENTRY_AUTH_TOKEN`, `UPSTASH_REDIS_REST_TOKEN` — none present
+- [ ] **At startup** in production with no Upstash env: a single `rateLimit.fallback_memory_store` warn record is emitted. This is a real signal — fix it for multi-instance deploys.
 - [ ] Audit events fire on the right edges:
   - `newsletter.signup` on POST success (status: created | duplicate)
   - `newsletter.rate_limited` on 429
   - `search.query` on each search (logs only `qLength`, never the query text)
   - `search.rate_limited` on 429
+  - `recipes.rate_limited` on 429
   - `recipes.get_failed` / `search.failed` / `health.db_check_failed` on errors
 
 ### Rate limit expectations
 
-- **In-memory only**. Counters reset on restart and don't share across instances.
-- **OK for single-instance** deploys (Vercel hobby, Railway single replica).
-- **For multi-instance**: swap `MemoryStore` in `src/lib/rate-limit.ts` with a Redis/Upstash implementation that satisfies `RateLimitStore`. No call-site changes needed.
-- **Behavior**:
-  - `POST /api/v1/newsletter` — 5 req / 60s per IP
-  - `GET /api/v1/search` — 30 req / 60s per IP
-  - 429 response includes `Retry-After` header with seconds-until-reset
+- **Backend selected at startup**: Upstash Redis if `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` set, else `MemoryStore`.
+- **MemoryStore** is per-process and resets on restart. **Single-instance only**.
+- **Upstash** is required for any deploy with more than one instance.
+- **Health endpoint** reports `rateLimitStore: 'redis' | 'memory'`. In production, `memory` flips `status` to `degraded`.
+- **Quotas (per IP)**:
+  - `POST /api/v1/newsletter` — 5 req / 60s
+  - `GET /api/v1/search` — 30 req / 60s
+  - `GET /api/v1/recipes/[slug]` — 120 req / 60s
+- 429 responses carry `Retry-After`, `x-request-id`, and `error.requestId`.
 
-### Health check
+### Content Security Policy
 
-- `GET /api/v1/health` — public, no auth, no rate limit. Pings the DB with `SELECT 1`.
-- Configure your hosting platform's healthcheck to hit this every 30s.
-- Returns 200 when DB is up, 503 when DB ping fails.
-- Response: `{ status, db, timestamp, version }`. `version` comes from `NEXT_PUBLIC_APP_VERSION` env (typically the deploy SHA).
+- [ ] `curl -I /` shows `Content-Security-Policy` header with the expected directive set (default-src 'self', img-src includes Cloudinary, connect-src includes GA + Sentry ingest, etc.)
+- [ ] In production, the header includes `upgrade-insecure-requests`
+- [ ] Browser DevTools console clean of CSP violations on `/`, `/r/<slug>`, `/recipes`, `/r/<slug>/cook`
+- [ ] After accepting consent, GA scripts load without CSP violations
+- [ ] Cloudinary image domain reachable when real images are wired (`https://res.cloudinary.com/...`)
+- [ ] **Known**: `'unsafe-inline'` for script-src and style-src is a temporary Next.js compatibility allowance. Nonce-based hardening tracked as follow-up.
+
+### Health endpoint
+
+`GET /api/v1/health` — public, no auth, no rate limit. Run a `SELECT 1` Prisma ping.
+
+Response shape:
+```json
+{
+  "status": "ok" | "degraded",
+  "db": "ok" | "error",
+  "rateLimitStore": "redis" | "memory",
+  "timestamp": "ISO-8601",
+  "uptimeSeconds": 1234,
+  "memory": { "rssMb": 0, "heapUsedMb": 0, "heapTotalMb": 0 },
+  "environment": "production" | ...,
+  "commit": "<short-sha>",
+  "version": "<release-id>",
+  "requestId": "<uuid>"
+}
+```
+
+- [ ] Configure your hosting platform's healthcheck to hit this every 30s
+- [ ] Returns 200 only when `db === 'ok'` AND (in production) `rateLimitStore === 'redis'`. Otherwise 503.
+- [ ] No secrets in body — grep response for `SENTRY`, `UPSTASH`, `DATABASE_URL`. None present.
 
 ## 5. Lighthouse
 
