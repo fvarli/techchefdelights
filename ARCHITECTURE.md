@@ -5,7 +5,7 @@
 ```
 techchefdelights/
 ├─ prisma/
-│  ├─ schema.prisma            41 models, 7 enums, translation tables
+│  ├─ schema.prisma            43 models, 7 enums, translation tables
 │  ├─ migrations/              including 20260425191951_search_vectors
 │  └─ seed/                    8 recipes × 3 locales + taxonomies
 ├─ src/
@@ -92,7 +92,7 @@ JSON shape is the public contract.
   - ES URL: `/es/recetas/<slug>`
   Add new public routes to `routing.pathnames` and to the `PATHNAMES` table inside `src/lib/path.ts`. Internal links go through `localePath(locale, '/canonical/path')` which returns the right URL for the locale.
 - **Translation**: server components use `getTranslations('Namespace')`; client components use `useTranslations('Namespace')`. Messages live in `src/i18n/messages/{en,tr,es}.json`.
-- **Database translations**: every locale-variant entity (`Recipe`, `Step`, `Ingredient`, `Equipment`, `Variation`, `FAQ`, `Category`, `Tag`, `Diet`, `Cuisine`, `Allergen`, plus `EditorialPick`) has a sibling `*Translation` table keyed `(parentId, locale)`. Numbers, FKs, and structural fields stay locale-agnostic on the base row.
+- **Database translations**: every locale-variant entity (`Recipe`, `Step`, `Ingredient`, `IngredientMaster`, `Equipment`, `Variation`, `FAQ`, `Category`, `Tag`, `Diet`, `Cuisine`, `Allergen`, plus `EditorialPick`) has a sibling `*Translation` table keyed `(parentId, locale)`. Numbers, FKs, and structural fields stay locale-agnostic on the base row.
 - **Slugs**:
   - Recipe slugs are **per-locale** (in `RecipeTranslation.slug`, unique by `(locale, slug)`).
   - Category slugs are **per-locale** in `CategoryTranslation.slug`. Strict `(locale, slug)` lookup; cross-locale slugs return 404.
@@ -134,6 +134,26 @@ URL: /recipes/<slug>/cook?step=N      (N optional; 0 by default)
 State persistence: tcd:resumePoint:<slug> = { stepIndex, savedAt }
                    (localStorage; no server hit until auth lands)
 ```
+
+## Ingredient model — usage row vs canonical master
+
+Two layers, on purpose:
+
+- **`Ingredient`** — per-recipe **usage row**. "200 g flour, sifted" inside the dough group of recipe X. Carries the recipe-specific `quantity`, `unit`, `position`, `optional`, and `aisle` override. One row per recipe-ingredient occurrence; ~10 rows per recipe.
+- **`IngredientMaster`** — canonical, recipe-agnostic concept of an ingredient: "flour", "olive oil", "egg". Exists once per real-world ingredient and is referenced by many `Ingredient` rows via the optional `Ingredient.masterId` foreign key.
+- **`IngredientMasterTranslation`** — per-locale `name`, optional `pluralName`, and `aliases[]` (e.g. `['plain flour', 'all-purpose flour']`) used for search and ingredient-page SEO.
+
+Why split?
+- **Ingredient pages** — `/ingredients/<slug>` lists every recipe that uses it (forthcoming). Without a canonical master, "Olive oil" and "olive-oil" and "Extra virgin olive oil" would each anchor a different page.
+- **Allergen automation** — link allergens to masters, not usage rows; one declaration covers every recipe that uses the master.
+- **Shopping-list merge** — combining "200 g flour" + "300 g flour" across recipes only works when both rows point at the same master.
+- **Nutrition calculation** — per-100g macros live on the master; usage rows scale by quantity.
+- **Substitutions** — substitution graph lives between masters, not usage rows.
+
+v1 status:
+- Schema in place (`IngredientMaster`, `IngredientMasterTranslation`, `Ingredient.masterId` nullable).
+- Seed derives master slug from each recipe's EN ingredient name (`prisma/seed/ingredient-masters.ts`), creates master rows, and connects every `Ingredient` to its master via slug. Today: 63 masters across 8 recipes; 82/82 ingredient rows linked.
+- API and recipe pages do not surface `masterId` yet — public types are unchanged. The relation is available for future ingredient pages, allergen automation, etc.
 
 ## Storage abstraction
 

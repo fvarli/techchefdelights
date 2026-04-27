@@ -216,6 +216,18 @@ Recipe data lives in two tables: `Recipe` (locale-agnostic) and `RecipeTranslati
 8. **JSON-LD** — if SEO-relevant, extend `src/lib/jsonld.ts` to include the new field.
 9. **API route** — `/api/v1/recipes/[slug]` automatically picks it up via the loader.
 
+## How to add a new ingredient (and its master)
+
+When you add a recipe with an ingredient that doesn't exist yet:
+
+1. Write the ingredient into the recipe seed file (`prisma/seed/data/recipes/<slug>.ts`) using the existing `IngredientItemSeed` shape — EN/TR/ES `name`, optional `prep`, `substitutes`, `aisle`, `metric`/`us` quantity.
+2. The seed runner derives a `slug` deterministically from the **EN name** (lowercased, parentheticals dropped, slugified) and creates a fresh `IngredientMaster` row + locale translations the next time `pnpm prisma db seed` runs.
+3. The slug derivation lives in `prisma/seed/ingredient-masters.ts` (`ingredientMasterSlug`) — copy of the rules: lowercase → drop `(...)` parentheticals → split on first `,` or ` or ` → collapse non-alphanumeric to `-`.
+4. To override master metadata (canonicalUnit, isStaple, defaultAisle), edit the master row in the database directly or extend `seedIngredientMasters` with explicit overrides. The seed uses `upsert` so it's safe to re-run.
+5. To rename an ingredient consistently across recipes, change the EN name in every recipe seed file — the same slug is derived, so the master row stays the same. To change the slug itself you'd need a migration that updates `IngredientMaster.slug` before re-seeding.
+
+The `Ingredient.masterId` column is nullable so a partial seed run (or an ingredient with an empty/unparseable EN name) still succeeds; the seed runner logs a warning instead of failing. Zero recipes should be in that state in normal operation.
+
 ## How to test
 
 - **Unit**: vitest, in `tests/unit/*.test.ts`. Use for pure logic (scaling, formatters, validators).

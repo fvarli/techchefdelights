@@ -1,5 +1,6 @@
 import type { PrismaClient } from '../../src/generated/prisma/client'
 import type { RecipeSeed, Locale } from './types'
+import { ingredientMasterSlug } from './ingredient-masters'
 
 const LOCALES: Locale[] = ['EN', 'TR', 'ES']
 
@@ -91,9 +92,26 @@ export async function seedRecipe(prisma: PrismaClient, recipe: RecipeSeed) {
       },
     })
     for (const item of group.items) {
+      // Link to canonical IngredientMaster by deriving the slug from the
+      // EN name. The master row is created earlier in the seed run; if a
+      // recipe introduces a new ingredient the master must be backfilled
+      // — log a warning instead of failing so the recipe still seeds.
+      const masterSlug = ingredientMasterSlug(item.translations.EN.name)
+      const master = masterSlug
+        ? await prisma.ingredientMaster.findUnique({ where: { slug: masterSlug } })
+        : null
+      if (masterSlug && !master) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          `[seed] missing IngredientMaster for slug='${masterSlug}' (recipe='${recipe.seedId}'). ` +
+            `Run seedIngredientMasters first.`,
+        )
+      }
+
       const itemRow = await prisma.ingredient.create({
         data: {
           groupId: groupRow.id,
+          masterId: master?.id ?? null,
           position: item.position,
           quantity: item.metric.quantity,
           unit: item.metric.unit,

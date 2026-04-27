@@ -11,6 +11,7 @@ import { equipment } from './seed/data/equipment'
 import { authors } from './seed/data/authors'
 import { recipes } from './seed/data/recipes'
 import { seedRecipe } from './seed/recipes'
+import { seedIngredientMasters } from './seed/ingredient-masters'
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
 const prisma = new PrismaClient({ adapter })
@@ -156,6 +157,10 @@ async function main() {
   console.log('▸ authors (1)')
   await seedAuthors()
   console.log('✓ reference data seeded')
+
+  console.log('▸ ingredient masters (derived from recipes)')
+  const masterCount = await seedIngredientMasters(prisma, recipes)
+  console.log(`✓ ${masterCount} ingredient masters seeded`)
 
   console.log(`▸ recipes (${recipes.length})`)
   for (const r of recipes) {

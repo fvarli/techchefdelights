@@ -159,9 +159,16 @@ model IngredientGroupTranslation {
   @@unique([groupId, locale])
 }
 
+// `Ingredient` is the per-recipe usage row (e.g. "200 g flour, sifted" inside
+// the dough group of recipe X). It carries the recipe-specific quantity, unit,
+// position, and aisle override. The optional `masterId` links the row to a
+// canonical IngredientMaster — the global concept of "flour" — so we can
+// later power ingredient pages, allergen automation, shopping-list merging,
+// and substitutions without rewriting recipe data.
 model Ingredient {
   id         String   @id @default(cuid())
   groupId    String
+  masterId   String?
   position   Int
   quantity   Float?
   unit       UnitKey?
@@ -171,9 +178,11 @@ model Ingredient {
   aisle      AisleKey @default(OTHER)
 
   group        IngredientGroup         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  master       IngredientMaster?       @relation(fields: [masterId], references: [id], onDelete: SetNull)
   translations IngredientTranslation[]
 
   @@index([groupId])
+  @@index([masterId])
 }
 
 model IngredientTranslation {
@@ -187,6 +196,34 @@ model IngredientTranslation {
   ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 
   @@unique([ingredientId, locale])
+}
+
+// `IngredientMaster` is the canonical, recipe-agnostic concept of an
+// ingredient — "red lentils", "flour", "olive oil", "egg". It exists once
+// per real-world ingredient and is reused by many `Ingredient` usage rows.
+// Translation table carries display name + plural + search aliases per locale.
+model IngredientMaster {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  defaultAisle  AisleKey?
+  canonicalUnit UnitKey?
+  isStaple      Boolean  @default(false)
+
+  translations IngredientMasterTranslation[]
+  ingredients  Ingredient[]
+}
+
+model IngredientMasterTranslation {
+  id         String   @id @default(cuid())
+  masterId   String
+  locale     Locale
+  name       String
+  pluralName String?
+  aliases    String[] @default([])
+
+  master IngredientMaster @relation(fields: [masterId], references: [id], onDelete: Cascade)
+
+  @@unique([masterId, locale])
 }
 
 // ─── STEPS ─────────────────────────────────────────────
