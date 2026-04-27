@@ -208,6 +208,12 @@ model IngredientMaster {
   defaultAisle  AisleKey?
   canonicalUnit UnitKey?
   isStaple      Boolean  @default(false)
+  // Canonical visual reference for the ingredient (NOT a recipe image).
+  // public_id only; URL is built at render time. Convention:
+  //   imagePublicId: ingredients/<slug>/hero
+  //   iconPublicId:  ingredients/<slug>/icon
+  imagePublicId String?
+  iconPublicId  String?
 
   translations IngredientMasterTranslation[]
   ingredients  Ingredient[]
@@ -262,6 +268,12 @@ model Equipment {
   id      String  @id @default(cuid())
   slug    String  @unique
   iconKey String?
+  // Canonical visual reference for the equipment piece (NOT a recipe
+  // image). public_id only; URL is built at render time. Convention:
+  //   imagePublicId: equipment/<slug>/hero
+  //   iconPublicId:  equipment/<slug>/icon
+  imagePublicId String?
+  iconPublicId  String?
 
   translations EquipmentTranslation[]
   recipes      RecipeEquipment[]

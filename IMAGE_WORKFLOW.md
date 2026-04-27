@@ -244,6 +244,73 @@ Post-launch, when content velocity grows:
 
 This is a deliberate v1.x scope item, not v1. The placeholder implementation in this doc and the Cloudinary `public_id` convention are designed to make that admin tool a thin layer on top of an already-correct data model.
 
+## Master assets — ingredient + equipment images
+
+Recipe images (hero / gallery / step / og) describe a **specific recipe**. They live under `Recipe.heroImageCloudinary` and `RecipeImage` / `StepImage`.
+
+There's a second, smaller class of images: **canonical visual references** for each `IngredientMaster` and `Equipment` row. These are not recipe images — they're reusable assets that anchor a single concept ("what avocado looks like", "what a saucepan looks like") across every recipe that uses it.
+
+| Layer | Field | Purpose |
+|---|---|---|
+| `IngredientMaster.imagePublicId` | optional Cloudinary `public_id` | hero image for the ingredient page (forthcoming `/ingredients/<slug>`) |
+| `IngredientMaster.iconPublicId` | optional `public_id` | small icon used in recipe-card overlays, search hits, ingredient pills |
+| `Equipment.imagePublicId` | optional `public_id` | hero image for the equipment page (forthcoming `/equipment/<slug>`) |
+| `Equipment.iconPublicId` | optional `public_id` | small icon used in equipment chips on recipe pages |
+
+### Public ID conventions
+
+```
+ingredients/<en-slug>/hero
+ingredients/<en-slug>/icon
+
+equipment/<en-slug>/hero
+equipment/<en-slug>/icon
+```
+
+Same rules as recipe assets:
+- slug is the EN slug from the master row (`IngredientMaster.slug`, `Equipment.slug`); locale-agnostic on the asset side
+- lowercase kebab-case
+- no timestamps, no random suffixes
+- `tcd/seed/*` is **forbidden** for production master assets (same gate as recipes)
+
+### Conceptual separation
+
+| Recipe image | Master asset |
+|---|---|
+| describes a single dish (a plated bowl of red lentil soup) | describes a single ingredient or piece of equipment (red lentils as an ingredient) |
+| stored on the `Recipe` row + `RecipeImage` table | stored on the `IngredientMaster` / `Equipment` row directly |
+| one per recipe (hero) + galleries + step images | one image + one icon per master row |
+| consumed by recipe detail pages, cards, OG cards | consumed by the future `/ingredients/<slug>` and `/equipment/<slug>` pages, recipe-card overlays, ingredient pills |
+| AI-generated for the dish, garnish must match recipe | AI-generated for the ingredient/object, no plating context |
+
+A recipe that uses red lentils, an onion, and a saucepan ends up referencing **three master assets** (red-lentils image, onion image, saucepan image) plus its own dish images. The master assets are reused across every recipe that uses the same canonical ingredient/equipment.
+
+### Future SEO surfaces (roadmap)
+
+```
+/ingredients/<slug>            "Recipes with avocado"
+/equipment/<slug>              "Recipes using a saucepan"
+```
+
+These pages are the natural home for master-asset images. Implementation deferred — not v1. The schema is in place so the URL can ship without another migration.
+
+### Master asset validation (forthcoming, NOT enforced today)
+
+When the master-asset workflow is real, the validator will gain:
+
+| Check | Trigger |
+|---|---|
+| `imagePublicId` matches `ingredients/<slug>/{hero,icon}` or `equipment/<slug>/{hero,icon}` | when set |
+| no `tcd/seed/*` prefix on master assets | when set |
+| optional alt text per locale (future i18n table) | when alt fields land |
+| Cloudinary asset reachable for `uploaded` / `approved` masters | when env present |
+
+**These are NOT in `IMAGES_STRICT=1` today.** The strict gate covers recipe heroes only — master assets remain advisory until the workflow has shipped at least one round of real master images.
+
+### No master manifest yet (intentional)
+
+`content/image-manifest.ts` tracks recipe images only. A future `content/master-image-manifest.ts` will plan ingredient + equipment images on the same status state machine (`planned` → `generated` → `uploaded` → `approved`). Adding it now would block on a workflow we haven't run yet — first ship one batch of master assets manually, then codify what worked into a manifest.
+
 ## Production pipeline
 
 End-to-end flow for shipping a recipe's images:

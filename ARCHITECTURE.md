@@ -173,6 +173,54 @@ v1 status:
 - Seed derives master slug from each recipe's EN ingredient name (`prisma/seed/ingredient-masters.ts`), creates master rows, and connects every `Ingredient` to its master via slug. Today: 63 masters across 8 recipes; 82/82 ingredient rows linked.
 - API and recipe pages do not surface `masterId` yet — public types are unchanged. The relation is available for future ingredient pages, allergen automation, etc.
 
+## Master assets — content-graph entities with their own images
+
+`IngredientMaster` and `Equipment` aren't just taxonomies — they're **content-graph nodes**. The site is a graph of recipes, ingredients, equipment, diets, categories, and their relationships, and the SEO/UX upside of that graph only lands when each node has its own surface:
+
+```
+/ingredients/avocado          "Recipes with avocado"
+/equipment/saucepan           "Recipes using a saucepan"
+```
+
+Those pages need a hero image and (often) an icon, and those images are **reusable across every recipe that uses the same master** — one image of avocado covers all 12 recipes that include avocado. To enable that without a future migration, the schema carries:
+
+| Master | Field | Purpose |
+|---|---|---|
+| `IngredientMaster.imagePublicId` | optional Cloudinary `public_id` | hero for `/ingredients/<slug>` |
+| `IngredientMaster.iconPublicId` | optional `public_id` | small icon (recipe overlays, search hits, ingredient pills) |
+| `Equipment.imagePublicId` | optional `public_id` | hero for `/equipment/<slug>` |
+| `Equipment.iconPublicId` | optional `public_id` | small icon (equipment chips on recipe pages) |
+
+All four columns are nullable. Today every row has them set to `NULL` — fields exist for future content; no data migration is required to start using them.
+
+### Why `IngredientMaster` and not `Ingredient`
+
+`Ingredient` is the **per-recipe usage row** ("200 g flour, sifted, in this recipe's dough group"). It's transient — flour gets a different `Ingredient` row for every recipe that uses it. Putting an image on `Ingredient` would mean uploading the same flour photo dozens of times, one per recipe. The image describes the canonical ingredient; the canonical ingredient is `IngredientMaster`. Same logic for `Equipment` (already canonical) vs `RecipeEquipment` (the per-recipe usage join).
+
+### Public ID conventions
+
+```
+ingredients/<en-slug>/hero
+ingredients/<en-slug>/icon
+equipment/<en-slug>/hero
+equipment/<en-slug>/icon
+```
+
+Same locale-agnostic, EN-slug-keyed convention as recipes. `tcd/seed/*` placeholders are forbidden for production master assets, same as the recipe gate.
+
+### Provider portability — same property as recipe images
+
+The DB stores **only the `public_id`** for master assets too. Switching off Cloudinary later is a URL-helper swap, not a schema migration. See `IMAGE_WORKFLOW.md` for the full breakdown.
+
+### What's NOT in v1 (deliberately)
+
+- `/ingredients/<slug>` and `/equipment/<slug>` pages — schema is ready, page implementation deferred
+- Per-locale alt-text on master assets — would require new translation tables; deferred until at least one master batch has shipped
+- `IMAGES_STRICT=1` gate for master assets — strict mode covers recipe heroes only today; master fields are advisory until the workflow is real
+- `content/master-image-manifest.ts` — recipe manifest exists; master manifest deferred until manual master batch is in production
+
+See `IMAGE_WORKFLOW.md` "Master assets — ingredient + equipment images" for the full operational rules.
+
 ## Image storage & provider portability
 
 Images for a recipe come in four roles: **hero** (1, required for production), **gallery** (0–N), **step** (0–N per step), and **OG / social** (derived from hero by default).

@@ -260,6 +260,43 @@ Rules of thumb:
 
 The seed runner is backwards-compatible — old recipe files using `equipmentSlugs: ['saucepan', 'oven']` keep working with `required=true` and array-index `position`.
 
+## How to attach an image to an ingredient or equipment master
+
+The `IngredientMaster` and `Equipment` tables each carry **two optional Cloudinary `public_id` columns**: `imagePublicId` (hero) and `iconPublicId` (small icon). These are for the canonical visual reference of the ingredient/equipment piece — **not** recipe images.
+
+When and where to use them:
+
+| Use case | Field |
+|---|---|
+| `/ingredients/<slug>` page hero (forthcoming) | `IngredientMaster.imagePublicId` |
+| ingredient pill / recipe-card overlay icon | `IngredientMaster.iconPublicId` |
+| `/equipment/<slug>` page hero (forthcoming) | `Equipment.imagePublicId` |
+| equipment chip on recipe page | `Equipment.iconPublicId` |
+
+Public ID convention (mirrors recipe assets):
+```
+ingredients/<en-slug>/hero
+ingredients/<en-slug>/icon
+equipment/<en-slug>/hero
+equipment/<en-slug>/icon
+```
+
+Workflow today:
+1. Generate / source the image (AI or photography per IMAGE_WORKFLOW.md style guide — but no plating context for masters; this is the ingredient/object itself).
+2. Upload to Cloudinary at the canonical path.
+3. Update the master row directly. Masters are upsert-seeded from recipe data, so a manual column update is the simplest path:
+   ```sql
+   UPDATE "IngredientMaster" SET "imagePublicId" = 'ingredients/avocado/hero'
+     WHERE slug = 'avocado';
+   UPDATE "Equipment" SET "iconPublicId" = 'equipment/saucepan/icon'
+     WHERE slug = 'saucepan';
+   ```
+4. The validator does **not** check master assets today (strict mode covers recipe heroes only). When a future `content/master-image-manifest.ts` lands, the same `pnpm images:validate` flow will gate them.
+
+**Don't** put master `public_id`s under the `tcd/seed/*` prefix — same gate as recipes.
+
+**Don't** add image columns to `Ingredient` (the per-recipe usage row). Master assets attach to `IngredientMaster`; `Ingredient` rows are transient and recipe-specific.
+
 ## How to add a recipe's images
 
 The full workflow lives in **[`IMAGE_WORKFLOW.md`](./IMAGE_WORKFLOW.md)** — read that first, then come back here for the dev shortcuts.
