@@ -205,6 +205,32 @@ For each of the three locales, validate at https://search.google.com/test/rich-r
 
 All four schema types must show "Valid items detected" with zero errors.
 
+## 6b. Recipe images (production minimum)
+
+Every recipe **published to production** (`Recipe.isDraft = false`) must have:
+
+- [ ] One Cloudinary asset at `recipes/<en-slug>/hero` (full canonical convention; **not** a `tcd/seed/...` placeholder)
+- [ ] `Recipe.heroImageCloudinary` matches that path
+- [ ] `Recipe.heroBlurhash` populated (or accept the no-placeholder fallback for that recipe)
+- [ ] Per-locale alt text on the hero in EN / TR / ES (≤ 125 chars each, no keyword stuffing, no "image of" prefix)
+- [ ] `width` / `height` columns set to the actual image dimensions (CLS-critical)
+- [ ] No text, logo, or watermark visible in the rendered image
+- [ ] OG preview check: paste `https://techchefdelights.com/recipes/<slug>` into a real Slack/iMessage/WhatsApp paste — hero image renders, no broken thumbnail
+
+Optional but recommended:
+- [ ] At least one gallery image at `recipes/<en-slug>/gallery-1` for the home masonry section
+- [ ] One step image per timed step (`recipes/<en-slug>/step-N`) for the cook-mode walkthrough
+
+The full image workflow — Cloudinary `public_id` rules, AI prompt style guide, alt-text SEO, provider portability, future media schema — lives in **[`IMAGE_WORKFLOW.md`](./IMAGE_WORKFLOW.md)**.
+
+DB sanity query before promotion:
+```bash
+psql "$DATABASE_URL" -c "SELECT COUNT(*) AS recipes_with_seed_hero
+  FROM \"Recipe\" WHERE \"isDraft\" = false
+  AND \"heroImageCloudinary\" LIKE 'tcd/seed/%';"
+# expected: 0  (any non-zero blocks promotion)
+```
+
 ## 7. Cross-browser smoke (manual, 5 minutes)
 
 On staging, with the staging hostname in the URL bar:

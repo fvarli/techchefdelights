@@ -301,6 +301,37 @@ curl -s -X POST $B/api/v1/newsletter -H 'content-type: application/json' \
 #             "details":{"retryAfterSec":<n>}, "requestId":"<uuid>" } }
 ```
 
+## 12b. Recipe image sanity (staging — placeholders OK)
+
+Staging may legitimately run on `tcd/seed/...` placeholder images. **Production must not.** Verify the boundary:
+
+```bash
+# Confirm staging seed paths are present (expected on staging)
+PGPASSWORD="$STRONG_PW" psql -h 127.0.0.1 -U tcd_staging -d techchefdelights_staging \
+  -c "SELECT COUNT(*) AS seed_path_recipes
+       FROM \"Recipe\" WHERE \"heroImageCloudinary\" LIKE 'tcd/seed/%';"
+# staging: typically equal to total published recipes (placeholder content)
+# production: must be 0
+
+# All hero paths look like one of the two valid prefixes
+PGPASSWORD="$STRONG_PW" psql -h 127.0.0.1 -U tcd_staging -d techchefdelights_staging \
+  -c "SELECT COUNT(*) AS bad_prefix
+       FROM \"Recipe\" WHERE \"isDraft\" = false
+        AND \"heroImageCloudinary\" NOT LIKE 'recipes/%'
+        AND \"heroImageCloudinary\" NOT LIKE 'tcd/seed/%';"
+# expected: 0  (any non-zero means a malformed public_id)
+
+# Per-locale alt text exists on every gallery image
+PGPASSWORD="$STRONG_PW" psql -h 127.0.0.1 -U tcd_staging -d techchefdelights_staging \
+  -c "SELECT ri.id FROM \"RecipeImage\" ri
+       LEFT JOIN \"RecipeImageTranslation\" t
+         ON t.\"imageId\" = ri.id
+       GROUP BY ri.id HAVING COUNT(t.id) < 3;"
+# expected: empty (every image has alt in EN/TR/ES)
+```
+
+The full image workflow — Cloudinary `public_id` rules, AI prompt style guide, alt-text SEO, provider portability — lives in **[`IMAGE_WORKFLOW.md`](./IMAGE_WORKFLOW.md)**.
+
 ## 13. Rich Results validation
 
 For each of the three locales, paste the URL into <https://search.google.com/test/rich-results>:

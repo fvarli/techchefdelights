@@ -81,6 +81,15 @@ Set in your hosting platform (or `.env.local` for development):
 - In **production**, MemoryStore flips `/api/v1/health.status` to `degraded` and emits a `rateLimit.fallback_memory_store` warn log. **Self-hosted: set `REDIS_URL`. Serverless: set Upstash vars.**
 - Without `SENTRY_AUTH_TOKEN`+`SENTRY_ORG`+`SENTRY_PROJECT`, builds skip source map upload (production builds still work; just not bound to releases in Sentry).
 
+## Recipe images
+
+- **Production minimum**: one hero image per recipe, with localized alt text in EN / TR / ES.
+- **Storage**: Cloudinary `public_id` only — the DB never stores a full URL. Path convention: `recipes/<en-slug>/hero`, `recipes/<en-slug>/gallery-N`, `recipes/<en-slug>/step-N`.
+- **AI-generated** with a brand style guide for visual consistency; no text / logos / watermarks in the image. The Cloudinary path uses the EN slug deliberately (locale-agnostic on the asset side; only `alt` is localized).
+- **Provider abstraction**: switching off Cloudinary later is a helper change, not a DB migration. The schema stores provider-neutral public_ids + dimensions + blurhash.
+
+See **[`IMAGE_WORKFLOW.md`](./IMAGE_WORKFLOW.md)** for the full workflow: Cloudinary `public_id` rules, hero/gallery/step/OG roles, AI prompt style guide, alt-text SEO rules, the per-recipe metadata template, and the pre-promotion verification checklist.
+
 ## Architecture summary
 
 - **Routing**: `[locale]` segment with next-intl. `(shell)` route group wraps pages with header/footer/MobileBottomNav; cook mode and print pages sit outside the group for chromeless layouts.

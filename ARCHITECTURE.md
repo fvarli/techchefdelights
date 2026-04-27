@@ -155,6 +155,23 @@ v1 status:
 - Seed derives master slug from each recipe's EN ingredient name (`prisma/seed/ingredient-masters.ts`), creates master rows, and connects every `Ingredient` to its master via slug. Today: 63 masters across 8 recipes; 82/82 ingredient rows linked.
 - API and recipe pages do not surface `masterId` yet — public types are unchanged. The relation is available for future ingredient pages, allergen automation, etc.
 
+## Image storage & provider portability
+
+Images for a recipe come in four roles: **hero** (1, required for production), **gallery** (0–N), **step** (0–N per step), and **OG / social** (derived from hero by default).
+
+Schema layout:
+- `Recipe.heroImageCloudinary` — required string, holds the Cloudinary `public_id` for the hero
+- `Recipe.heroBlurhash` — optional preview placeholder
+- `RecipeImage` — gallery rows: `cloudinaryId`, `w`, `h`, `blurhash`, `position`; `RecipeImageTranslation` carries per-locale `alt`
+- `StepImage` — same shape as `RecipeImage`, scoped per `Step`
+
+Provider portability is by design:
+- The DB stores **only the `public_id`**, never a full URL or transformation string. Today that path is shaped for Cloudinary (`recipes/<slug>/hero`); a future move to imgix / Bunny.net / R2 + Cloudflare Images / self-hosted Imgproxy is a **URL-builder swap**, not a schema migration.
+- `w`, `h`, `blurhash`, `alt` are provider-neutral.
+- Convention: production assets live at `recipes/<en-slug>/<role>(-N)?` (locale-agnostic on the asset side; only `alt` is per-locale). Seed data uses `tcd/seed/<slug>/...` so test environments don't collide with real assets.
+
+See **`IMAGE_WORKFLOW.md`** for the full operational doc: hero/gallery/step roles, AI image generation style guide, alt-text SEO rules, per-recipe metadata template, future schema additions (caption, role enum, color palette, AI-content flag), and the pre-promotion verification checklist.
+
 ## Storage abstraction
 
 Single namespace lock (`src/lib/storage-keys.ts`):

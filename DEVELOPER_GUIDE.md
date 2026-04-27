@@ -228,6 +228,41 @@ When you add a recipe with an ingredient that doesn't exist yet:
 
 The `Ingredient.masterId` column is nullable so a partial seed run (or an ingredient with an empty/unparseable EN name) still succeeds; the seed runner logs a warning instead of failing. Zero recipes should be in that state in normal operation.
 
+## How to add a recipe's images
+
+The full workflow lives in **[`IMAGE_WORKFLOW.md`](./IMAGE_WORKFLOW.md)** — read that first, then come back here for the dev shortcuts.
+
+### TL;DR
+
+1. **Generate** the hero image with the brand style guide (see IMAGE_WORKFLOW.md "AI image generation"). Only the hero is required to ship; gallery/step are optional.
+2. **Upload** to Cloudinary at the canonical path:
+   ```
+   recipes/<en-slug>/hero
+   recipes/<en-slug>/gallery-1
+   recipes/<en-slug>/gallery-2
+   recipes/<en-slug>/step-1
+   ```
+   Use the **EN slug** even for TR/ES recipes — the asset side is locale-agnostic; only `alt` is per-locale.
+3. **Edit the recipe seed file** at `prisma/seed/data/recipes/<slug>.ts`:
+   ```ts
+   heroImageCloudinary: 'recipes/red-lentil-soup/hero',
+   heroBlurhash: '<run a blurhash generator on the source>',
+   ```
+   For gallery / step images, populate the `gallery: []` and `steps[].images: []` arrays with `cloudinaryId`, `w`, `h`, `blurhash`, plus per-locale `alt`.
+4. **Re-seed**: `pnpm prisma db seed` (idempotent — upsert).
+
+### Don't do this
+
+- Don't store a full URL in `heroImageCloudinary` — store only the `public_id`. The URL is built at render time.
+- Don't reuse the placeholder `tcd/seed/<slug>/hero` for production assets — that prefix is reserved for seed/test data.
+- Don't put translated names in the `public_id` — assets are keyed by EN slug.
+- Don't write `alt: 'Image of <recipe>'` — screen readers already announce it as an image. Describe the photographic content.
+- Don't ship a recipe to production with `isDraft = false` if its hero is still pointing at a `tcd/seed/...` path.
+
+### Adding image dimensions
+
+`w` and `h` are CLS-critical (they prevent layout shift on first paint). Set them to the actual image dimensions, not the rendered size. Cloudinary returns these from the upload response; capture them in the per-recipe metadata template before re-seeding.
+
 ## How to test
 
 - **Unit**: vitest, in `tests/unit/*.test.ts`. Use for pure logic (scaling, formatters, validators).
