@@ -2,6 +2,8 @@
 
 Single source of truth for how recipe images are produced, stored, named, and served. Audience: anyone adding new recipes or operating the site.
 
+> **Generating images for v1?** This document is the **specification**. The **operational batch** with copy-paste-ready prompts for every seeded recipe — grouped per recipe, with target Cloudinary `public_id`, alt text in EN/TR/ES, aspect-ratio target, local filename, and a per-block review checklist — lives in **[`IMAGE_GENERATION_BATCH.md`](./IMAGE_GENERATION_BATCH.md)**. Use that as the working queue; come back here for the rules.
+
 ## Roles & minimum requirements
 
 | Role | Required | Quantity per recipe | Stored on |
