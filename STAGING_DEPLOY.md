@@ -339,15 +339,20 @@ The full image workflow — Cloudinary `public_id` rules, AI prompt style guide,
 Run the manifest validator before promoting staging → production:
 
 ```bash
-# advisory (default): exit 0 with warns about unfinished heroes
+# advisory (default): exit 0 with warns about unfinished heroes +
+# placeholder seed paths. Galleries are tracked but not strict
+# launch blockers; missing gallery-1/gallery-2 statuses are quiet.
 pnpm images:validate
 
 # production gate: exit 1 if any required hero isn't approved, any
-# placeholder tcd/seed/* path remains, alt is missing, etc.
+# placeholder tcd/seed/* path remains, alt is missing, aspectRatio /
+# width / height are missing on uploaded/approved images, or any
+# aspectRatio is outside its role's allowlist (hero: 16:9 / 4:3,
+# gallery: 4:3 / 1:1, step: 4:3, og: 1200x630).
 IMAGES_STRICT=1 pnpm images:validate
 ```
 
-When `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET` are set on the staging host, the validator also checks every `uploaded`/`approved` asset is reachable via the Cloudinary Admin API (read-only — no mutations).
+When `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET` are set on the staging host, the validator also checks every `uploaded`/`approved` asset is reachable via the Cloudinary Admin API (read-only — no mutations). Public IDs are encoded per path segment so folder slashes are preserved verbatim.
 
 ## 13. Rich Results validation
 

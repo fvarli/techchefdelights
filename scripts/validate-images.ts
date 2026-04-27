@@ -15,6 +15,7 @@ import 'dotenv/config'
 import { recipes } from '../prisma/seed/data/recipes'
 import {
   imageManifest,
+  type AspectRatio,
   type ImageRole,
   type ImageStatus,
   type ManifestEntry,
@@ -27,6 +28,19 @@ const VALID_STATUSES: ImageStatus[] = ['planned', 'generated', 'uploaded', 'appr
 const ALT_MAX = 125
 const PUBLIC_ID_RE =
   /^recipes\/[a-z0-9][a-z0-9-]*[a-z0-9]\/(hero|og|gallery-[1-9][0-9]*|step-[1-9][0-9]*)$/
+
+/**
+ * Allowed aspect ratios per role. Hero supports 16:9 (cinematic) or 4:3
+ * (classic). Gallery is square or 4:3 for a tighter scroll. Step prefers
+ * 4:3 to match recipe-card grids. OG must be 1200×630 exactly to match
+ * the Open Graph spec — declared with the literal `1200x630` token.
+ */
+const ASPECT_BY_ROLE: Record<ImageRole, AspectRatio[]> = {
+  hero: ['16:9', '4:3'],
+  gallery: ['4:3', '1:1'],
+  step: ['4:3'],
+  og: ['1200x630'],
+}
 
 type Severity = 'error' | 'warn'
 type Finding = { severity: Severity; recipeSlug: string; publicId?: string; message: string }
@@ -72,6 +86,8 @@ for (const entry of imageManifest) {
     validateStatus(entry.slug, img)
     validateAlt(entry.slug, img)
     validateTitle(entry.slug, img)
+    validateAspectRatio(entry.slug, img)
+    validateDimensions(entry.slug, img)
 
     if (seenPublicIds.has(img.publicId)) {
       add(
@@ -187,7 +203,15 @@ async function cloudinaryRemoteCheck() {
       // 'generated' assets aren't expected on Cloudinary yet.
       if (img.status === 'planned' || img.status === 'generated') continue
 
-      const url = `https://api.cloudinary.com/v1_1/${cloud}/resources/image/upload/${encodeURIComponent(img.publicId)}`
+      // Cloudinary public_id segments are encoded individually so the
+      // forward slashes that separate folders are preserved verbatim.
+      // encodeURIComponent on the whole string would percent-encode the
+      // slashes to %2F and Cloudinary 404s legitimately existing assets.
+      const encodedId = img.publicId
+        .split('/')
+        .map(encodeURIComponent)
+        .join('/')
+      const url = `https://api.cloudinary.com/v1_1/${cloud}/resources/image/upload/${encodedId}`
       try {
         const r = await fetch(url, { headers: { Authorization: auth } })
         if (r.status === 404) {
@@ -309,6 +333,65 @@ function validateTitle(recipeSlug: string, img: ManifestImage) {
         'error',
         recipeSlug,
         `title.${locale} present but empty for ${img.publicId}`,
+        img.publicId,
+      )
+    }
+  }
+}
+
+function validateAspectRatio(recipeSlug: string, img: ManifestImage) {
+  const allowed = ASPECT_BY_ROLE[img.role]
+  if (img.aspectRatio !== undefined) {
+    if (!allowed.includes(img.aspectRatio)) {
+      add(
+        'error',
+        recipeSlug,
+        `aspectRatio '${img.aspectRatio}' not allowed for role='${img.role}' (allowed: ${allowed.join(', ')}) on ${img.publicId}`,
+        img.publicId,
+      )
+    }
+    return
+  }
+  // Missing aspectRatio on uploaded/approved is a launch blocker
+  // (advisory in default mode, fatal in strict via the warn->error
+  // escalation in main()).
+  if (img.status === 'uploaded' || img.status === 'approved') {
+    add(
+      'warn',
+      recipeSlug,
+      `aspectRatio missing on ${img.status} image (allowed for role='${img.role}': ${allowed.join(', ')}) for ${img.publicId}`,
+      img.publicId,
+    )
+  }
+}
+
+function validateDimensions(recipeSlug: string, img: ManifestImage) {
+  const w = img.width
+  const h = img.height
+  const oneSet = (w !== undefined) !== (h !== undefined)
+  if (oneSet) {
+    add(
+      'error',
+      recipeSlug,
+      `width and height must be set together (got width=${w}, height=${h}) on ${img.publicId}`,
+      img.publicId,
+    )
+    return
+  }
+  if (w !== undefined && (typeof w !== 'number' || w <= 0)) {
+    add('error', recipeSlug, `width must be a positive number on ${img.publicId}`, img.publicId)
+  }
+  if (h !== undefined && (typeof h !== 'number' || h <= 0)) {
+    add('error', recipeSlug, `height must be a positive number on ${img.publicId}`, img.publicId)
+  }
+  // Strict-mode (uploaded/approved) requirement: dimensions must be set.
+  // Advisory in default mode.
+  if (img.status === 'uploaded' || img.status === 'approved') {
+    if (w === undefined || h === undefined) {
+      add(
+        'warn',
+        recipeSlug,
+        `width/height missing on ${img.status} image — required by strict mode for ${img.publicId}`,
         img.publicId,
       )
     }

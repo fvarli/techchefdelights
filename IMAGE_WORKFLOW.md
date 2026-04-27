@@ -296,6 +296,10 @@ The manifest is **read-only** for the validator. The validator never uploads, de
 | alt EN/TR/ES present, ≤ 125 chars | error | error |
 | no duplicate publicIds across the manifest | error | error |
 | gallery numbering sequential (1, 2, 3, …) | error | error |
+| `aspectRatio` (when set) is in the role's allowlist | error | error |
+| `aspectRatio` set on `uploaded` / `approved` images | warn | error |
+| `width` and `height` set together (never one without the other) | error | error |
+| `width`/`height` present on `uploaded` / `approved` images | warn | error |
 | seed `Recipe.heroImageCloudinary` not `tcd/seed/...` | warn | error |
 | required hero status === `approved` | warn | error |
 | Cloudinary asset exists for `uploaded` / `approved` (when env set) | error | error |
@@ -303,7 +307,22 @@ The manifest is **read-only** for the validator. The validator never uploads, de
 **Default mode**: warns are advisory; exit 0 unless a hard error is found.
 **Strict mode** (`IMAGES_STRICT=1`): warns become fatal; exit 1 on any failure.
 
-The Cloudinary remote check runs only when `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET` are set. Without those env vars the script logs a clear "skipping remote check" notice and continues with local-only validation. The check uses the Cloudinary Admin API (`GET /resources/image/upload/<public_id>`) — read-only.
+The Cloudinary remote check runs only when `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET` are set. Without those env vars the script logs a clear "skipping remote check" notice and continues with local-only validation. The check uses the Cloudinary Admin API (`GET /resources/image/upload/<public_id>`) — read-only. Public IDs are encoded **per path segment** so the folder slashes in `recipes/<slug>/hero` are preserved verbatim (encoding the whole id with `encodeURIComponent` would percent-encode `/` and produce false-negative 404s).
+
+## Aspect ratio rules
+
+Each image role has an allowed-set of aspect ratios. The manifest's `aspectRatio` field accepts one of: `'16:9'`, `'4:3'`, `'1:1'`, `'1200x630'`. The validator enforces:
+
+| Role | Allowed | Why |
+|---|---|---|
+| `hero` | `16:9`, `4:3` | wide for desktop hero block + recipe cards; both crop cleanly |
+| `gallery` | `4:3`, `1:1` | recipe-card grids and tighter detail crops |
+| `step` | `4:3` | matches in-cook step cards consistently |
+| `og` | `1200x630` | OpenGraph spec — exact pixel dimensions, not a ratio |
+
+A non-OG image with `aspectRatio: '1200x630'` is rejected (the OG spec is precise; mixing it with content shots breaks card crops). An OG image with `aspectRatio: '16:9'` is rejected for the same reason — Open Graph crawlers expect 1200×630 exactly.
+
+`width` and `height` columns hold the **actual pixel dimensions** of the rendered asset (CLS-critical) and must be set together. The validator allows them to be unset for `planned` / `generated` images but warns (default) / errors (strict) when they're missing on `uploaded` / `approved` images.
 
 ## Verification checklist (before promoting a new recipe to production)
 

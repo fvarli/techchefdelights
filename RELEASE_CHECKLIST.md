@@ -240,8 +240,12 @@ IMAGES_STRICT=1 pnpm images:validate
 # expected: exit 0
 # fails on: missing required hero, non-approved hero, placeholder
 #   tcd/seed/* prefix, missing alt EN/TR/ES, alt > 125 chars,
-#   duplicate publicIds, gallery-N gaps, Cloudinary asset missing
-#   (when env is configured), seed/manifest hero mismatch.
+#   duplicate publicIds, gallery-N gaps, missing aspectRatio on
+#   uploaded/approved images, missing width+height on uploaded/
+#   approved images (must be set together), aspectRatio outside
+#   the role's allowlist (hero: 16:9 or 4:3, gallery: 4:3 or 1:1,
+#   step: 4:3, og: 1200x630), Cloudinary asset missing (when env
+#   is configured), seed/manifest hero mismatch.
 ```
 
 The validator is **read-only** — it never uploads, deletes, renames, or mutates any Cloudinary asset.

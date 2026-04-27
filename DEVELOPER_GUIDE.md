@@ -300,7 +300,9 @@ pnpm images:validate              # advisory; exit 0 with warns
 IMAGES_STRICT=1 pnpm images:validate  # production gate; exit 1 on any blocker
 ```
 
-When `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET` are set, the validator also remote-checks every `uploaded`/`approved` `publicId` against the Cloudinary Admin API. It is **read-only** — the script never uploads, deletes, renames, or mutates assets.
+When `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET` are set, the validator also remote-checks every `uploaded`/`approved` `publicId` against the Cloudinary Admin API. It is **read-only** — the script never uploads, deletes, renames, or mutates assets. Public IDs are encoded **per path segment** so the folder slashes in `recipes/<slug>/hero` survive (encoding the whole string with `encodeURIComponent` would percent-encode `/` to `%2F` and produce false-negative 404s).
+
+Strict-mode dimension + aspect-ratio rules: when an image has `status: 'uploaded'` or `'approved'`, the validator expects both `width` and `height` set (positive numbers, both or neither) and an `aspectRatio` value in the role's allowlist (hero: `16:9`/`4:3`, gallery: `4:3`/`1:1`, step: `4:3`, og: `1200x630`). These are advisory in default mode and fatal under `IMAGES_STRICT=1`.
 
 Workflow when adding a new image:
 1. Plan it in the manifest (`status: 'planned'`).
