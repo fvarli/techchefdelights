@@ -14,7 +14,7 @@ export type AuthorSeed = {
 export const authors: AuthorSeed[] = [
   {
     slug: 'ferzender',
-    name: 'Ferzender Varlı',
+    name: 'Ferzender Varli',
     avatar: 'tcd/authors/ferzender/avatar',
     translations: [
       {
