@@ -4,8 +4,13 @@
  * this is a no-op and the app behaves exactly as before.
  */
 
+import { resolveRelease } from '@/lib/release'
+
 export async function register() {
   if (!process.env.SENTRY_DSN) return
+
+  const release = resolveRelease()
+  const environment = process.env.SENTRY_ENV ?? process.env.NODE_ENV
 
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     const Sentry = await import('@sentry/nextjs')
@@ -13,7 +18,8 @@ export async function register() {
       dsn: process.env.SENTRY_DSN,
       tracesSampleRate: 0.1,
       sendDefaultPii: false,
-      environment: process.env.SENTRY_ENV ?? process.env.NODE_ENV,
+      environment,
+      release,
     })
   }
 
@@ -23,7 +29,8 @@ export async function register() {
       dsn: process.env.SENTRY_DSN,
       tracesSampleRate: 0.1,
       sendDefaultPii: false,
-      environment: process.env.SENTRY_ENV ?? process.env.NODE_ENV,
+      environment,
+      release,
     })
   }
 }
