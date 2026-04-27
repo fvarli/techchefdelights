@@ -53,6 +53,24 @@ export type ApiAllergenRef = ApiTaxonomyRef & {
   presence: ApiAllergenPresence
 }
 
+/**
+ * Recipe equipment usage row. Extends ApiTaxonomyRef with optional
+ * recipe-specific metadata: required flag, quantity, free-form note.
+ * All metadata fields are optional — clients that read only slug/name/
+ * iconKey continue to work unchanged.
+ *
+ * Note: `note` is locale-shared in v1 (same string for EN/TR/ES). Adding
+ * a per-locale RecipeEquipmentTranslation table is tracked as a v1.1
+ * enhancement; until then keep notes short and either English or
+ * locale-neutral.
+ */
+export type ApiRecipeEquipment = ApiTaxonomyRef & {
+  required: boolean
+  quantity: number | null
+  note: string | null
+  position: number
+}
+
 export type ApiIngredient = {
   id: string
   name: string
@@ -143,7 +161,7 @@ export type ApiRecipe = {
   tags: ApiTaxonomyRef[]
   diets: ApiTaxonomyRef[]
   allergens: ApiAllergenRef[]
-  equipment: ApiTaxonomyRef[]
+  equipment: ApiRecipeEquipment[]
 
   ingredientGroups: ApiIngredientGroup[]
   steps: ApiStep[]

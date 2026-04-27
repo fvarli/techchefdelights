@@ -46,6 +46,9 @@ psql "$DATABASE_URL" -c 'SELECT COUNT(*) FROM "Ingredient";'                    
 psql "$DATABASE_URL" -c 'SELECT COUNT(*) FROM "IngredientMaster";'                 # expect 63
 psql "$DATABASE_URL" -c 'SELECT COUNT(*) FROM "IngredientMasterTranslation";'      # expect 189 (63 × 3 locales)
 psql "$DATABASE_URL" -c 'SELECT COUNT(*) FROM "Ingredient" WHERE "masterId" IS NOT NULL;'  # expect 82 (every row linked)
+psql "$DATABASE_URL" -c 'SELECT COUNT(*) FROM "RecipeEquipment";'                              # expect 27 (current seed)
+psql "$DATABASE_URL" -c 'SELECT COUNT(*) FROM "RecipeEquipment" WHERE NOT required;'           # expect 7 (optional rows)
+psql "$DATABASE_URL" -c 'SELECT COUNT(*) FROM "RecipeEquipment" WHERE note IS NOT NULL;'       # expect 18 (rows with caveat note)
 psql "$DATABASE_URL" -c "SELECT to_regprocedure('public.tcd_locale_to_regconfig(text)');"  # expect non-null
 ```
 

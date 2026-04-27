@@ -4,6 +4,7 @@ import type {
   ApiAuthor,
   ApiTaxonomyRef,
   ApiAllergenRef,
+  ApiRecipeEquipment,
   ApiIngredientGroup,
   ApiStep,
   ApiVariation,
@@ -119,6 +120,10 @@ type LoadedRecipe = {
     }>
   }>
   equipment: Array<{
+    required: boolean
+    quantity: number | null
+    note: string | null
+    position: number
     equipment: {
       slug: string
       iconKey: string | null
@@ -248,11 +253,18 @@ export function mapRecipeToApi(recipe: LoadedRecipe, requestLocale: Locale): Api
     presence: toApiAllergenPresence(ra.presence),
   }))
 
-  const equipment: ApiTaxonomyRef[] = recipe.equipment.map((re) => ({
-    slug: re.equipment.slug,
-    name: pickTranslation(re.equipment.translations, requestLocale)?.name ?? re.equipment.slug,
-    iconKey: re.equipment.iconKey,
-  }))
+  const equipment: ApiRecipeEquipment[] = recipe.equipment
+    .slice()
+    .sort((a, b) => a.position - b.position)
+    .map((re) => ({
+      slug: re.equipment.slug,
+      name: pickTranslation(re.equipment.translations, requestLocale)?.name ?? re.equipment.slug,
+      iconKey: re.equipment.iconKey,
+      required: re.required,
+      quantity: re.quantity,
+      note: re.note,
+      position: re.position,
+    }))
 
   const ingredientGroups: ApiIngredientGroup[] = recipe.ingredientGroups
     .sort((a, b) => a.position - b.position)

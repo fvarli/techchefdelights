@@ -360,7 +360,11 @@ export const lemonCheesecake: RecipeSeed = {
     },
   ],
 
-  equipmentSlugs: ['oven', 'mixer', 'baking-sheet'],
+  equipmentSlugs: [
+    { slug: 'oven', position: 0, required: true },
+    { slug: 'mixer', position: 1, required: false, note: 'Hand whisk also works; takes a few minutes longer' },
+    { slug: 'baking-sheet', position: 2, required: true, note: 'A 23 cm springform pan plus an outer tray for the water bath' },
+  ],
 
   variations: [
     {

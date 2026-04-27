@@ -368,7 +368,12 @@ export const classicBaklava: RecipeSeed = {
     },
   ],
 
-  equipmentSlugs: ['oven', 'saucepan', 'baking-sheet', 'stovetop'],
+  equipmentSlugs: [
+    { slug: 'oven', position: 0, required: true },
+    { slug: 'baking-sheet', position: 1, quantity: 1, required: true, note: 'A 23×33 cm rimmed tray; any rimmed tray works' },
+    { slug: 'saucepan', position: 2, required: true, note: 'For the syrup' },
+    { slug: 'stovetop', position: 3, required: true },
+  ],
 
   variations: [
     {

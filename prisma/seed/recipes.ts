@@ -156,12 +156,21 @@ export async function seedRecipe(prisma: PrismaClient, recipe: RecipeSeed) {
     })
   }
 
-  // 6. Equipment joins
-  for (const eqSlug of recipe.equipmentSlugs) {
-    const eq = await prisma.equipment.findUnique({ where: { slug: eqSlug } })
-    if (!eq) throw new Error(`Equipment not found: ${eqSlug}`)
+  // 6. Equipment joins (with usage metadata)
+  for (let i = 0; i < recipe.equipmentSlugs.length; i++) {
+    const usage = recipe.equipmentSlugs[i]
+    const slug = typeof usage === 'string' ? usage : usage.slug
+    const eq = await prisma.equipment.findUnique({ where: { slug } })
+    if (!eq) throw new Error(`Equipment not found: ${slug}`)
     await prisma.recipeEquipment.create({
-      data: { recipeId: recipe.seedId, equipmentId: eq.id },
+      data: {
+        recipeId: recipe.seedId,
+        equipmentId: eq.id,
+        required: typeof usage === 'string' ? true : (usage.required ?? true),
+        quantity: typeof usage === 'string' ? null : (usage.quantity ?? null),
+        note: typeof usage === 'string' ? null : (usage.note ?? null),
+        position: typeof usage === 'string' ? i : (usage.position ?? i),
+      },
     })
   }
 

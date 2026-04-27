@@ -228,6 +228,38 @@ When you add a recipe with an ingredient that doesn't exist yet:
 
 The `Ingredient.masterId` column is nullable so a partial seed run (or an ingredient with an empty/unparseable EN name) still succeeds; the seed runner logs a warning instead of failing. Zero recipes should be in that state in normal operation.
 
+## How to add equipment to a recipe
+
+`equipmentSlugs` on `RecipeSeed` accepts two shapes that may be mixed:
+
+- **Plain slug** — `'saucepan'`. Equivalent to `{ slug: 'saucepan', required: true }` with auto-incremented `position` from array order.
+- **Object form** — `{ slug, required?, quantity?, note?, position? }`. Use this when you need any of the four metadata fields.
+
+Examples:
+
+```ts
+equipmentSlugs: [
+  // strictly required, default ordering, no caveats
+  { slug: 'oven', position: 0, required: true },
+
+  // recipe needs 4 ramekins
+  { slug: 'baking-sheet', position: 1, quantity: 4, required: true,
+    note: '8 oz ramekins; 4 of them for individual soufflés' },
+
+  // optional with a substitution hint
+  { slug: 'mixer', position: 2, required: false,
+    note: 'Hand whisk also works; takes a few minutes longer' },
+]
+```
+
+Rules of thumb:
+- `position` is the display order; explicit values give stable ordering across re-seeds. If omitted, the seed runner uses array-index order.
+- `quantity` only renders when `> 1` (UI hides `× 1` as visual noise).
+- `note` is **locale-shared in v1** — the same string is shown in EN / TR / ES. Keep it short and either English or locale-neutral until the per-locale translation table lands. Do not put long sentences here; recipe variations and step bodies are the right place for long-form guidance.
+- `required: false` produces an "optional" badge on the equipment chip — use it when a substitution exists in the recipe (hand-whisk for mixer, fork for whisk, etc.).
+
+The seed runner is backwards-compatible — old recipe files using `equipmentSlugs: ['saucepan', 'oven']` keep working with `required=true` and array-index `position`.
+
 ## How to add a recipe's images
 
 The full workflow lives in **[`IMAGE_WORKFLOW.md`](./IMAGE_WORKFLOW.md)** — read that first, then come back here for the dev shortcuts.

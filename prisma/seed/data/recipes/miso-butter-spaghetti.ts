@@ -283,7 +283,12 @@ export const misoButterSpaghetti: RecipeSeed = {
     },
   ],
 
-  equipmentSlugs: ['saucepan', 'skillet', 'stovetop', 'whisk'],
+  equipmentSlugs: [
+    { slug: 'saucepan', position: 0, required: true, note: 'Wide enough to hold a portion of pasta' },
+    { slug: 'skillet', position: 1, required: true, note: 'A 30 cm / 12-inch pan' },
+    { slug: 'stovetop', position: 2, required: true },
+    { slug: 'whisk', position: 3, required: false, note: 'A fork emulsifies the sauce just as well' },
+  ],
 
   variations: [
     {

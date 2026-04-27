@@ -382,7 +382,12 @@ export const darkChocolateSouffle: RecipeSeed = {
     },
   ],
 
-  equipmentSlugs: ['oven', 'mixer', 'whisk', 'baking-sheet'],
+  equipmentSlugs: [
+    { slug: 'oven', position: 0, required: true },
+    { slug: 'mixer', position: 1, required: false, note: 'A balloon whisk works but expect tired arms' },
+    { slug: 'whisk', position: 2, required: true, note: 'For folding meringue into the base' },
+    { slug: 'baking-sheet', position: 3, quantity: 4, required: true, note: '8 oz ramekins; 4 of them for individual soufflés' },
+  ],
 
   variations: [
     {

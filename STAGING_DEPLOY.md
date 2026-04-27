@@ -136,9 +136,13 @@ PGPASSWORD="$STRONG_PW" psql -h 127.0.0.1 -U tcd_staging -d techchefdelights_sta
   -c 'SELECT COUNT(*) AS ingredient_masters FROM "IngredientMaster";' \
   -c 'SELECT COUNT(*) AS master_translations FROM "IngredientMasterTranslation";' \
   -c 'SELECT COUNT(*) FILTER (WHERE "masterId" IS NOT NULL) AS ingredients_with_master FROM "Ingredient";' \
+  -c 'SELECT COUNT(*) AS recipe_equipment FROM "RecipeEquipment";' \
+  -c 'SELECT COUNT(*) FILTER (WHERE NOT required) AS optional_equipment FROM "RecipeEquipment";' \
+  -c 'SELECT COUNT(*) FILTER (WHERE note IS NOT NULL) AS equipment_with_note FROM "RecipeEquipment";' \
   -c "SELECT to_regprocedure('public.tcd_locale_to_regconfig(text)');"
 # expected: 8 recipes, 24 translations, 24 reviews, 112 allergen_links,
 #           82 ingredients, 63 masters, 189 master_translations, 82 ingredients_with_master,
+#           27 recipe_equipment, 7 optional_equipment, 18 equipment_with_note,
 #           function present
 ```
 

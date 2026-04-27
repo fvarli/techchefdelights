@@ -299,7 +299,11 @@ export default async function RecipePage({
             <IngredientsSection recipe={recipe} labels={ingredientsLabels} />
           </Suspense>
 
-          <EquipmentList equipment={recipe.equipment} title={t('sections.equipment')} />
+          <EquipmentList
+            equipment={recipe.equipment}
+            title={t('sections.equipment')}
+            optionalLabel={t('ingredients.optional')}
+          />
 
           <InstructionsSection steps={recipe.steps} labels={instructionsLabels} />
 

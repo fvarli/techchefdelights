@@ -278,15 +278,25 @@ model EquipmentTranslation {
   @@unique([equipmentId, locale])
 }
 
+// `Equipment` is the canonical/global equipment taxonomy (saucepan, oven,
+// whisk, …). `RecipeEquipment` is the recipe-specific usage row — same
+// pattern as IngredientMaster ↔ Ingredient. Recipe-specific metadata (is
+// it strictly required, is more than one needed, any caveat) lives here,
+// not on the canonical Equipment row.
 model RecipeEquipment {
   recipeId    String
   equipmentId String
+  required    Boolean @default(true)
+  quantity    Int?
+  note        String?
+  position    Int     @default(0)
 
   recipe    Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   equipment Equipment @relation(fields: [equipmentId], references: [id])
 
   @@id([recipeId, equipmentId])
   @@index([equipmentId])
+  @@index([recipeId, position])
 }
 
 // ─── VARIATIONS / FAQ / NUTRITION / VIDEO ──────────────

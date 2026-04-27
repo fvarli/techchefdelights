@@ -331,7 +331,10 @@ export const avocadoToast: RecipeSeed = {
     },
   ],
 
-  equipmentSlugs: ['saucepan', 'stovetop'],
+  equipmentSlugs: [
+    { slug: 'saucepan', position: 0, required: true, note: 'A small pan; egg poaching needs ~5 cm of water' },
+    { slug: 'stovetop', position: 1, required: true },
+  ],
 
   variations: [
     {

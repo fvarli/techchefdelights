@@ -335,7 +335,11 @@ export const mediterraneanQuinoaSalad: RecipeSeed = {
     },
   ],
 
-  equipmentSlugs: ['saucepan', 'stovetop', 'whisk'],
+  equipmentSlugs: [
+    { slug: 'saucepan', position: 0, required: true },
+    { slug: 'stovetop', position: 1, required: true },
+    { slug: 'whisk', position: 2, required: false, note: 'A fork emulsifies the dressing just as well' },
+  ],
 
   variations: [
     {

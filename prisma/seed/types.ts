@@ -98,6 +98,14 @@ export type AllergenMappingSeed = {
   presence: AllergenPresence
 }
 
+export type EquipmentUsageSeed = {
+  slug: string
+  required?: boolean
+  quantity?: number
+  note?: string
+  position?: number
+}
+
 export type RecipeSeed = {
   seedId: string                                    // stable id, e.g. recipe_<slug>_seed
   cuisineSlug: string
@@ -114,7 +122,13 @@ export type RecipeSeed = {
   translations: Record<Locale, RecipeTranslationSeed>
   ingredientGroups: IngredientGroupSeed[]
   steps: StepSeed[]
-  equipmentSlugs: string[]
+  /**
+   * Recipe equipment usage rows. Accepts either:
+   *   - a plain slug string (legacy shape; required=true, no metadata)
+   *   - or an EquipmentUsageSeed with required/quantity/note/position
+   * Both forms may be mixed within the same recipe during transition.
+   */
+  equipmentSlugs: Array<string | EquipmentUsageSeed>
   variations: VariationSeed[]
   faq: FAQSeed[]
   nutrition: NutritionSeed

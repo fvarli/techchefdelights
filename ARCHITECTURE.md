@@ -6,6 +6,9 @@
 techchefdelights/
 ├─ prisma/
 │  ├─ schema.prisma            43 models, 7 enums, translation tables
+│  │                           (RecipeEquipment carries usage metadata
+│  │                            required/quantity/note/position; v1.1 will
+│  │                            split note per-locale via translation table)
 │  ├─ migrations/              including 20260425191951_search_vectors
 │  └─ seed/                    8 recipes × 3 locales + taxonomies
 ├─ src/
@@ -134,6 +137,21 @@ URL: /recipes/<slug>/cook?step=N      (N optional; 0 by default)
 State persistence: tcd:resumePoint:<slug> = { stepIndex, savedAt }
                    (localStorage; no server hit until auth lands)
 ```
+
+## Equipment model — usage row vs canonical master
+
+Same two-layer pattern as ingredients:
+
+- **`Equipment`** — canonical taxonomy (saucepan, oven, whisk, …). One row per real-world piece of equipment. Localized name via `EquipmentTranslation`.
+- **`RecipeEquipment`** — recipe-specific usage row. Carries:
+  - `required` (bool, default `true`) — strictly required vs nice-to-have
+  - `quantity` (int?) — when more than one is needed (e.g. 4 ramekins)
+  - `note` (string?) — recipe-specific caveat ("a 4-litre, heavy-bottom pot is ideal", "hand whisk also works")
+  - `position` (int, default `0`) — stable display order on the recipe page
+- API exposes `ApiRecipeEquipment` (extends `ApiTaxonomyRef`) with all four optional metadata fields. Old consumers that read only `slug`/`name`/`iconKey` keep working.
+- UI: `EquipmentList` shows the name, an `×N` quantity badge when > 1, an `optional` chip when `required=false`, and the note as a sub-line.
+
+**v1 limitation**: `note` is locale-shared (single string used for EN/TR/ES). Keep notes short and either English or locale-neutral. A per-locale `RecipeEquipmentTranslation` table is tracked as a v1.1 enhancement; until then, write notes in English (the dominant content language for v1) or keep them universal ("4 × 8 oz ramekins").
 
 ## Ingredient model — usage row vs canonical master
 

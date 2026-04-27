@@ -334,7 +334,12 @@ export const margheritaPizza: RecipeSeed = {
     },
   ],
 
-  equipmentSlugs: ['oven', 'mixer', 'rolling-pin', 'baking-sheet'],
+  equipmentSlugs: [
+    { slug: 'oven', position: 0, required: true, note: 'As hot as it goes — 250 °C / 480 °F minimum' },
+    { slug: 'baking-sheet', position: 1, required: true, note: 'Or a pizza stone if you have one' },
+    { slug: 'mixer', position: 2, required: false, note: 'You can knead the dough by hand for 10 minutes' },
+    { slug: 'rolling-pin', position: 3, required: false, note: 'Hand-stretch is traditional; rolling pin is fine for beginners' },
+  ],
 
   variations: [
     {

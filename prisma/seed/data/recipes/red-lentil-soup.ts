@@ -360,7 +360,11 @@ export const redLentilSoup: RecipeSeed = {
     },
   ],
 
-  equipmentSlugs: ['saucepan', 'blender', 'stovetop'],
+  equipmentSlugs: [
+    { slug: 'saucepan', position: 0, quantity: 1, required: true, note: 'A 4-litre, heavy-bottom pot is ideal' },
+    { slug: 'stovetop', position: 1, required: true },
+    { slug: 'blender', position: 2, required: false, note: 'An immersion blender works just as well' },
+  ],
 
   variations: [
     {
