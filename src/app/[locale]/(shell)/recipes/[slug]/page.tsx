@@ -53,24 +53,24 @@ export async function generateMetadata({
   const recipe = await loadRecipeBySlug(slug, locale)
   if (!recipe) return { title: 'Recipe not found' }
 
-  const path = locale === 'en' ? `/r/${recipe.slug}` : `/${locale}/r/${recipe.slug}`
+  const canonical = localePath(locale, `/recipes/${recipe.slug}`)
 
   return {
     title: recipe.seo.title ?? recipe.title,
     description: recipe.seo.description ?? recipe.description,
     alternates: {
-      canonical: path,
+      canonical,
       languages: {
-        en: `/r/${recipe.slugByLocale.en}`,
-        tr: `/tr/r/${recipe.slugByLocale.tr}`,
-        es: `/es/r/${recipe.slugByLocale.es}`,
+        en: localePath('en', `/recipes/${recipe.slugByLocale.en}`),
+        tr: localePath('tr', `/recipes/${recipe.slugByLocale.tr}`),
+        es: localePath('es', `/recipes/${recipe.slugByLocale.es}`),
       },
     },
     openGraph: {
       title: recipe.seo.title ?? recipe.title,
       description: recipe.seo.description ?? recipe.description,
       type: 'article',
-      url: `${BASE_URL}${path}`,
+      url: `${BASE_URL}${canonical}`,
     },
   }
 }
@@ -230,7 +230,7 @@ export default async function RecipePage({
     },
   }
 
-  const cookHref = localePath(locale, `/r/${recipe.slug}/cook`)
+  const cookHref = localePath(locale, `/recipes/${recipe.slug}/cook`)
   const resumeBannerLabels = {
     title: tCook('resumeBanner.title'),
     body: tCook('resumeBanner.body', { step: '{step}' }),

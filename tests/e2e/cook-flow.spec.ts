@@ -19,11 +19,11 @@ test('discover → recipe → cook → step nav → exit → resume', async ({ p
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 
   // Land on the recipe via direct URL
-  await page.goto(`/r/${SLUG}`)
+  await page.goto(`/recipes/${SLUG}`)
   await expect(page.getByRole('heading', { level: 1 })).toContainText(/Red Lentil Soup/i)
 
   // Enter cook mode
-  await page.goto(`/r/${SLUG}/cook`)
+  await page.goto(`/recipes/${SLUG}/cook`)
   await expect(page).toHaveURL(/\/cook$/)
 
   // Use Next button (more deterministic than keyboard timing)
@@ -44,7 +44,7 @@ test('discover → recipe → cook → step nav → exit → resume', async ({ p
   await saveAndExit.click()
 
   // Back on recipe detail page; resume banner should appear after hydration
-  await page.waitForURL(new RegExp(`/r/${SLUG}$`))
+  await page.waitForURL(new RegExp(`/recipes/${SLUG}$`))
   const resumeBanner = page.getByRole('status').filter({
     hasText: /(resume|devam|reanud)/i,
   })
@@ -60,7 +60,7 @@ test('cook timer transitions: idle → active → paused', async ({ page }) => {
   await clearStorage(page)
 
   // Step index 0 of red-lentil-soup ("Sweat the aromatics" — 8 min) has a timer.
-  await page.goto(`/r/${SLUG}/cook`)
+  await page.goto(`/recipes/${SLUG}/cook`)
   const timer = page.getByRole('timer')
   await expect(timer).toBeVisible()
 

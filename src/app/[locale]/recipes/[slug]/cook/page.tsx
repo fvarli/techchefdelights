@@ -53,8 +53,8 @@ export default async function CookPage({
   const ingredients = recipe.ingredientGroups.flatMap((g) => g.items)
 
   const t = await getTranslations('Cook')
-  const exitHref = localePath(locale, `/r/${recipe.slug}`)
-  const cookBasePath = localePath(locale, `/r/${recipe.slug}/cook`)
+  const exitHref = localePath(locale, `/recipes/${recipe.slug}`)
+  const cookBasePath = localePath(locale, `/recipes/${recipe.slug}/cook`)
 
   const exitModalLabels = {
     title: t('exitModal.title'),

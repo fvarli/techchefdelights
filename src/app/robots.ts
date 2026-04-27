@@ -10,30 +10,44 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
         disallow: [
+          // API
           '/api/',
+          // EN private/dynamic
           '/search',
           '/saved',
           '/profile',
           '/plan',
           '/print/',
           '/design',
-          // Per-locale variants
-          '/tr/search',
-          '/tr/saved',
-          '/tr/profile',
+          // TR localized
+          '/tr/ara',
+          '/tr/kaydedilenler',
+          '/tr/profil',
           '/tr/plan',
-          '/tr/print/',
+          '/tr/yazdir/',
           '/tr/design',
-          '/es/search',
-          '/es/saved',
-          '/es/profile',
+          // ES localized
+          '/es/buscar',
+          '/es/guardadas',
+          '/es/perfil',
           '/es/plan',
-          '/es/print/',
+          '/es/imprimir/',
           '/es/design',
-          // Cook mode
-          '/r/*/cook',
-          '/tr/r/*/cook',
-          '/es/r/*/cook',
+          // Cook mode (chromeless, never indexable)
+          '/recipes/*/cook',
+          '/tr/tarifler/*/pisir',
+          '/es/recetas/*/cocinar',
+          // Legacy short-form paths (kept disallowed in case caches still resolve them
+          // before the 301 redirects run)
+          '/r/',
+          '/c/',
+          '/d/',
+          '/tr/r/',
+          '/tr/c/',
+          '/tr/d/',
+          '/es/r/',
+          '/es/c/',
+          '/es/d/',
         ],
       },
     ],

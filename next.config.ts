@@ -88,6 +88,48 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  async redirects() {
+    // Permanent (308 — Next.js's permanent redirect, equivalent to 301 for
+    // search-engine signals while preserving the request method) redirects
+    // from the legacy short-form URLs to the new SEO-friendly localized
+    // paths. These cover every previously-shipped public path so external
+    // links and search-index entries don't 404.
+    return [
+      // EN — short form -> canonical
+      { source: '/r/:slug', destination: '/recipes/:slug', permanent: true },
+      { source: '/r/:slug/cook', destination: '/recipes/:slug/cook', permanent: true },
+      { source: '/c/:slug', destination: '/categories/:slug', permanent: true },
+      { source: '/d/:slug', destination: '/diets/:slug', permanent: true },
+      // TR — old non-localized prefix -> localized
+      { source: '/tr/r/:slug', destination: '/tr/tarifler/:slug', permanent: true },
+      { source: '/tr/r/:slug/cook', destination: '/tr/tarifler/:slug/pisir', permanent: true },
+      { source: '/tr/c/:slug', destination: '/tr/kategoriler/:slug', permanent: true },
+      { source: '/tr/d/:slug', destination: '/tr/diyetler/:slug', permanent: true },
+      { source: '/tr/recipes', destination: '/tr/tarifler', permanent: true },
+      { source: '/tr/recipes/:slug', destination: '/tr/tarifler/:slug', permanent: true },
+      { source: '/tr/recipes/:slug/cook', destination: '/tr/tarifler/:slug/pisir', permanent: true },
+      { source: '/tr/print/:slug', destination: '/tr/yazdir/:slug', permanent: true },
+      { source: '/tr/categories/:slug', destination: '/tr/kategoriler/:slug', permanent: true },
+      { source: '/tr/diets/:slug', destination: '/tr/diyetler/:slug', permanent: true },
+      { source: '/tr/search', destination: '/tr/ara', permanent: true },
+      { source: '/tr/saved', destination: '/tr/kaydedilenler', permanent: true },
+      { source: '/tr/profile', destination: '/tr/profil', permanent: true },
+      // ES — old non-localized prefix -> localized
+      { source: '/es/r/:slug', destination: '/es/recetas/:slug', permanent: true },
+      { source: '/es/r/:slug/cook', destination: '/es/recetas/:slug/cocinar', permanent: true },
+      { source: '/es/c/:slug', destination: '/es/categorias/:slug', permanent: true },
+      { source: '/es/d/:slug', destination: '/es/dietas/:slug', permanent: true },
+      { source: '/es/recipes', destination: '/es/recetas', permanent: true },
+      { source: '/es/recipes/:slug', destination: '/es/recetas/:slug', permanent: true },
+      { source: '/es/recipes/:slug/cook', destination: '/es/recetas/:slug/cocinar', permanent: true },
+      { source: '/es/print/:slug', destination: '/es/imprimir/:slug', permanent: true },
+      { source: '/es/categories/:slug', destination: '/es/categorias/:slug', permanent: true },
+      { source: '/es/diets/:slug', destination: '/es/dietas/:slug', permanent: true },
+      { source: '/es/search', destination: '/es/buscar', permanent: true },
+      { source: '/es/saved', destination: '/es/guardadas', permanent: true },
+      { source: '/es/profile', destination: '/es/perfil', permanent: true },
+    ]
+  },
 }
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')

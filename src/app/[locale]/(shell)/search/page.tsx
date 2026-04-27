@@ -20,11 +20,11 @@ export async function generateMetadata({
     description: t('metaDescription'),
     robots: { index: false, follow: true },
     alternates: {
-      canonical: locale === 'en' ? '/search' : `/${locale}/search`,
+      canonical: localePath(locale, '/search'),
       languages: {
-        en: '/search',
-        tr: '/tr/search',
-        es: '/es/search',
+        en: localePath('en', '/search'),
+        tr: localePath('tr', '/search'),
+        es: localePath('es', '/search'),
       },
     },
   }

@@ -13,18 +13,18 @@ techchefdelights/
 │  │  ├─ [locale]/
 │  │  │  ├─ layout.tsx         html/body, NextIntlClientProvider, GA mount
 │  │  │  ├─ (shell)/           SiteShell-wrapped pages (header/footer/mobile-nav)
-│  │  │  │  ├─ page.tsx        home
-│  │  │  │  ├─ recipes/        index w/ filters + cursor pagination
-│  │  │  │  ├─ r/[slug]/       recipe detail (JSON-LD, ISR)
-│  │  │  │  ├─ c/[category]/   per-locale category slug taxonomy
-│  │  │  │  ├─ d/[diet]/       shared-slug diet taxonomy
-│  │  │  │  ├─ search/         FTS over searchVector
-│  │  │  │  ├─ saved/          localStorage-backed
-│  │  │  │  ├─ profile/        usePrefs (allergies + units)
-│  │  │  │  ├─ plan/           coming-soon stub
-│  │  │  │  └─ design/         primitives showcase (noindex)
-│  │  │  ├─ r/[slug]/cook/     CHROMELESS — outside (shell)
-│  │  │  └─ print/[slug]/      CHROMELESS — BareShell, @media print
+│  │  │  │  ├─ page.tsx                         home
+│  │  │  │  ├─ recipes/page.tsx                 index w/ filters + cursor pagination
+│  │  │  │  ├─ recipes/[slug]/page.tsx          recipe detail (JSON-LD, ISR)
+│  │  │  │  ├─ categories/[category]/page.tsx   per-locale category slug taxonomy
+│  │  │  │  ├─ diets/[diet]/page.tsx            shared-slug diet taxonomy
+│  │  │  │  ├─ search/                          FTS over searchVector
+│  │  │  │  ├─ saved/                           localStorage-backed
+│  │  │  │  ├─ profile/                         usePrefs (allergies + units)
+│  │  │  │  ├─ plan/                            coming-soon stub
+│  │  │  │  └─ design/                          primitives showcase (noindex)
+│  │  │  ├─ recipes/[slug]/cook/                CHROMELESS — outside (shell)
+│  │  │  └─ print/[slug]/                       CHROMELESS — BareShell, @media print
 │  │  ├─ api/v1/
 │  │  │  ├─ recipes/[slug]/    GET full recipe by (slug, locale)
 │  │  │  ├─ search/            GET FTS, rate-limited
@@ -85,6 +85,12 @@ JSON shape is the public contract.
 - **Library**: next-intl 4.
 - **Locales**: `en`, `tr`, `es`. EN is the default and is served unprefixed (`/`); TR and ES are prefixed (`/tr`, `/es`).
 - **Route layout**: `[locale]` segment matches all three; `localePrefix: 'as-needed'` strips `/en` to `/` automatically.
+- **Localized URL segments**: routing.pathnames maps each canonical English path (the file-system path) to per-locale URL forms. The user-facing URL is localized; Next.js still routes the request to the canonical file. Example:
+  - File: `src/app/[locale]/(shell)/recipes/[slug]/page.tsx`
+  - EN URL: `/recipes/<slug>`
+  - TR URL: `/tr/tarifler/<slug>`
+  - ES URL: `/es/recetas/<slug>`
+  Add new public routes to `routing.pathnames` and to the `PATHNAMES` table inside `src/lib/path.ts`. Internal links go through `localePath(locale, '/canonical/path')` which returns the right URL for the locale.
 - **Translation**: server components use `getTranslations('Namespace')`; client components use `useTranslations('Namespace')`. Messages live in `src/i18n/messages/{en,tr,es}.json`.
 - **Database translations**: every locale-variant entity (`Recipe`, `Step`, `Ingredient`, `Equipment`, `Variation`, `FAQ`, `Category`, `Tag`, `Diet`, `Cuisine`, `Allergen`, plus `EditorialPick`) has a sibling `*Translation` table keyed `(parentId, locale)`. Numbers, FKs, and structural fields stay locale-agnostic on the base row.
 - **Slugs**:
@@ -95,14 +101,15 @@ JSON shape is the public contract.
 ## Routing strategy
 
 - `[locale]/(shell)/...` — wrapped by `SiteShell` (Header, Footer, MobileBottomNav, skip-to-content link).
-- `[locale]/r/[slug]/cook/page.tsx` — outside the shell group. Chromeless cook mode, `dynamic = 'force-dynamic'`, `robots: { index: false, follow: false }`.
-- `[locale]/print/[slug]/page.tsx` — outside the shell group. BareShell with `@media print` styles.
+- `[locale]/recipes/[slug]/cook/page.tsx` — outside the shell group. Chromeless cook mode, `dynamic = 'force-dynamic'`, `robots: { index: false, follow: false }`. Localized at `/tr/tarifler/<slug>/pisir`, `/es/recetas/<slug>/cocinar`.
+- `[locale]/print/[slug]/page.tsx` — outside the shell group. BareShell with `@media print` styles. Localized at `/tr/yazdir/<slug>`, `/es/imprimir/<slug>`.
+- Old short-form paths (`/r/<slug>`, `/c/<slug>`, `/d/<slug>`, plus old non-localized `/tr/recipes/...` / `/es/profile` etc.) are kept as **308 permanent redirects** in `next.config.ts → redirects()` so external links and cached search results don't 404.
 - API at `/api/v1/...` is locale-agnostic and not under `[locale]`; resolves locale via `?locale=` query param using `resolveLocale()`.
 
 ## Cook Mode architecture
 
 ```
-URL: /r/<slug>/cook?step=N      (N optional; 0 by default)
+URL: /recipes/<slug>/cook?step=N      (N optional; 0 by default)
                   │
                   ├─ Page (RSC):  loads recipe via loadRecipeBySlug()
                   │                clamps step to [0, totalSteps-1]

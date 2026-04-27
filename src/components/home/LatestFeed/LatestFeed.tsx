@@ -22,7 +22,7 @@ export function LatestFeed({ recipes, locale, labels }: Props) {
       <ul className={styles.list}>
         {recipes.map((r) => (
           <li key={r.id} className={styles.item}>
-            <Link href={localePath(locale, `/r/${r.slug}`)} className={styles.row}>
+            <Link href={localePath(locale, `/recipes/${r.slug}`)} className={styles.row}>
               <div className={styles.thumb}>
                 <Placeholder tone="warm" ratio={1} label={r.title.slice(0, 4).toUpperCase()} />
               </div>

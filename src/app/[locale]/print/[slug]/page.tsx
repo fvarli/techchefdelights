@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { loadRecipeBySlug } from '@/lib/api/recipe-loader'
 import { formatScaledQuantity } from '@/lib/scaling'
+import { localePath } from '@/lib/path'
 import type { ApiLocale } from '@/lib/api/enums'
 import type { ApiIngredient } from '@/lib/api/types'
 import styles from './print.module.css'
@@ -50,8 +51,7 @@ export default async function PrintRecipePage({
   const t = await getTranslations('Print')
   const tRecipe = await getTranslations('Recipe')
 
-  const recipePath = locale === 'en' ? `/r/${recipe.slug}` : `/${locale}/r/${recipe.slug}`
-  const sourceUrl = `${BASE_URL}${recipePath}`
+  const sourceUrl = `${BASE_URL}${localePath(locale, `/recipes/${recipe.slug}`)}`
 
   return (
     <article className={styles.page}>

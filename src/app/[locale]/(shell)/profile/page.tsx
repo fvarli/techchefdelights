@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { loadAllergens } from '@/lib/api/account-loaders'
 import { ProfileForm } from '@/components/account/ProfileForm'
+import { localePath } from '@/lib/path'
 import type { ApiLocale } from '@/lib/api/enums'
 import styles from './profile.module.css'
 
@@ -19,8 +20,12 @@ export async function generateMetadata({
     description: t('metaDescription'),
     robots: { index: false, follow: false },
     alternates: {
-      canonical: locale === 'en' ? '/profile' : `/${locale}/profile`,
-      languages: { en: '/profile', tr: '/tr/profile', es: '/es/profile' },
+      canonical: localePath(locale, '/profile'),
+      languages: {
+        en: localePath('en', '/profile'),
+        tr: localePath('tr', '/profile'),
+        es: localePath('es', '/profile'),
+      },
     },
   }
 }

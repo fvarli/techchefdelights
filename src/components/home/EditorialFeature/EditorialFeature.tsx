@@ -19,7 +19,7 @@ export function EditorialFeature({ feature, locale, labels }: Props) {
   const r = feature.recipe
   return (
     <section className={styles.section}>
-      <Link href={localePath(locale, `/r/${r.slug}`)} className={styles.imageLink}>
+      <Link href={localePath(locale, `/recipes/${r.slug}`)} className={styles.imageLink}>
         <Placeholder tone="dark" ratio={3 / 4} label={r.title.toUpperCase().slice(0, 18)} />
       </Link>
 
@@ -49,7 +49,7 @@ export function EditorialFeature({ feature, locale, labels }: Props) {
           )}
         </div>
 
-        <Link href={localePath(locale, `/r/${r.slug}`)} className={styles.cta}>
+        <Link href={localePath(locale, `/recipes/${r.slug}`)} className={styles.cta}>
           {labels.cta} <span aria-hidden>→</span>
         </Link>
       </div>

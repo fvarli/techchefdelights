@@ -49,17 +49,17 @@ psql "$DATABASE_URL" -c "SELECT to_regprocedure('public.tcd_locale_to_regconfig(
 Deploy to a staging URL first. Run on the live staging hostname:
 
 - [ ] `/` (EN), `/tr`, `/es` return 200 with localized H1
-- [ ] `/r/red-lentil-soup` (EN), `/tr/r/mercimek-corbasi`, `/es/r/sopa-lentejas-rojas` render full recipe + JSON-LD
-- [ ] `/r/red-lentil-soup/cook` enters chromeless cook mode; arrow-key navigation advances steps; timer starts/pauses
+- [ ] `/recipes/red-lentil-soup` (EN), `/tr/tarifler/mercimek-corbasi`, `/es/recetas/sopa-lentejas-rojas` render full recipe + JSON-LD
+- [ ] `/recipes/red-lentil-soup/cook` enters chromeless cook mode; arrow-key navigation advances steps; timer starts/pauses
 - [ ] `/recipes` paginates; `?cuisine=turkish`, `?diet=vegetarian`, `?skill=beginner`, `?maxMinutes=30` filter
-- [ ] `/c/desserts`, `/tr/c/tatlilar`, `/es/c/postres` resolve via per-locale slug; cross-locale slugs 404
-- [ ] `/d/vegetarian` × 3 locales (shared slug)
+- [ ] `/categories/desserts`, `/tr/kategoriler/tatlilar`, `/es/categorias/postres` resolve via per-locale slug; cross-locale slugs 404
+- [ ] `/diets/vegetarian` × 3 locales (shared slug)
 - [ ] `/search?q=lentil` (EN), `/tr/search?q=mercimek`, `/es/search?q=lentejas` each return 1 result
 - [ ] `/saved`, `/profile`, `/plan` render with localized labels (private; `noindex,nofollow`)
 - [ ] `/print/red-lentil-soup` renders BareShell (no header/footer/MobileBottomNav); `@media print` styles apply when printed
-- [ ] `/en` → 307 → `/`; `/en/r/<slug>` → 307 → `/r/<slug>`
+- [ ] `/en` → 307 → `/`; `/en/recipes/<slug>` → 307 → `/recipes/<slug>`
 - [ ] `/sitemap.xml` returns 22 URLs × 3 hreflang each (= 66 alternate links)
-- [ ] `/robots.txt` lists Disallow for `/api/`, `/search`, `/saved`, `/profile`, `/plan`, `/print/`, `/design`, `/r/*/cook` for all locales
+- [ ] `/robots.txt` lists Disallow for `/api/`, `/search`, `/saved`, `/profile`, `/plan`, `/print/`, `/design`, `/recipes/*/cook` for all locales
 - [ ] Mobile viewport (390 × 844): MobileBottomNav visible at home, hidden in cook mode; Sticky cook CTA appears on recipe detail
 - [ ] Cross-tab sync: save a recipe in tab A, open tab B at `/saved` — appears after focus
 - [ ] `GET /api/v1/health` returns `{"status":"ok","db":"ok",...}` with 200
@@ -141,7 +141,7 @@ Tail the application logs (hosting platform's log viewer or `docker logs`) and c
 
 - [ ] `curl -I /` shows `Content-Security-Policy` header with the expected directive set (default-src 'self', img-src includes Cloudinary, connect-src includes GA + Sentry ingest, etc.)
 - [ ] In production, the header includes `upgrade-insecure-requests`
-- [ ] Browser DevTools console clean of CSP violations on `/`, `/r/<slug>`, `/recipes`, `/r/<slug>/cook`
+- [ ] Browser DevTools console clean of CSP violations on `/`, `/recipes/<slug>`, `/recipes`, `/recipes/<slug>/cook`
 - [ ] After accepting consent, GA scripts load without CSP violations
 - [ ] Cloudinary image domain reachable when real images are wired (`https://res.cloudinary.com/...`)
 - [ ] **Known**: `'unsafe-inline'` for script-src and style-src is a temporary Next.js compatibility allowance. Nonce-based hardening tracked as follow-up.
@@ -177,9 +177,9 @@ Run against staging URL with a clean Chrome instance:
 ```bash
 pnpm exec lhci autorun \
   --collect.url=https://staging.techchefdelights.com/ \
-  --collect.url=https://staging.techchefdelights.com/r/red-lentil-soup \
+  --collect.url=https://staging.techchefdelights.com/recipes/red-lentil-soup \
   --collect.url=https://staging.techchefdelights.com/recipes \
-  --collect.url=https://staging.techchefdelights.com/r/red-lentil-soup/cook
+  --collect.url=https://staging.techchefdelights.com/recipes/red-lentil-soup/cook
 ```
 
 **Required minimums** (mobile + desktop):
@@ -194,9 +194,9 @@ Investigate any LCP > 2.5s (4G), CLS > 0.05, or TBT > 200ms before promoting.
 
 For each of the three locales, validate at https://search.google.com/test/rich-results :
 
-- `https://staging.techchefdelights.com/r/red-lentil-soup` → expect `Recipe`, `FAQPage`, `BreadcrumbList`, `Review` (placeholder data)
-- `https://staging.techchefdelights.com/tr/r/mercimek-corbasi` → same set
-- `https://staging.techchefdelights.com/es/r/sopa-lentejas-rojas` → same set
+- `https://staging.techchefdelights.com/recipes/red-lentil-soup` → expect `Recipe`, `FAQPage`, `BreadcrumbList`, `Review` (placeholder data)
+- `https://staging.techchefdelights.com/tr/tarifler/mercimek-corbasi` → same set
+- `https://staging.techchefdelights.com/es/recetas/sopa-lentejas-rojas` → same set
 
 All four schema types must show "Valid items detected" with zero errors.
 
@@ -210,7 +210,7 @@ On staging, with the staging hostname in the URL bar:
 - Edge (latest)
 - Android Chrome (latest)
 
-Walk: `/` → search → `/r/<slug>` → save → `/saved` → cook → timer → exit → resume.
+Walk: `/` → search → `/recipes/<slug>` → save → `/saved` → cook → timer → exit → resume.
 
 ## 8. Production sign-off gate
 

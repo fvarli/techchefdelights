@@ -24,16 +24,16 @@ export async function generateMetadata({
   const d = await loadDietBySlug(locale, diet)
   if (!d) return { title: 'Diet not found' }
   const t = await getTranslations({ locale, namespace: 'Taxonomy' })
-  const path = locale === 'en' ? `/d/${d.slug}` : `/${locale}/d/${d.slug}`
+  const canonical = localePath(locale, `/diets/${d.slug}`)
   return {
     title: t('diet.metaTitle', { name: d.name }),
     description: d.description ?? t('diet.metaDescription', { name: d.name }),
     alternates: {
-      canonical: path,
+      canonical,
       languages: {
-        en: `/d/${d.slug}`,
-        tr: `/tr/d/${d.slug}`,
-        es: `/es/d/${d.slug}`,
+        en: localePath('en', `/diets/${d.slug}`),
+        tr: localePath('tr', `/diets/${d.slug}`),
+        es: localePath('es', `/diets/${d.slug}`),
       },
     },
   }
@@ -61,7 +61,7 @@ export default async function DietPage({
     loadRecipeList(locale, { diet: d.slug }, cursor, PAGE_SIZE),
   ])
 
-  const basePath = localePath(locale, `/d/${d.slug}`)
+  const basePath = localePath(locale, `/diets/${d.slug}`)
   const recipesPath = localePath(locale, '/recipes')
   const nextHref = page.nextCursor
     ? `${basePath}?${new URLSearchParams({ cursor: page.nextCursor }).toString()}`

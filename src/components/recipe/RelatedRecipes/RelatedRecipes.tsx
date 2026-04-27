@@ -1,5 +1,6 @@
 import { Placeholder } from '@/components/foundation'
 import type { ApiLocale } from '@/lib/api/enums'
+import { localePath } from '@/lib/path'
 import styles from './RelatedRecipes.module.css'
 
 export type RelatedRecipeItem = {
@@ -17,7 +18,7 @@ type Props = {
 }
 
 function recipePath(locale: ApiLocale, slug: string): string {
-  return locale === 'en' ? `/r/${slug}` : `/${locale}/r/${slug}`
+  return localePath(locale, `/recipes/${slug}`)
 }
 
 export function RelatedRecipes({ items, locale, labels }: Props) {

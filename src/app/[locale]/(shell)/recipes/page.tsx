@@ -53,11 +53,11 @@ export async function generateMetadata({
     title: t('metaTitle'),
     description: t('metaDescription'),
     alternates: {
-      canonical: locale === 'en' ? '/recipes' : `/${locale}/recipes`,
+      canonical: localePath(locale, '/recipes'),
       languages: {
-        en: '/recipes',
-        tr: '/tr/recipes',
-        es: '/es/recipes',
+        en: localePath('en', '/recipes'),
+        tr: localePath('tr', '/recipes'),
+        es: localePath('es', '/recipes'),
       },
     },
   }

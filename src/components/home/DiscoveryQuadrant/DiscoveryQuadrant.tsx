@@ -32,7 +32,7 @@ export function DiscoveryQuadrant({ locale, labels }: Props) {
       icon: '◇',
       title: labels.diet.title,
       desc: labels.diet.desc,
-      href: localePath(locale, '/d'),
+      href: localePath(locale, '/diets'),
     },
     {
       key: 'cuisine',

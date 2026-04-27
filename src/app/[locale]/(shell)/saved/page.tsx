@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { loadRecipeList } from '@/lib/api/recipe-list-loader'
 import { SavedRecipesGrid } from '@/components/account/SavedRecipesGrid'
+import { localePath } from '@/lib/path'
 import type { ApiLocale } from '@/lib/api/enums'
 import styles from './saved.module.css'
 
@@ -19,8 +20,12 @@ export async function generateMetadata({
     description: t('metaDescription'),
     robots: { index: false, follow: false },
     alternates: {
-      canonical: locale === 'en' ? '/saved' : `/${locale}/saved`,
-      languages: { en: '/saved', tr: '/tr/saved', es: '/es/saved' },
+      canonical: localePath(locale, '/saved'),
+      languages: {
+        en: localePath('en', '/saved'),
+        tr: localePath('tr', '/saved'),
+        es: localePath('es', '/saved'),
+      },
     },
   }
 }

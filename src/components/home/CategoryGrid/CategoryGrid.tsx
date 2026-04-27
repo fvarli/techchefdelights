@@ -34,7 +34,7 @@ export function CategoryGrid({ categories, locale, labels }: Props) {
         {categories.map((c) => (
           <Link
             key={c.slug}
-            href={localePath(locale, `/c/${c.slug}`)}
+            href={localePath(locale, `/categories/${c.slug}`)}
             className={styles.tile}
           >
             <span className={styles.icon} aria-hidden>

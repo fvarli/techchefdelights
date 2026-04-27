@@ -24,16 +24,16 @@ export async function generateMetadata({
   const cat = await loadCategoryBySlug(locale, category)
   if (!cat) return { title: 'Category not found' }
   const t = await getTranslations({ locale, namespace: 'Taxonomy' })
-  const path = locale === 'en' ? `/c/${cat.slugByLocale.en}` : `/${locale}/c/${cat.slugByLocale[locale]}`
+  const canonical = localePath(locale, `/categories/${cat.slugByLocale[locale]}`)
   return {
     title: t('category.metaTitle', { name: cat.name }),
     description: cat.description ?? t('category.metaDescription', { name: cat.name }),
     alternates: {
-      canonical: path,
+      canonical,
       languages: {
-        en: `/c/${cat.slugByLocale.en}`,
-        tr: `/tr/c/${cat.slugByLocale.tr}`,
-        es: `/es/c/${cat.slugByLocale.es}`,
+        en: localePath('en', `/categories/${cat.slugByLocale.en}`),
+        tr: localePath('tr', `/categories/${cat.slugByLocale.tr}`),
+        es: localePath('es', `/categories/${cat.slugByLocale.es}`),
       },
     },
   }
@@ -61,7 +61,7 @@ export default async function CategoryPage({
     loadRecipeList(locale, { category: cat.baseSlug }, cursor, PAGE_SIZE),
   ])
 
-  const basePath = localePath(locale, `/c/${cat.slugByLocale[locale]}`)
+  const basePath = localePath(locale, `/categories/${cat.slugByLocale[locale]}`)
   const recipesPath = localePath(locale, '/recipes')
   const nextHref = page.nextCursor
     ? `${basePath}?${new URLSearchParams({ cursor: page.nextCursor }).toString()}`

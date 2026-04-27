@@ -1,27 +1,28 @@
 import type { MetadataRoute } from 'next'
 import { db } from '@/lib/db'
+import { localePath } from '@/lib/path'
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '') ?? 'https://techchefdelights.com'
 
-type LocaleSlug = { en: string; tr: string; es: string }
+type LocaleUrls = { en: string; tr: string; es: string }
 
 function entry(
-  path: LocaleSlug,
+  paths: LocaleUrls,
   lastModified: Date,
   changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'],
   priority: number,
 ): MetadataRoute.Sitemap[number] {
   return {
-    url: `${BASE_URL}${path.en}`,
+    url: `${BASE_URL}${paths.en}`,
     lastModified,
     changeFrequency,
     priority,
     alternates: {
       languages: {
-        en: `${BASE_URL}${path.en}`,
-        tr: `${BASE_URL}${path.tr}`,
-        es: `${BASE_URL}${path.es}`,
+        en: `${BASE_URL}${paths.en}`,
+        tr: `${BASE_URL}${paths.tr}`,
+        es: `${BASE_URL}${paths.es}`,
       },
     },
   }
@@ -53,26 +54,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ])
 
   const entries: MetadataRoute.Sitemap = [
-    // Home
-    entry({ en: '/', tr: '/tr', es: '/es' }, now, 'daily', 1.0),
-    // Recipes index
-    entry({ en: '/recipes', tr: '/tr/recipes', es: '/es/recipes' }, now, 'daily', 0.9),
+    entry(
+      {
+        en: localePath('en', '/'),
+        tr: localePath('tr', '/'),
+        es: localePath('es', '/'),
+      },
+      now,
+      'daily',
+      1.0,
+    ),
+    entry(
+      {
+        en: localePath('en', '/recipes'),
+        tr: localePath('tr', '/recipes'),
+        es: localePath('es', '/recipes'),
+      },
+      now,
+      'daily',
+      0.9,
+    ),
   ]
 
-  // Recipe detail pages — per-locale slugs
+  // Recipe detail pages — per-locale slugs, localized URL segments
   for (const r of recipes) {
-    const byLocale: LocaleSlug = { en: '', tr: '', es: '' }
+    const slugByLocale: LocaleUrls = { en: '', tr: '', es: '' }
     for (const tx of r.translations) {
-      const key = tx.locale.toLowerCase() as keyof LocaleSlug
-      byLocale[key] = tx.slug
+      const key = tx.locale.toLowerCase() as keyof LocaleUrls
+      slugByLocale[key] = tx.slug
     }
-    if (!byLocale.en || !byLocale.tr || !byLocale.es) continue
+    if (!slugByLocale.en || !slugByLocale.tr || !slugByLocale.es) continue
     entries.push(
       entry(
         {
-          en: `/r/${byLocale.en}`,
-          tr: `/tr/r/${byLocale.tr}`,
-          es: `/es/r/${byLocale.es}`,
+          en: localePath('en', `/recipes/${slugByLocale.en}`),
+          tr: localePath('tr', `/recipes/${slugByLocale.tr}`),
+          es: localePath('es', `/recipes/${slugByLocale.es}`),
         },
         r.updatedAt,
         'weekly',
@@ -81,20 +98,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   }
 
-  // Category pages — per-locale slugs
+  // Category pages — per-locale slugs, localized URL segments
   for (const c of categories) {
-    const byLocale: LocaleSlug = { en: '', tr: '', es: '' }
+    const slugByLocale: LocaleUrls = { en: '', tr: '', es: '' }
     for (const tx of c.translations) {
-      const key = tx.locale.toLowerCase() as keyof LocaleSlug
-      byLocale[key] = tx.slug
+      const key = tx.locale.toLowerCase() as keyof LocaleUrls
+      slugByLocale[key] = tx.slug
     }
-    if (!byLocale.en || !byLocale.tr || !byLocale.es) continue
+    if (!slugByLocale.en || !slugByLocale.tr || !slugByLocale.es) continue
     entries.push(
       entry(
         {
-          en: `/c/${byLocale.en}`,
-          tr: `/tr/c/${byLocale.tr}`,
-          es: `/es/c/${byLocale.es}`,
+          en: localePath('en', `/categories/${slugByLocale.en}`),
+          tr: localePath('tr', `/categories/${slugByLocale.tr}`),
+          es: localePath('es', `/categories/${slugByLocale.es}`),
         },
         now,
         'weekly',
@@ -103,14 +120,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   }
 
-  // Diet pages — slug shared across locales
+  // Diet pages — slug shared across locales, localized URL segments
   for (const d of diets) {
     entries.push(
       entry(
         {
-          en: `/d/${d.slug}`,
-          tr: `/tr/d/${d.slug}`,
-          es: `/es/d/${d.slug}`,
+          en: localePath('en', `/diets/${d.slug}`),
+          tr: localePath('tr', `/diets/${d.slug}`),
+          es: localePath('es', `/diets/${d.slug}`),
         },
         now,
         'weekly',

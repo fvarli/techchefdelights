@@ -12,7 +12,7 @@ test('search "lentil" → click result → land on recipe detail', async ({ page
   await expect(result).toBeVisible()
   await result.click()
 
-  await page.waitForURL(/\/r\/red-lentil-soup$/)
+  await page.waitForURL(/\/recipes\/red-lentil-soup$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText(/Red Lentil Soup/i)
 })
 

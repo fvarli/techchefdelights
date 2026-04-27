@@ -14,7 +14,7 @@ type Props = {
 
 export function RecipeCard({ recipe, locale, minutesLabel, tone = 'warm' }: Props) {
   return (
-    <Link href={localePath(locale, `/r/${recipe.slug}`)} className={styles.card}>
+    <Link href={localePath(locale, `/recipes/${recipe.slug}`)} className={styles.card}>
       <div className={styles.imageWrap}>
         <Placeholder tone={tone} ratio={4 / 3} label={recipe.title.toUpperCase().slice(0, 16)} />
       </div>

@@ -75,7 +75,7 @@ export function HomeHero({
 
       {spotlight && (
         <Link
-          href={localePath(locale, `/r/${spotlight.slug}`)}
+          href={localePath(locale, `/recipes/${spotlight.slug}`)}
           className={styles.spotlight}
           aria-label={spotlight.title}
         >

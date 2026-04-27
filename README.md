@@ -94,7 +94,7 @@ See **[`ARCHITECTURE.md`](./ARCHITECTURE.md)** for the full breakdown and **[`DE
 
 - **Health check**: `GET /api/v1/health` — `{ status, db, rateLimitStore, timestamp, uptimeSeconds, memory:{rssMb,heapUsedMb,heapTotalMb}, environment, commit, version, requestId }`. 503 when DB ping fails or (in production) when running on memory-store rate limiting.
 - **Sitemap**: `/sitemap.xml` — 22 URLs with hreflang per locale.
-- **Robots**: `/robots.txt` — Disallow on `/api/`, `/search`, `/saved`, `/profile`, `/plan`, `/print/`, `/r/*/cook`, `/design`.
+- **Robots**: `/robots.txt` — Disallow on `/api/`, `/search`, `/saved`, `/profile`, `/plan`, `/print/`, `/recipes/*/cook`, `/design`.
 - **Rate limits** (Redis when configured, MemoryStore fallback):
   - `POST /api/v1/newsletter` — 5 req / 60s / IP
   - `GET /api/v1/search` — 30 req / 60s / IP

@@ -40,7 +40,7 @@ export async function Footer({ locale, labels }: Props) {
   const categories = await loadPopularCategories(locale)
 
   function categoryPath(slug: string) {
-    return localePath(locale, `/c/${slug}`)
+    return localePath(locale, `/categories/${slug}`)
   }
 
   return (
@@ -71,8 +71,8 @@ export async function Footer({ locale, labels }: Props) {
           <h3 className={styles.columnTitle}>{labels.explore.title}</h3>
           <ul className={styles.list}>
             <li><Link href={localePath(locale, '/recipes')}>{labels.explore.recipes}</Link></li>
-            <li><Link href={localePath(locale, '/c')}>{labels.explore.categories}</Link></li>
-            <li><Link href={localePath(locale, '/d')}>{labels.explore.diets}</Link></li>
+            <li><Link href={localePath(locale, '/categories')}>{labels.explore.categories}</Link></li>
+            <li><Link href={localePath(locale, '/diets')}>{labels.explore.diets}</Link></li>
             <li><Link href={localePath(locale, '/cuisine')}>{labels.explore.cuisines}</Link></li>
           </ul>
         </div>

@@ -14,7 +14,7 @@ async function clearStorage(page: import('@playwright/test').Page) {
 test('save recipe → appears on /saved', async ({ page }) => {
   await clearStorage(page)
 
-  await page.goto(`/r/${SLUG}`)
+  await page.goto(`/recipes/${SLUG}`)
   await expect(page.getByRole('heading', { level: 1 })).toContainText(/Red Lentil Soup/i)
 
   const saveBtn = page

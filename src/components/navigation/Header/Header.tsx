@@ -32,7 +32,7 @@ export function Header({ locale, labels }: Props) {
           <Link href={localePath(locale, '/recipes')} className={styles.navLink}>
             {labels.recipes}
           </Link>
-          <Link href={localePath(locale, '/c')} className={styles.navLink}>
+          <Link href={localePath(locale, '/categories')} className={styles.navLink}>
             {labels.categories}
           </Link>
           <Link href={localePath(locale, '/search')} className={styles.navLink}>

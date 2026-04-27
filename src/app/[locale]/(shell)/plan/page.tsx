@@ -19,8 +19,12 @@ export async function generateMetadata({
     description: t('metaDescription'),
     robots: { index: false, follow: false },
     alternates: {
-      canonical: locale === 'en' ? '/plan' : `/${locale}/plan`,
-      languages: { en: '/plan', tr: '/tr/plan', es: '/es/plan' },
+      canonical: localePath(locale, '/plan'),
+      languages: {
+        en: localePath('en', '/plan'),
+        tr: localePath('tr', '/plan'),
+        es: localePath('es', '/plan'),
+      },
     },
   }
 }

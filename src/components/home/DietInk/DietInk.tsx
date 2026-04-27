@@ -32,7 +32,7 @@ export function DietInk({ diets, locale, labels }: Props) {
           {diets.map((d) => (
             <Link
               key={d.slug}
-              href={localePath(locale, `/d/${d.slug}`)}
+              href={localePath(locale, `/diets/${d.slug}`)}
               className={styles.tile}
             >
               <span className={styles.name}>{d.name}</span>

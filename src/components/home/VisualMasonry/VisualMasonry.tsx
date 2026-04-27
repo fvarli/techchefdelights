@@ -39,7 +39,7 @@ export function VisualMasonry({ recipes, locale, labels }: Props) {
           return (
             <Link
               key={r.id}
-              href={localePath(locale, `/r/${r.slug}`)}
+              href={localePath(locale, `/recipes/${r.slug}`)}
               className={styles.tile}
               style={{ '--tile-h': `${height}px` } as React.CSSProperties}
             >

@@ -3,6 +3,7 @@
 
 import type { ApiRecipe } from './api/types'
 import type { ApiLocale } from './api/enums'
+import { localePath } from './path'
 
 const SKILL_TO_SCHEMA: Record<string, string> = {
   beginner: 'Easy',
@@ -17,15 +18,15 @@ const LOCALE_TO_SCHEMA_LANG: Record<ApiLocale, string> = {
 }
 
 function recipePath(locale: ApiLocale, slug: string): string {
-  return locale === 'en' ? `/r/${slug}` : `/${locale}/r/${slug}`
+  return localePath(locale, `/recipes/${slug}`)
 }
 
 function homePath(locale: ApiLocale): string {
-  return locale === 'en' ? '/' : `/${locale}`
+  return localePath(locale, '/')
 }
 
 function recipesPath(locale: ApiLocale): string {
-  return locale === 'en' ? '/recipes' : `/${locale}/recipes`
+  return localePath(locale, '/recipes')
 }
 
 function isoDuration(minutes: number): string {
