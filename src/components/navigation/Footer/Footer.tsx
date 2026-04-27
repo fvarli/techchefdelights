@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { db } from '@/lib/db'
 import { fromApiLocale, type ApiLocale } from '@/lib/api/enums'
 import { localePath } from '@/lib/path'
+import { PrivacySettingsLink } from '@/components/analytics'
 import styles from './Footer.module.css'
 
 type FooterLabels = {
@@ -12,6 +13,7 @@ type FooterLabels = {
   company: { title: string; about: string; contact: string; privacy: string; terms: string }
   connect: { title: string; instagram: string; newsletter: string }
   copyright: string
+  privacySettings: string
 }
 
 type Props = {
@@ -115,6 +117,10 @@ export async function Footer({ locale, labels }: Props) {
 
       <div className={styles.bottomBar}>
         <span className={styles.copyright}>{labels.copyright}</span>
+        <PrivacySettingsLink
+          enabled={Boolean(process.env.NEXT_PUBLIC_GA_ID)}
+          label={labels.privacySettings}
+        />
       </div>
     </footer>
   )

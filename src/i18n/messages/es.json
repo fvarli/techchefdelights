@@ -164,6 +164,15 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Consent": {
+    "title": "Tu privacidad",
+    "description": "Usamos analítica básica para entender cómo se usan las recetas. Sin anuncios ni seguimiento entre sitios. Puedes cambiarlo cuando quieras desde el pie de página.",
+    "analytics": "Solo analítica — Google Analytics 4",
+    "accept": "Aceptar analítica",
+    "reject": "Rechazar",
+    "manage": "Privacidad",
+    "save": "Guardar"
+  },
   "Print": {
     "cuisine": "Cocina",
     "source": "Fuente",

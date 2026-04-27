@@ -164,6 +164,15 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Consent": {
+    "title": "Gizliliğin",
+    "description": "Tariflerin nasıl kullanıldığını anlamak için sınırlı analitik kullanıyoruz. Reklam yok, siteler arası izleme yok. Tercihini istediğin zaman alt menüden değiştirebilirsin.",
+    "analytics": "Yalnızca analitik — Google Analytics 4",
+    "accept": "Analitiği kabul et",
+    "reject": "Reddet",
+    "manage": "Gizlilik ayarları",
+    "save": "Kaydet"
+  },
   "Print": {
     "cuisine": "Mutfak",
     "source": "Kaynak",

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
-import { GoogleAnalytics } from '@/components/analytics'
+import { ConsentBanner, GoogleAnalytics } from '@/components/analytics'
 import '@fontsource/instrument-serif'
 import '@fontsource-variable/geist'
 import '@fontsource-variable/jetbrains-mono'
@@ -29,10 +29,23 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) notFound()
   setRequestLocale(locale)
 
+  const t = await getTranslations('Consent')
+  const gaConfigured = Boolean(process.env.NEXT_PUBLIC_GA_ID)
+
   return (
     <html lang={locale}>
       <body>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <ConsentBanner
+          enabled={gaConfigured}
+          labels={{
+            title: t('title'),
+            description: t('description'),
+            analytics: t('analytics'),
+            accept: t('accept'),
+            reject: t('reject'),
+          }}
+        />
         <GoogleAnalytics />
       </body>
     </html>

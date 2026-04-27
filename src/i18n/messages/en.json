@@ -164,6 +164,15 @@
     },
     "copyright": "© {year} TechChefDelights"
   },
+  "Consent": {
+    "title": "Your privacy",
+    "description": "We use a small amount of analytics to understand how recipes are used. No ads, no tracking across sites. You can change this any time from the footer.",
+    "analytics": "Analytics only — Google Analytics 4",
+    "accept": "Accept analytics",
+    "reject": "Reject",
+    "manage": "Privacy settings",
+    "save": "Save"
+  },
   "Print": {
     "cuisine": "Cuisine",
     "source": "Source",

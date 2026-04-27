@@ -11,11 +11,12 @@ type Props = {
 }
 
 export async function SiteShell({ locale, children }: Props) {
-  const [tHeader, tFooter, tMobile, tCommon] = await Promise.all([
+  const [tHeader, tFooter, tMobile, tCommon, tConsent] = await Promise.all([
     getTranslations('Header'),
     getTranslations('Footer'),
     getTranslations('MobileNav'),
     getTranslations('Common'),
+    getTranslations('Consent'),
   ])
 
   const headerLabels = {
@@ -49,6 +50,7 @@ export async function SiteShell({ locale, children }: Props) {
       newsletter: tFooter('connect.newsletter'),
     },
     copyright: tFooter('copyright', { year: new Date().getFullYear() }),
+    privacySettings: tConsent('manage'),
   }
 
   const mobileNavLabels = {

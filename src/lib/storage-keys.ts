@@ -14,4 +14,5 @@ export const SK = {
   locale: 'tcd:locale',
   diet: 'tcd:diet',
   prefs: 'tcd:prefs',
+  consent: 'tcd:consent',
 } as const
