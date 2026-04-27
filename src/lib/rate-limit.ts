@@ -1,11 +1,19 @@
 /**
- * Lightweight in-memory IP-based rate limiter with a swappable interface.
+ * IP-based rate limiter with a swappable backend.
  *
- * v1 strategy is fixed-window per (key, bucket) stored in process memory.
- * That's fine for single-instance deploys; for multi-instance, swap the
- * RateLimitStore implementation for a Redis/Upstash-backed one without
- * touching call sites.
+ *   - MemoryStore: per-process buckets. Fine for single-instance deploys
+ *     and dev. Loses state on restart and doesn't share across replicas.
+ *   - RedisStore: Upstash REST client. Shared across instances; persists
+ *     across restarts.
+ *
+ * Backend is selected at module load: if UPSTASH_REDIS_REST_URL +
+ * UPSTASH_REDIS_REST_TOKEN are set, RedisStore is used. Otherwise we
+ * fall back to MemoryStore. The selection is exposed via
+ * `rateLimitStoreKind` so the health endpoint can report which one is
+ * live.
  */
+
+import { Redis } from '@upstash/redis'
 
 export type RateLimitVerdict = {
   allowed: boolean
@@ -53,9 +61,69 @@ class MemoryStore implements RateLimitStore {
   }
 }
 
-const globalForLimit = globalThis as unknown as { __tcd_rl?: RateLimitStore }
-export const rateLimitStore: RateLimitStore = globalForLimit.__tcd_rl ?? new MemoryStore()
-if (process.env.NODE_ENV !== 'production') globalForLimit.__tcd_rl = rateLimitStore
+class RedisStore implements RateLimitStore {
+  constructor(private readonly redis: Redis) {}
+
+  async hit(key: string, windowMs: number, limit: number): Promise<RateLimitVerdict> {
+    const now = Date.now()
+    const windowSec = Math.max(1, Math.ceil(windowMs / 1000))
+    const bucket = `tcd:rl:${key}:${Math.floor(now / windowMs)}`
+    const ttlKey = `${bucket}:ttl`
+
+    // INCR establishes the counter; the first caller in the window also
+    // sets the absolute reset timestamp so every subsequent caller sees
+    // the same resetAt.
+    const count = await this.redis.incr(bucket)
+    let resetAt = now + windowMs
+    if (count === 1) {
+      await this.redis.expire(bucket, windowSec)
+      await this.redis.set(ttlKey, String(resetAt), { ex: windowSec })
+    } else {
+      const stored = await this.redis.get<string>(ttlKey)
+      if (stored) resetAt = Number(stored)
+    }
+
+    return {
+      allowed: count <= limit,
+      limit,
+      remaining: Math.max(0, limit - count),
+      resetAt,
+    }
+  }
+}
+
+function makeStore(): { store: RateLimitStore; kind: 'redis' | 'memory' } {
+  const url = process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN
+  if (url && token) {
+    const redis = new Redis({ url, token })
+    return { store: new RedisStore(redis), kind: 'redis' }
+  }
+  if (process.env.NODE_ENV === 'production') {
+    // Loud signal in production logs that we're running on a single-instance
+    // store. Not a hard failure — single-instance deploys still work — but
+    // multi-instance deploys MUST configure Upstash.
+    // eslint-disable-next-line no-console
+    console.warn(
+      JSON.stringify({
+        level: 'warn',
+        message: 'rateLimit.fallback_memory_store',
+        timestamp: new Date().toISOString(),
+        context: { hint: 'set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN for multi-instance deploys' },
+      }),
+    )
+  }
+  return { store: new MemoryStore(), kind: 'memory' }
+}
+
+const globalForLimit = globalThis as unknown as {
+  __tcd_rl?: { store: RateLimitStore; kind: 'redis' | 'memory' }
+}
+const selected = globalForLimit.__tcd_rl ?? makeStore()
+if (process.env.NODE_ENV !== 'production') globalForLimit.__tcd_rl = selected
+
+export const rateLimitStore: RateLimitStore = selected.store
+export const rateLimitStoreKind: 'redis' | 'memory' = selected.kind
 
 export function clientIpFrom(headers: Headers): string {
   const xff = headers.get('x-forwarded-for')
@@ -63,10 +131,6 @@ export function clientIpFrom(headers: Headers): string {
   return headers.get('x-real-ip') ?? '0.0.0.0'
 }
 
-/**
- * Convenience wrapper. `bucket` namespaces independent counters so e.g.
- * /newsletter and /search don't share quota.
- */
 export async function rateLimit(
   request: Request,
   bucket: string,
