@@ -116,6 +116,22 @@ Conventions:
 - Standard error envelope only.
 - Audit logs for important actions; error logs on failures with route meta only.
 
+### Rate limit backend selection
+
+`src/lib/rate-limit.ts` chooses one of three implementations at module
+load time:
+
+| Priority | Backend | Trigger | Best for |
+|---|---|---|---|
+| 1 | `StandardRedisStore` (ioredis) | `REDIS_URL` set | VPS / self-hosted production |
+| 2 | `UpstashRedisStore` (REST) | `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` set | Serverless (Vercel, Cloudflare) |
+| 3 | `MemoryStore` | none of the above | Local dev only |
+
+In production, MemoryStore degrades the health endpoint and emits a
+one-shot warn log. To run a quick local Redis for testing:
+`docker run -p 6379:6379 redis:alpine` then
+`REDIS_URL=redis://127.0.0.1:6379 pnpm dev`.
+
 ## How to use hooks
 
 All hooks live in `src/hooks/` and follow the v1=v2 contract. Patterns:

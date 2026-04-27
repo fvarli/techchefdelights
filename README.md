@@ -68,15 +68,17 @@ Set in your hosting platform (or `.env.local` for development):
 | `NEXT_PUBLIC_APP_VERSION` | optional | Release id for Sentry + `/api/v1/health`. Falls back to `VERCEL_GIT_COMMIT_SHA` or `APP_COMMIT_SHA`. |
 | `VERCEL_GIT_COMMIT_SHA` | auto (Vercel) | Auto-injected. Surfaced as `commit` in `/api/v1/health`. |
 | `APP_COMMIT_SHA` | optional | CI fallback for the commit field on non-Vercel deploys. |
-| `UPSTASH_REDIS_REST_URL` | prod (multi-instance) | Upstash Redis URL for distributed rate limiting. |
-| `UPSTASH_REDIS_REST_TOKEN` | prod (multi-instance) | Upstash Redis token. Required if URL is set. |
+| `REDIS_URL` | **prod (recommended)** | Standard Redis URL for distributed rate limiting (`redis://host:6379` or `rediss://...` for TLS). Used via ioredis. Best fit for VPS / self-hosted deploys. |
+| `UPSTASH_REDIS_REST_URL` | prod (serverless alt) | Upstash Redis REST URL — used only when `REDIS_URL` is unset. Best for serverless platforms (Vercel, Cloudflare) that can't hold TCP sockets. |
+| `UPSTASH_REDIS_REST_TOKEN` | prod (serverless alt) | Upstash REST token. Required if `UPSTASH_REDIS_REST_URL` is set. |
 | `CLOUDINARY_CLOUD_NAME` | deferred | Required when real images replace placeholders. |
 | `CLOUDINARY_API_KEY` | deferred | Same. |
 | `CLOUDINARY_API_SECRET` | deferred | Same. |
 
 **Behavior summary:**
-- All Sentry / GA / Upstash vars are **optional**. Missing values produce no-op behavior (Sentry inactive, GA hidden, MemoryStore fallback).
-- In **production**, missing Upstash flips `/api/v1/health.status` to `degraded` and emits a `rateLimit.fallback_memory_store` warn log. Single-instance deploys can ignore this; multi-instance MUST configure Upstash.
+- All Sentry / GA / Redis vars are **optional**. Missing values produce no-op behavior (Sentry inactive, GA hidden, MemoryStore fallback).
+- **Rate limit backend selection** (priority): `REDIS_URL` → `UPSTASH_REDIS_REST_URL`+`TOKEN` → MemoryStore. The `/api/v1/health.rateLimitStore` field reports which one is active (`'redis'` | `'upstash'` | `'memory'`).
+- In **production**, MemoryStore flips `/api/v1/health.status` to `degraded` and emits a `rateLimit.fallback_memory_store` warn log. **Self-hosted: set `REDIS_URL`. Serverless: set Upstash vars.**
 - Without `SENTRY_AUTH_TOKEN`+`SENTRY_ORG`+`SENTRY_PROJECT`, builds skip source map upload (production builds still work; just not bound to releases in Sentry).
 
 ## Architecture summary
@@ -93,7 +95,7 @@ See **[`ARCHITECTURE.md`](./ARCHITECTURE.md)** for the full breakdown and **[`DE
 - **Health check**: `GET /api/v1/health` — `{ status, db, rateLimitStore, timestamp, uptimeSeconds, memory:{rssMb,heapUsedMb,heapTotalMb}, environment, commit, version, requestId }`. 503 when DB ping fails or (in production) when running on memory-store rate limiting.
 - **Sitemap**: `/sitemap.xml` — 22 URLs with hreflang per locale.
 - **Robots**: `/robots.txt` — Disallow on `/api/`, `/search`, `/saved`, `/profile`, `/plan`, `/print/`, `/r/*/cook`, `/design`.
-- **Rate limits** (Upstash Redis when configured, MemoryStore fallback):
+- **Rate limits** (Redis when configured, MemoryStore fallback):
   - `POST /api/v1/newsletter` — 5 req / 60s / IP
   - `GET /api/v1/search` — 30 req / 60s / IP
   - `GET /api/v1/recipes/[slug]` — 120 req / 60s / IP

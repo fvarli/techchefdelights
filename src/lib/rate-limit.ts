@@ -1,19 +1,23 @@
 /**
- * IP-based rate limiter with a swappable backend.
+ * IP-based rate limiter with three swappable backends:
  *
- *   - MemoryStore: per-process buckets. Fine for single-instance deploys
- *     and dev. Loses state on restart and doesn't share across replicas.
- *   - RedisStore: Upstash REST client. Shared across instances; persists
- *     across restarts.
+ *   1. StandardRedisStore — connects via REDIS_URL using ioredis. Best for
+ *      VPS / self-hosted production where you run your own Redis.
+ *   2. UpstashRedisStore — Upstash REST API. For serverless/edge deploys
+ *      that can't hold a TCP socket (Vercel, Cloudflare).
+ *   3. MemoryStore — per-process buckets. Local dev / single-instance only.
  *
- * Backend is selected at module load: if UPSTASH_REDIS_REST_URL +
- * UPSTASH_REDIS_REST_TOKEN are set, RedisStore is used. Otherwise we
- * fall back to MemoryStore. The selection is exposed via
- * `rateLimitStoreKind` so the health endpoint can report which one is
- * live.
+ * Backend is selected at module load. Priority:
+ *   REDIS_URL > (UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN) > memory
+ *
+ * In production, MemoryStore emits a one-shot warn log and the health
+ * endpoint reports `degraded` so misconfigurations are visible.
  */
 
-import { Redis } from '@upstash/redis'
+import { Redis as Upstash } from '@upstash/redis'
+import IORedis, { type Redis as IORedisClient } from 'ioredis'
+
+export type RateLimitStoreKind = 'redis' | 'upstash' | 'memory'
 
 export type RateLimitVerdict = {
   allowed: boolean
@@ -61,8 +65,13 @@ class MemoryStore implements RateLimitStore {
   }
 }
 
-class RedisStore implements RateLimitStore {
-  constructor(private readonly redis: Redis) {}
+/**
+ * Standard Redis (ioredis) — fixed window using INCR + EXPIRE on the
+ * counter, with a sibling `:ttl` key so all callers in the same window
+ * see the same absolute resetAt.
+ */
+class StandardRedisStore implements RateLimitStore {
+  constructor(private readonly redis: IORedisClient) {}
 
   async hit(key: string, windowMs: number, limit: number): Promise<RateLimitVerdict> {
     const now = Date.now()
@@ -70,9 +79,34 @@ class RedisStore implements RateLimitStore {
     const bucket = `tcd:rl:${key}:${Math.floor(now / windowMs)}`
     const ttlKey = `${bucket}:ttl`
 
-    // INCR establishes the counter; the first caller in the window also
-    // sets the absolute reset timestamp so every subsequent caller sees
-    // the same resetAt.
+    const count = await this.redis.incr(bucket)
+    let resetAt = now + windowMs
+    if (count === 1) {
+      await this.redis.expire(bucket, windowSec)
+      await this.redis.set(ttlKey, String(resetAt), 'EX', windowSec)
+    } else {
+      const stored = await this.redis.get(ttlKey)
+      if (stored) resetAt = Number(stored)
+    }
+
+    return {
+      allowed: count <= limit,
+      limit,
+      remaining: Math.max(0, limit - count),
+      resetAt,
+    }
+  }
+}
+
+class UpstashRedisStore implements RateLimitStore {
+  constructor(private readonly redis: Upstash) {}
+
+  async hit(key: string, windowMs: number, limit: number): Promise<RateLimitVerdict> {
+    const now = Date.now()
+    const windowSec = Math.max(1, Math.ceil(windowMs / 1000))
+    const bucket = `tcd:rl:${key}:${Math.floor(now / windowMs)}`
+    const ttlKey = `${bucket}:ttl`
+
     const count = await this.redis.incr(bucket)
     let resetAt = now + windowMs
     if (count === 1) {
@@ -92,24 +126,38 @@ class RedisStore implements RateLimitStore {
   }
 }
 
-function makeStore(): { store: RateLimitStore; kind: 'redis' | 'memory' } {
-  const url = process.env.UPSTASH_REDIS_REST_URL
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN
-  if (url && token) {
-    const redis = new Redis({ url, token })
-    return { store: new RedisStore(redis), kind: 'redis' }
+function makeStore(): { store: RateLimitStore; kind: RateLimitStoreKind } {
+  const redisUrl = process.env.REDIS_URL
+  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL
+  const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN
+
+  if (redisUrl) {
+    const redis = new IORedis(redisUrl, {
+      // Don't crash the process if Redis is briefly unreachable; let
+      // the operation throw and the caller's try/catch (or the rate
+      // limit endpoint's swallow path) handle it.
+      lazyConnect: false,
+      maxRetriesPerRequest: 2,
+      enableReadyCheck: true,
+    })
+    return { store: new StandardRedisStore(redis), kind: 'redis' }
   }
+
+  if (upstashUrl && upstashToken) {
+    const redis = new Upstash({ url: upstashUrl, token: upstashToken })
+    return { store: new UpstashRedisStore(redis), kind: 'upstash' }
+  }
+
   if (process.env.NODE_ENV === 'production') {
-    // Loud signal in production logs that we're running on a single-instance
-    // store. Not a hard failure — single-instance deploys still work — but
-    // multi-instance deploys MUST configure Upstash.
     // eslint-disable-next-line no-console
     console.warn(
       JSON.stringify({
         level: 'warn',
         message: 'rateLimit.fallback_memory_store',
         timestamp: new Date().toISOString(),
-        context: { hint: 'set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN for multi-instance deploys' },
+        context: {
+          hint: 'set REDIS_URL (self-hosted) or UPSTASH_REDIS_REST_URL+TOKEN (serverless) for multi-instance deploys',
+        },
       }),
     )
   }
@@ -117,13 +165,13 @@ function makeStore(): { store: RateLimitStore; kind: 'redis' | 'memory' } {
 }
 
 const globalForLimit = globalThis as unknown as {
-  __tcd_rl?: { store: RateLimitStore; kind: 'redis' | 'memory' }
+  __tcd_rl?: { store: RateLimitStore; kind: RateLimitStoreKind }
 }
 const selected = globalForLimit.__tcd_rl ?? makeStore()
 if (process.env.NODE_ENV !== 'production') globalForLimit.__tcd_rl = selected
 
 export const rateLimitStore: RateLimitStore = selected.store
-export const rateLimitStoreKind: 'redis' | 'memory' = selected.kind
+export const rateLimitStoreKind: RateLimitStoreKind = selected.kind
 
 export function clientIpFrom(headers: Headers): string {
   const xff = headers.get('x-forwarded-for')

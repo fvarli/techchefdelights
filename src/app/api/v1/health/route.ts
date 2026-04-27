@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { logger, reqMeta } from '@/lib/logger'
-import { rateLimitStoreKind } from '@/lib/rate-limit'
+import { rateLimitStoreKind, type RateLimitStoreKind } from '@/lib/rate-limit'
 import { getRequestId, REQUEST_ID_HEADER } from '@/lib/request-id'
 import { resolveRelease } from '@/lib/release'
 
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 type HealthResponse = {
   status: 'ok' | 'degraded'
   db: 'ok' | 'error'
-  rateLimitStore: 'redis' | 'memory'
+  rateLimitStore: RateLimitStoreKind
   timestamp: string
   uptimeSeconds: number
   memory: {
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
   }
 
   const isProd = process.env.NODE_ENV === 'production'
-  const rlOk = !isProd || rateLimitStoreKind === 'redis'
+  const rlOk = !isProd || rateLimitStoreKind !== 'memory'
   const status: 'ok' | 'degraded' = dbStatus === 'ok' && rlOk ? 'ok' : 'degraded'
 
   const mem = process.memoryUsage()

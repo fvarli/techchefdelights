@@ -20,8 +20,9 @@ Required in the deployment platform (Vercel / Railway / self-host):
 | `NEXT_PUBLIC_APP_VERSION` | git short SHA or release tag | Release id for Sentry + `version` in `/api/v1/health`. |
 | `VERCEL_GIT_COMMIT_SHA` | auto-set on Vercel | Used for `commit` field in `/api/v1/health` and as a release fallback. |
 | `APP_COMMIT_SHA` | optional | CI fallback for non-Vercel deploys. |
-| `UPSTASH_REDIS_REST_URL` | **prod (multi-instance) required** | Upstash Redis URL for distributed rate limiting. Without it, the app uses an in-process MemoryStore — fine for single-instance, broken for multi-instance. |
-| `UPSTASH_REDIS_REST_TOKEN` | required if URL is set | Upstash Redis token. |
+| `REDIS_URL` | **prod (self-hosted) required** | Standard Redis URL for distributed rate limiting via ioredis. `redis://host:6379` (or `rediss://` for TLS). Best fit for VPS / self-hosted deploys. **Without a Redis backend the app uses MemoryStore — fine for local dev, broken for any multi-instance prod.** |
+| `UPSTASH_REDIS_REST_URL` | prod (serverless) required if no `REDIS_URL` | Upstash REST URL. Used only when `REDIS_URL` is unset. Best fit for Vercel / Cloudflare / other serverless platforms that can't hold TCP sockets. |
+| `UPSTASH_REDIS_REST_TOKEN` | required when Upstash URL is set | Upstash REST token. |
 | `CLOUDINARY_CLOUD_NAME` | deferred | Required when real recipe images replace seed placeholders. |
 | `CLOUDINARY_API_KEY` | deferred | Same. |
 | `CLOUDINARY_API_SECRET` | deferred | Same. |
@@ -123,10 +124,13 @@ Tail the application logs (hosting platform's log viewer or `docker logs`) and c
 
 ### Rate limit expectations
 
-- **Backend selected at startup**: Upstash Redis if `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` set, else `MemoryStore`.
-- **MemoryStore** is per-process and resets on restart. **Single-instance only**.
-- **Upstash** is required for any deploy with more than one instance.
-- **Health endpoint** reports `rateLimitStore: 'redis' | 'memory'`. In production, `memory` flips `status` to `degraded`.
+- **Backend selected at startup, in priority order**:
+  1. `REDIS_URL` → ioredis (standard Redis). **Self-hosted production target.**
+  2. `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` → Upstash REST. **Serverless production target.**
+  3. Neither → in-process MemoryStore. **Local dev only.**
+- **MemoryStore** is per-process and resets on restart. **Single-instance only.**
+- **Health endpoint** reports `rateLimitStore: 'redis' | 'upstash' | 'memory'`. In production, `'memory'` flips `status` to `degraded`.
+- **Self-hosted setup**: install Redis on the VPS (`apt install redis-server` or Docker), then set `REDIS_URL=redis://127.0.0.1:6379`. Verify with `/api/v1/health` showing `rateLimitStore: "redis"`.
 - **Quotas (per IP)**:
   - `POST /api/v1/newsletter` — 5 req / 60s
   - `GET /api/v1/search` — 30 req / 60s
