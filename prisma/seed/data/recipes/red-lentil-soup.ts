@@ -9,7 +9,7 @@ export const redLentilSoup: RecipeSeed = {
   prepMinutes: 10,
   cookMinutes: 25,
   totalMinutes: 35,
-  heroImageCloudinary: 'tcd/seed/red-lentil-soup/hero',
+  heroImageCloudinary: 'recipes/red-lentil-soup/hero',
   heroBlurhash: null,
   costPerServingCents: 800,
   costCurrency: 'TRY',
