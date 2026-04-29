@@ -162,7 +162,9 @@
       "instagram": "Instagram",
       "newsletter": "Newsletter"
     },
-    "copyright": "© {year} TechChefDelights"
+    "copyright": "© {year} TechChefDelights",
+    "builtBy": "Built by",
+    "builtByStudio": "Lunexa Studio"
   },
   "Consent": {
     "title": "Your privacy",

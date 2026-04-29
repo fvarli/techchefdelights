@@ -127,6 +127,23 @@
   color: var(--color-mute);
 }
 
+.builtBy {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--color-mute);
+}
+
+.builtByLink {
+  color: var(--color-cream);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.builtByLink:hover {
+  color: var(--color-terra);
+}
+
 @media (max-width: 1024px) {
   .inner {
     grid-template-columns: 1.4fr 1fr 1fr;

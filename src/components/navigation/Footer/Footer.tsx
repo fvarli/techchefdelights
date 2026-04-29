@@ -14,6 +14,8 @@ type FooterLabels = {
   connect: { title: string; instagram: string; newsletter: string }
   copyright: string
   privacySettings: string
+  builtBy: string
+  builtByStudio: string
 }
 
 type Props = {
@@ -117,6 +119,17 @@ export async function Footer({ locale, labels }: Props) {
 
       <div className={styles.bottomBar}>
         <span className={styles.copyright}>{labels.copyright}</span>
+        <span className={styles.builtBy}>
+          {labels.builtBy}{' '}
+          <a
+            href="https://uselunexa.com"
+            target="_blank"
+            rel="noopener"
+            className={styles.builtByLink}
+          >
+            {labels.builtByStudio}
+          </a>
+        </span>
         <PrivacySettingsLink
           enabled={Boolean(process.env.NEXT_PUBLIC_GA_ID)}
           label={labels.privacySettings}

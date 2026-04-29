@@ -51,6 +51,8 @@ export async function SiteShell({ locale, children }: Props) {
     },
     copyright: tFooter('copyright', { year: new Date().getFullYear() }),
     privacySettings: tConsent('manage'),
+    builtBy: tFooter('builtBy'),
+    builtByStudio: tFooter('builtByStudio'),
   }
 
   const mobileNavLabels = {

@@ -162,7 +162,9 @@
       "instagram": "Instagram",
       "newsletter": "Boletín"
     },
-    "copyright": "© {year} TechChefDelights"
+    "copyright": "© {year} TechChefDelights",
+    "builtBy": "Construido por",
+    "builtByStudio": "Lunexa Studio"
   },
   "Consent": {
     "title": "Tu privacidad",

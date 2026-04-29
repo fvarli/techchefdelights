@@ -162,7 +162,9 @@
       "instagram": "Instagram",
       "newsletter": "Bülten"
     },
-    "copyright": "© {year} TechChefDelights"
+    "copyright": "© {year} TechChefDelights",
+    "builtBy": "Geliştiren",
+    "builtByStudio": "Lunexa Studio"
   },
   "Consent": {
     "title": "Gizliliğin",
